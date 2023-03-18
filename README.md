@@ -7,14 +7,12 @@ List nama username **Github** di Trello untuk diundang sebagai collaborator di p
 Clone project ini dengan menggunakan perintah:
 
 ```bash
-git clone https://github.com/juliansyahrifqi/realta-hotel-backend.git ``
+git clone https://github.com/juliansyahrifqi/realta-hotel-backend.git
 ```
 
 Setelah clone project ini, buka di VS Code.
 
 ## Instalasi dan Jalankan Project
-
-ini perubahan
 
 ```bash
 npm install
