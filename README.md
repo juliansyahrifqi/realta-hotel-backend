@@ -7,7 +7,7 @@ List nama username **Github** di Trello untuk diundang sebagai collaborator di p
 Clone project ini dengan menggunakan perintah:
 
 ```bash
-git clone https://github.com/juliansyahrifqi/realta-hotel-backend.git`
+git clone https://github.com/juliansyahrifqi/realta-hotel-backend.git
 ```
 
 Setelah clone project ini, buka di VS Code.
@@ -81,14 +81,15 @@ stg -D postgres -o models/users_module -h localhost -p 5432 -d "HotelRealtaDB" -
 ```
 src/
   ├── nama_schema (contoh: usersSchema)
-    ├── dto
-      ├── createUsers.dto.ts
-      ├── updateUsers.dto.ts
-    ├── users.controller.spec
-    ├── users.controller.ts
-    ├── users.module.ts
-    ├── users.service.spec
-    ├── users.service.ts
+    ├── users
+      ├── dto
+         ├── createUsers.dto.ts
+         ├── updateUsers.dto.ts
+      ├── users.controller.spec
+      ├── users.controller.ts
+      ├── users.module.ts
+      ├── users.service.spec
+      ├── users.service.ts
 ```
 
 Ketika akan generate seperti module, service atau controllers, pastikan bahwa file yang kita generate tadi berada di folder sesuai dengan schema yang kita kerjakan.
