@@ -72,8 +72,18 @@ models/
 
 . Pastikan ketika ketika generate models, output yang disimpan adalah seperti `models/nama_schema`. Contoh: `models/usersSchema`.
 
+> **Jangan menambahkan script di dalam `package.json` untuk menghindari konflik di kemudian hari. Lebih baik menggunakan `npx`. Contoh:**
+
+Install NPX
+
 ```bash
-stg -D postgres -o models/users_module -h localhost -p 5432 -d "HotelRealtaDB" -u postgres -x "your_password" --indices --associations-file association.csv --clean
+npm install -g npx
+```
+
+Lalu, untuk generate model, contoh:
+
+```bash
+npx stg -D postgres -o models/users_module -h localhost -p 5432 -d "HotelRealtaDB" -u postgres -x "your_password" --indices --associations-file association.csv --clean
 ```
 
 ### Struktur Folder Untuk Masing-masing Schema
