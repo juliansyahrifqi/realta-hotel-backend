@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users/users.module';
 import { UserMembersModule } from './users/user-members/user-members.module';
+import { UserBonusPointsModule } from './users/user-bonus-points/user-bonus-points.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserMembersModule } from './users/user-members/user-members.module';
     }),
     UsersModule,
     UserMembersModule,
+    UserBonusPointsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
