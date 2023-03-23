@@ -13,38 +13,41 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignUpGuestDto } from './dto/signup-guest.dto';
 import { SignUpEmployeeDto } from './dto/signup-employee.dto';
-import { Sequelize } from 'sequelize-typescript';
-import * as bcrypt from 'bcrypt';
-import { QueryTypes } from 'sequelize';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private sequelize: Sequelize,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  @Post('signUpGuest')
+  @Post('signupGuest')
   async signUpGuest(@Body() signUpGuestDto: SignUpGuestDto) {
     try {
       await this.usersService.signUpGuest(signUpGuestDto);
 
       return {
-        statusCode: HttpStatus.ACCEPTED,
+        statusCode: HttpStatus.OK,
         message: 'Guest success created',
       };
     } catch (error) {
-      return { statusCode: HttpStatus.BAD_REQUEST, message: error };
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error,
+      };
     }
   }
 
   @Post('signUpEmployee')
   async signUpEmployee(@Body() signUpEmployeeDto: SignUpEmployeeDto) {
     try {
-      // const result = await
-      const result = await this.usersService.signUpEmployee(signUpEmployeeDto);
+      if (signUpEmployeeDto.password !== signUpEmployeeDto.confirm_password) {
+        return {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Password and Confirm Password is not same',
+        };
+      }
 
-      console.log(result);
+      await this.usersService.signUpEmployee(signUpEmployeeDto);
+
+      return { statusCode: HttpStatus.OK, message: 'Employee success created' };
     } catch (e) {
       return { statusCode: HttpStatus.BAD_REQUEST, message: e };
     }

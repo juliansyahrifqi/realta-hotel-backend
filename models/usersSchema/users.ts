@@ -15,7 +15,9 @@ export interface usersAttributes {
   user_company_name?: string;
   user_email?: string;
   user_phone_number?: string;
+  user_photo_profile?: string;
   user_modified_date?: Date;
+  user_hotel_id?: number;
 }
 
 @Table({ tableName: 'users', schema: 'users', timestamps: false })
@@ -23,7 +25,14 @@ export class users
   extends Model<usersAttributes, usersAttributes>
   implements usersAttributes
 {
-  @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
+  @Column({
+    primaryKey: true,
+    autoIncrement: true,
+    type: DataType.INTEGER,
+    defaultValue: Sequelize.literal(
+      "nextval('users.users_user_id_seq'::regclass)",
+    ),
+  })
   user_id?: number;
 
   @Column({
@@ -47,6 +56,12 @@ export class users
   @Column({ allowNull: true, type: DataType.STRING(25) })
   user_phone_number?: string;
 
+  @Column({ allowNull: true, type: DataType.STRING(225) })
+  user_photo_profile?: string;
+
   @Column({ allowNull: true, type: DataType.DATE(6) })
   user_modified_date?: Date;
+
+  @Column({ allowNull: true, type: DataType.INTEGER })
+  user_hotel_id?: number;
 }

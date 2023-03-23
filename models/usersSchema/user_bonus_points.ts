@@ -21,7 +21,14 @@ export class user_bonus_points
   extends Model<user_bonus_pointsAttributes, user_bonus_pointsAttributes>
   implements user_bonus_pointsAttributes
 {
-  @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
+  @Column({
+    primaryKey: true,
+    autoIncrement: true,
+    type: DataType.INTEGER,
+    defaultValue: Sequelize.literal(
+      "nextval('users.user_bonus_points_ubpo_id_seq'::regclass)",
+    ),
+  })
   ubpo_id?: number;
 
   @Column({ primaryKey: true, type: DataType.INTEGER })

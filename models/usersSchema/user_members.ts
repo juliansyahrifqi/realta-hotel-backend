@@ -21,7 +21,14 @@ export class user_members
   extends Model<user_membersAttributes, user_membersAttributes>
   implements user_membersAttributes
 {
-  @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
+  @Column({
+    primaryKey: true,
+    autoIncrement: true,
+    type: DataType.INTEGER,
+    defaultValue: Sequelize.literal(
+      "nextval('users.user_members_usme_user_id_seq'::regclass)",
+    ),
+  })
   usme_user_id?: number;
 
   @Column({ primaryKey: true, type: DataType.STRING(15) })

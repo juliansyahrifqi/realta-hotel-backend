@@ -15,28 +15,30 @@ export class UsersService {
     private sequelize: Sequelize,
   ) {}
 
-  signUpGuest(signUpGuestDto: SignUpGuestDto) {
-    return this.userModel.create(signUpGuestDto);
+  async signUpGuest(signUpGuestDto: SignUpGuestDto) {
+    return await this.sequelize.query('CALL signUpGuest(:phone_number);', {
+      replacements: {
+        phone_number: signUpGuestDto.phone_number,
+      },
+    });
   }
 
   async signUpEmployee(signUpEmployeeDto: SignUpEmployeeDto) {
     const salt = await bcrypt.genSalt(10);
     const passHash = await bcrypt.hash(signUpEmployeeDto.password, salt);
 
-    const result = await this.sequelize
-      .query(
-        'CALL signUpEmployee(:username, :email, :password, :passwordSalt, :phone_number);',
-        {
-          replacements: {
-            username: signUpEmployeeDto.username,
-            email: signUpEmployeeDto.email,
-            password: passHash,
-            passwordSalt: salt,
-            phone_number: signUpEmployeeDto.phone_number,
-          },
+    return await this.sequelize.query(
+      'CALL signUpEmployee(:username, :email, :password, :passwordSalt, :phone_number);',
+      {
+        replacements: {
+          username: signUpEmployeeDto.username,
+          email: signUpEmployeeDto.email,
+          password: passHash,
+          passwordSalt: salt,
+          phone_number: signUpEmployeeDto.phone_number,
         },
-      )
-      .then((test) => console.log(test));
+      },
+    );
   }
 
   create(createUserDto: CreateUserDto) {
