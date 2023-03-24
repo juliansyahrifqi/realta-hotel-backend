@@ -5,6 +5,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users/users.module';
 import { UserMembersModule } from './users/user-members/user-members.module';
 import { UserBonusPointsModule } from './users/user-bonus-points/user-bonus-points.module';
+import { RolesModule } from './users/roles/roles.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserBonusPointsModule } from './users/user-bonus-points/user-bonus-poin
     UsersModule,
     UserMembersModule,
     UserBonusPointsModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
