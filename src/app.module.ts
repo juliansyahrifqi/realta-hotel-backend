@@ -6,6 +6,7 @@ import { UsersModule } from './users/users/users.module';
 import { UserMembersModule } from './users/user-members/user-members.module';
 import { UserBonusPointsModule } from './users/user-bonus-points/user-bonus-points.module';
 import { RolesModule } from './users/roles/roles.module';
+import { UserPasswordModule } from './users/user-password/user-password.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RolesModule } from './users/roles/roles.module';
     UserMembersModule,
     UserBonusPointsModule,
     RolesModule,
+    UserPasswordModule,
   ],
   controllers: [AppController],
   providers: [AppService],
