@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -17,6 +8,25 @@ import { SignUpEmployeeDto } from './dto/signup-employee.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get(':id')
+  async getUserById(@Param('id') id: string) {
+    try {
+      const result = await this.usersService.getUserById(+id);
+
+      if (result.length === 0) {
+        return { statusCode: HttpStatus.NOT_FOUND, message: 'User not found' };
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User found',
+        data: result[0],
+      };
+    } catch (e) {
+      return { statusCode: HttpStatus.BAD_REQUEST, message: e };
+    }
+  }
 
   @Post('signupGuest')
   async signUpGuest(@Body() signUpGuestDto: SignUpGuestDto) {

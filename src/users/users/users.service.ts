@@ -7,6 +7,7 @@ import { SignUpGuestDto } from './dto/signup-guest.dto';
 import { SignUpEmployeeDto } from './dto/signup-employee.dto';
 import { Sequelize } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
+import { QueryTypes } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,18 @@ export class UsersService {
     @InjectModel(users) private readonly userModel: typeof users,
     private sequelize: Sequelize,
   ) {}
+
+  async getUserById(id: number) {
+    return await this.sequelize.query(
+      'SELECT * FROM get_user_data(:user_id);',
+      {
+        replacements: {
+          user_id: id,
+        },
+        type: QueryTypes.SELECT,
+      },
+    );
+  }
 
   async signUpGuest(signUpGuestDto: SignUpGuestDto) {
     return await this.sequelize.query('CALL signUpGuest(:phone_number);', {
