@@ -1,9 +1,26 @@
-import { Controller, Get, Post, Body, Param, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  Body,
+  Param,
+  HttpStatus,
+  Put,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  FileTypeValidator,
+  MaxFileSizeValidator,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignUpGuestDto } from './dto/signup-guest.dto';
 import { SignUpEmployeeDto } from './dto/signup-employee.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { Request } from 'express';
+import { existsSync, unlink } from 'fs';
 
 @Controller('users')
 export class UsersController {
@@ -12,7 +29,7 @@ export class UsersController {
   @Get(':id')
   async getUserById(@Param('id') id: string) {
     try {
-      const result = await this.usersService.getUserById(+id);
+      const result = await this.usersService.getUserJoinById(+id);
 
       if (result.length === 0) {
         return { statusCode: HttpStatus.NOT_FOUND, message: 'User not found' };
@@ -63,28 +80,66 @@ export class UsersController {
     }
   }
 
-  // @Post()
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
+  @Put('update/:id')
+  @UseInterceptors(
+    FileInterceptor('user_photo_profile', {
+      storage: diskStorage({
+        destination: './uploads/image/users',
+        filename(req, file, callback) {
+          const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e9);
+          callback(
+            null,
+            uniqueSuffix + '.' + file.originalname.split('.').pop(),
+          );
+        },
+      }),
+    }),
+  )
+  async updateUsers(
+    @Req() req: Request,
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2000000 }),
+          new FileTypeValidator({ fileType: /(jpg|jpeg|png|gif)$/ }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const users = await this.usersService.getUserById(+id);
 
-  // @Get()
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
+    if (users === null) {
+      return { status: 'Not Found', message: `Product doesn't exists` };
+    }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
+    const oldImage = users.user_photo_profile;
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
+    let finalImageUrl: string;
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(+id);
-  // }
+    console.log(oldImage);
+
+    if (file || req.file) {
+      if (
+        existsSync('uploads/image/users/' + oldImage) &&
+        oldImage !== 'default.jpg'
+      ) {
+        unlink('uploads/image/users/' + oldImage, (err) => {
+          if (err) throw err;
+        });
+      }
+
+      finalImageUrl = req.file.filename;
+    } else {
+      finalImageUrl = oldImage;
+    }
+
+    return await this.usersService.updateUser(+id, {
+      ...updateUserDto,
+      user_photo_profile: finalImageUrl,
+    });
+  }
 }

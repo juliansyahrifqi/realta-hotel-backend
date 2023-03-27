@@ -9,8 +9,8 @@ import {
 } from 'sequelize-typescript';
 
 export interface user_rolesAttributes {
-  uspro_user_id: number;
-  uspro_role_id: number;
+  usro_user_id: number;
+  usro_role_id: number;
 }
 
 @Table({ tableName: 'user_roles', schema: 'users', timestamps: false })
@@ -19,8 +19,8 @@ export class user_roles
   implements user_rolesAttributes
 {
   @Column({ primaryKey: true, type: DataType.INTEGER })
-  uspro_user_id!: number;
+  usro_user_id!: number;
 
   @Column({ primaryKey: true, type: DataType.INTEGER })
-  uspro_role_id!: number;
+  usro_role_id!: number;
 }
