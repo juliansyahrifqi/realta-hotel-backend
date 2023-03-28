@@ -18,6 +18,10 @@ export class UsersService {
     private sequelize: Sequelize,
   ) {}
 
+  getUserByEmail(email: string) {
+    return this.userModel.findOne({ where: { user_email: email } });
+  }
+
   async getUserById(id: number) {
     return await this.userModel.findOne({ where: { user_id: id } });
   }
