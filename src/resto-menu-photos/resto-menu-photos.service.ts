@@ -12,9 +12,16 @@ export class RestoMenuPhotosService {
   ) {}
 
   async create(
-    createRestoMenuPhotoDto: CreateRestoMenuPhotoDto,
-  ): Promise<resto_menu_photos> {
-    return this.restoMenuPhotosModel.create(createRestoMenuPhotoDto);
+    createRestoMenuPhotosDto: CreateRestoMenuPhotoDto[],
+  ): Promise<resto_menu_photos[]> {
+    const createdRestoMenuPhotos = [];
+    for (const createRestoMenuPhotoDto of createRestoMenuPhotosDto) {
+      const createdRestoMenuPhoto = new this.restoMenuPhotosModel(
+        createRestoMenuPhotoDto,
+      );
+      createdRestoMenuPhotos.push(await createdRestoMenuPhoto.save());
+    }
+    return createdRestoMenuPhotos;
   }
 
   // MULTIPLE

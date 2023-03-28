@@ -38,7 +38,7 @@ export class RestoMenuPhotosController {
 
   @Post()
   @UseInterceptors(
-    FileInterceptor('remp_photo_filename', {
+    FilesInterceptor('remp_photo_filename', 10, {
       storage: diskStorage({
         destination: './uploads/resto',
         filename: (req, file, cb) => {
@@ -53,22 +53,27 @@ export class RestoMenuPhotosController {
   )
   async create(
     @Body() createRestoMenuPhotosDto: CreateRestoMenuPhotoDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFiles() images: Express.Multer.File[],
     @Req() req: any,
-  ): Promise<resto_menu_photos> {
-    if (!image) {
-      throw new BadRequestException('No file uploaded');
+  ): Promise<resto_menu_photos[]> {
+    if (!images || images.length === 0) {
+      throw new BadRequestException('No files uploaded');
     }
-    const finalImageURL =
-      req.protocol +
-      '://' +
-      req.get('host') +
-      '/resto-menu-photos/image/' +
-      image.filename;
-    const restomenuPhotos = {
-      ...createRestoMenuPhotosDto,
-      remp_photo_filename: finalImageURL,
-    };
+    const imagesURLs = images.map((image) => {
+      return (
+        req.protocol +
+        '://' +
+        req.get('host') +
+        '/resto-menu-photos/image/' +
+        image.filename
+      );
+    });
+    const restomenuPhotos = imagesURLs.map((url) => {
+      return {
+        ...createRestoMenuPhotosDto,
+        remp_photo_filename: url,
+      };
+    });
     return this.restoMenuPhotosService.create(restomenuPhotos);
   }
 
