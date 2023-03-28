@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -8,6 +13,7 @@ import { UserBonusPointsModule } from './users/user-bonus-points/user-bonus-poin
 import { RolesModule } from './users/roles/roles.module';
 import { UserPasswordModule } from './users/user-password/user-password.module';
 import { AuthModule } from './users/auth/auth.module';
+import { JwtMiddleware } from './users/auth/jwt.middleware';
 
 @Module({
   imports: [
@@ -32,4 +38,15 @@ import { AuthModule } from './users/auth/auth.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(JwtMiddleware)
+      .exclude(
+        { path: 'users/signUpGuest', method: RequestMethod.POST },
+        { path: 'users/signUpEmployee', method: RequestMethod.POST },
+        'auth/(.*)',
+      )
+      .forRoutes('*');
+  }
+}
