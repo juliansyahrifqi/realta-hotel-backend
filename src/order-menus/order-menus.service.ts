@@ -12,7 +12,12 @@ export class OrderMenusService {
   ) {}
 
   async create(createOrderMenuDto: CreateOrderMenuDto): Promise<order_menus> {
-    return this.orderMenusModel.create(createOrderMenuDto);
+    const now = new Date();
+    const newData = {
+      ...createOrderMenuDto,
+      orme_modified_date: now,
+    };
+    return this.orderMenusModel.create(newData);
   }
 
   async findAll(): Promise<order_menus[]> {
@@ -26,17 +31,22 @@ export class OrderMenusService {
   async update(
     id: number,
     updateOrderMenuDto: UpdateOrderMenuDto,
-  ): Promise<order_menus> {
-    const [affectedCount] = await this.orderMenusModel.update(
-      updateOrderMenuDto,
+  ): Promise<[number, order_menus[]]> {
+    const orderMenusUpdate = await this.orderMenusModel.findByPk(id);
+
+    if (!orderMenusUpdate) throw new Error(`Customer with id ${id} not found.`);
+
+    const now = new Date();
+    const newData = { ...updateOrderMenuDto, orme_modified_date: now };
+
+    const [affectedCount, affectedRows] = await this.orderMenusModel.update(
+      newData,
       {
         where: { orme_id: id },
+        returning: true,
       },
     );
-    if (affectedCount === 0) {
-      return null;
-    }
-    return this.findOne(id);
+    return [affectedCount, affectedRows];
   }
 
   async remove(id: number): Promise<number> {

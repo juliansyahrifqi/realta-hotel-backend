@@ -11,13 +11,16 @@ import {
 import { CreateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { UpdateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { RestoMenusService } from './resto-menus.service';
+import { resto_menus } from 'models/resto_module';
 
 @Controller('resto-menus')
 export class RestoMenusController {
   constructor(private readonly restoMenusService: RestoMenusService) {}
 
   @Post()
-  create(@Body() createRestoMenuDto: CreateRestoMenuDto) {
+  async create(
+    @Body() createRestoMenuDto: CreateRestoMenuDto,
+  ): Promise<resto_menus> {
     return this.restoMenusService.create(createRestoMenuDto);
   }
 
@@ -38,11 +41,11 @@ export class RestoMenusController {
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: string,
+  async update(
+    @Param('id') id: number,
     @Body() updateRestoMenuDto: UpdateRestoMenuDto,
-  ) {
-    return this.restoMenusService.update(+id, updateRestoMenuDto);
+  ): Promise<[number, resto_menus[]]> {
+    return this.restoMenusService.update(id, updateRestoMenuDto);
   }
 
   @Delete(':id')

@@ -38,15 +38,8 @@ export class OrderMenusController {
   async update(
     @Param('id') id: number,
     @Body() updateOrderMenuDto: UpdateOrderMenuDto,
-  ): Promise<order_menus> {
-    const updatedOrderMenu = await this.orderMenusService.update(
-      id,
-      updateOrderMenuDto,
-    );
-    if (!updatedOrderMenu) {
-      throw new NotFoundException(`Order menu with ID ${id} not found`);
-    }
-    return updatedOrderMenu;
+  ): Promise<[number, order_menus[]]> {
+    return this.orderMenusService.update(id, updateOrderMenuDto);
   }
 
   @Delete(':id')

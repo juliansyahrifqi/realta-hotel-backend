@@ -14,7 +14,12 @@ export class RestoMenusService {
   ) {}
 
   async create(createRestoMenuDto: CreateRestoMenuDto): Promise<resto_menus> {
-    return await this.restoMenuModel.create(createRestoMenuDto);
+    const now = new Date();
+    const newData = {
+      ...createRestoMenuDto,
+      reme_modified_date: now,
+    };
+    return this.restoMenuModel.create(newData);
   }
 
   async findAll(options: { page?: number; limit?: number }): Promise<{
@@ -38,8 +43,16 @@ export class RestoMenusService {
     id: number,
     updateRestoMenuDto: UpdateRestoMenuDto,
   ): Promise<[number, resto_menus[]]> {
+    const restoMenusUpdate = await this.restoMenuModel.findByPk(id);
+
+    if (!restoMenusUpdate)
+      throw new Error(`Resto Menu with id ${id} not found.`);
+
+    const now = new Date();
+    const newDate = { ...updateRestoMenuDto, reme_modified_date: now };
+
     const [affectedCount, affectedRows] = await this.restoMenuModel.update(
-      updateRestoMenuDto,
+      newDate,
       {
         where: { reme_id: id },
         returning: true,
