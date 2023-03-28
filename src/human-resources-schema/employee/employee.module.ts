@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { EmployeeController } from './employee.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { employee, work_orders } from '../../../models/humanResourcesSchema'; // ini nambah
+import { employee } from '../../../models/humanResourcesSchema'; // ini nambah
 import { MulterModule } from '@nestjs/platform-express';
 
 @Module({

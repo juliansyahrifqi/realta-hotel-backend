@@ -42,6 +42,6 @@ export class DepartmentService {
     await this.departmentModel.destroy({
       where: { dept_id },
     });
-    return `Deleted dept_id ${dept_id} success`;
+    return `Deleted dept_id : ${dept_id} success`;
   }
 }

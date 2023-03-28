@@ -10,6 +10,10 @@ import { ServiceTaskModule } from './master-schema/service_task/service_task.mod
 import { FacilitesModule } from './hotel-schema/facilites/facilites.module';
 import { DepartmentModule } from './human-resources-schema/department/department.module';
 import { EmployeeModule } from './human-resources-schema/employee/employee.module';
+import { EmployeeDepatmentHistoryModule } from './human-resources-schema/employee_depatment_history/employee_depatment_history.module';
+import { EmployeePayHistoryModule } from './human-resources-schema/employee_pay_history/employee_pay_history.module';
+import { WorkOrdersModule } from './human-resources-schema/work_orders/work_orders.module';
+import { WorkOrderDetailModule } from './human-resources-schema/work_order_detail/work_order_detail.module';
 
 @Module({
   imports: [
@@ -31,6 +35,10 @@ import { EmployeeModule } from './human-resources-schema/employee/employee.modul
     FacilitesModule,
     DepartmentModule,
     EmployeeModule,
+    EmployeeDepatmentHistoryModule,
+    EmployeePayHistoryModule,
+    WorkOrdersModule,
+    WorkOrderDetailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
