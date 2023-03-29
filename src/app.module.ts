@@ -29,7 +29,7 @@ import { MulterModule } from '@nestjs/platform-express';
     OrderMenuDetailModule,
     MulterModule.register({
       storage: diskStorage({
-        destination: './uploads/resto',
+        destination: './uploads/image/resto',
         filename: (req, file, cb) => {
           cb(null, file.originalname);
         },

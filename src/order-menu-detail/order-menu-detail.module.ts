@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { order_menu_detail } from '../../models/resto_module';
+import { order_menu_detail } from '../../models/restoSchema';
 import { OrderMenuDetailController } from './order-menu-detail.controller';
 import { OrderMenuDetailService } from './order-menu-detail.service';
 

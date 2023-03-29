@@ -10,7 +10,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { order_menu_detail } from '../../models/resto_module';
+import { order_menu_detail } from '../../models/restoSchema';
 import { OrderMenuDetailService } from './order-menu-detail.service';
 import { CreateOrderMenuDetailDto } from './dto/create-order-menu-detail.dto';
 import { UpdateOrderMenuDetailDto } from './dto/update-order-menu-detail.dto';

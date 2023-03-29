@@ -11,7 +11,7 @@ import {
 import { CreateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { UpdateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { RestoMenusService } from './resto-menus.service';
-import { resto_menus } from 'models/resto_module';
+import { resto_menus } from 'models/restoSchema';
 
 @Controller('resto-menus')
 export class RestoMenusController {

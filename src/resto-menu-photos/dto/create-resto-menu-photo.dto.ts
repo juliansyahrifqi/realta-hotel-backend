@@ -14,4 +14,6 @@ export class CreateRestoMenuPhotoDto {
   // @IsNumber()
   // @IsOptional()
   remp_reme_id?: number;
+  remp_thumbnail_filename?: string;
+  remp_url?: string;
 }

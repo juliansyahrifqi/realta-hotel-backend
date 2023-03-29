@@ -8,6 +8,7 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
+import { resto_menu_photos } from './resto_menu_photos';
 import { order_menu_detail } from './order_menu_detail';
 
 export interface resto_menusAttributes {
@@ -25,6 +26,7 @@ export class resto_menus
   implements resto_menusAttributes
 {
   @ForeignKey(() => order_menu_detail)
+  @ForeignKey(() => resto_menu_photos)
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -50,6 +52,9 @@ export class resto_menus
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
   reme_modified_date?: Date;
+
+  @BelongsTo(() => resto_menu_photos)
+  resto_menu_photo?: resto_menu_photos;
 
   @BelongsTo(() => order_menu_detail)
   order_menu_detail?: order_menu_detail;

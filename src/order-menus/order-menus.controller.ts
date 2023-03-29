@@ -8,7 +8,7 @@ import {
   Param,
   NotFoundException,
 } from '@nestjs/common';
-import { order_menus } from '../../models/resto_module';
+import { order_menus } from '../../models/restoSchema';
 import { OrderMenusService } from './order-menus.service';
 import { CreateOrderMenuDto } from './dto/create-order-menu.dto';
 import { UpdateOrderMenuDto } from './dto/update-order-menu.dto';

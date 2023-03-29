@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateRestoMenuPhotoDto } from './dto/create-resto-menu-photo.dto';
 import { UpdateRestoMenuPhotoDto } from './dto/update-resto-menu-photo.dto';
-import { resto_menu_photos } from '../../models/resto_module';
+import { resto_menu_photos } from '../../models/restoSchema';
 
 @Injectable()
 export class RestoMenuPhotosService {
@@ -24,21 +24,10 @@ export class RestoMenuPhotosService {
     return createdRestoMenuPhotos;
   }
 
-  // MULTIPLE
-
-  // async createMultiple(
-  //   restoMenuPhotos: resto_menu_photos[],
-  // ): Promise<resto_menu_photos[]> {
-  //   return this.restoMenuPhotosModel.bulkCreate(restoMenuPhotos, {
-  //     returning: true,
-  //     ignoreDuplicates: true,
-  //   });
-  // }
-
-  // MULTIPLE
-
   async findAll(): Promise<resto_menu_photos[]> {
-    return this.restoMenuPhotosModel.findAll();
+    return this.restoMenuPhotosModel.findAll({
+      include: 'resto_menu',
+    });
   }
 
   async findOne(id: number): Promise<resto_menu_photos> {
