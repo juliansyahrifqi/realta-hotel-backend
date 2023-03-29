@@ -27,14 +27,25 @@ export class HotelsController {
   async findAll(
     @Query('pageNumber') pageNumber: number = 1,
     @Query('pageSize') pageSize: number = 10,
-    @Query('searchQuery') searchQuery: string = '',
   ) {
     try {
-      const hotels = await this.hotelsService.findAll(
-        pageNumber,
-        pageSize,
-        searchQuery,
-      );
+      const hotels = await this.hotelsService.findAll(pageNumber, pageSize);
+      return {
+        data: hotels,
+        Halaman: pageNumber,
+        JmlhData: pageSize,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Internal server error',
+      };
+    }
+  }
+  @Get('search')
+  async findAllSeacrh(@Query('searchQuery') searchQuery: string = '') {
+    try {
+      const hotels = await this.hotelsService.findAllSearch(searchQuery);
       return {
         data: hotels,
       };

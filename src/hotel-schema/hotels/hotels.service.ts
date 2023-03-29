@@ -48,17 +48,27 @@ export class HotelsService {
     }
   }
 
-  async findAll(pageNumber = 1, pageSize = 10, searchQuery = '') {
+  async findAll(pageNumber = 1, pageSize = 10) {
     try {
       const offset = (pageNumber - 1) * pageSize;
       const limit = pageSize;
 
       const data = await this.hotelsModel.findAll({
+        offset,
+        limit,
+      });
+
+      return data;
+    } catch (error) {
+      return error;
+    }
+  }
+  async findAllSearch(searchQuery = '') {
+    try {
+      const data = await this.hotelsModel.findAll({
         where: {
           hotel_name: { [Op.like]: `%${searchQuery}%` },
         },
-        offset,
-        limit,
       });
 
       return data;
