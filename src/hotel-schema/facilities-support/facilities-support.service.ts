@@ -18,7 +18,6 @@ export class FacilitiesSupportService {
         fs_description: createFacilitiesSupportDto.fs_description,
         fs_icon: createFacilitiesSupportDto.fs_icon,
         fs_icon_url: createFacilitiesSupportDto.fs_icon_url,
-        fs_hotel_id: createFacilitiesSupportDto.fs_hotel_id,
       });
       return data;
     } catch (error) {
@@ -59,7 +58,6 @@ export class FacilitiesSupportService {
           fs_description: updateFacilitiesSupportDto.fs_description,
           fs_icon: updateFacilitiesSupportDto.fs_icon,
           fs_icon_url: updateFacilitiesSupportDto.fs_icon_url,
-          fs_hotel_id: updateFacilitiesSupportDto.fs_hotel_id,
         },
         {
           where: { fs_id: id },

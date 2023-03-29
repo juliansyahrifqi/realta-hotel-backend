@@ -22,9 +22,9 @@ export class CreateFacilityDto {
   @IsNotEmpty()
   faci_rate_price: string;
   @IsNotEmpty()
-  faci_discount: string;
+  faci_discount: number;
   @IsNotEmpty()
-  faci_tax_rate: string;
+  faci_tax_rate: number;
   @IsNotEmpty()
   faci_cagro_id: number;
   @IsNotEmpty()

@@ -19,8 +19,8 @@ export interface facility_price_historyAttributes {
   faph_low_price?: string;
   faph_high_price?: string;
   faph_rate_price?: string;
-  faph_discount?: string;
-  faph_tax_rate?: string;
+  faph_discount?: number;
+  faph_tax_rate?: number;
   faph_modified_date?: Date;
   faph_user_id?: number;
 }
@@ -69,10 +69,10 @@ export class facility_price_history
   faph_rate_price?: string;
 
   @Column({ allowNull: true, type: DataType.NUMBER })
-  faph_discount?: string;
+  faph_discount?: number;
 
   @Column({ allowNull: true, type: DataType.NUMBER })
-  faph_tax_rate?: string;
+  faph_tax_rate?: number;
 
   @Column({ allowNull: true, type: DataType.DATE })
   faph_modified_date?: Date;

@@ -6,8 +6,9 @@ import {
   Index,
   Sequelize,
   ForeignKey,
-  BelongsTo,
+  BelongsToMany,
 } from 'sequelize-typescript';
+import { facility_support_hotels } from './facility_support_hotels';
 import { hotels } from './hotels';
 
 export interface facilities_supportAttributes {
@@ -16,7 +17,6 @@ export interface facilities_supportAttributes {
   fs_description?: string;
   fs_icon?: string;
   fs_icon_url?: string;
-  fs_hotel_id?: number;
 }
 
 @Table({ tableName: 'facilities_support', schema: 'hotel', timestamps: false })
@@ -47,10 +47,6 @@ export class facilities_support
   @Column({ allowNull: true, type: DataType.STRING(100) })
   fs_icon_url?: string;
 
-  @ForeignKey(() => hotels)
-  @Column({ allowNull: true, type: DataType.INTEGER })
-  fs_hotel_id?: number;
-
-  @BelongsTo(() => hotels)
-  hotels?: hotels;
+  @BelongsToMany(() => hotels, () => facility_support_hotels)
+  hotels?: hotels[];
 }

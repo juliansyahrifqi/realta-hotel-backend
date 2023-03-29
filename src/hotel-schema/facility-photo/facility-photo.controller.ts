@@ -25,7 +25,7 @@ export class FacilityPhotoController {
   @UseInterceptors(
     FileInterceptor('photos', {
       storage: diskStorage({
-        destination: './Upload/hotelSchema',
+        destination: './Upload/image/hotelSchema',
         filename(req, file, cb) {
           const finalName = Array(20)
             .fill(null)
@@ -56,14 +56,14 @@ export class FacilityPhotoController {
 
   @Get('photos/:id')
   async getImage(@Res() res, @Param('id') id) {
-    res.sendFile(id, { root: './Upload/hotelSchema' });
+    res.sendFile(id, { root: './Upload/image/hotelSchema' });
   }
 
   @Put(':id')
   @UseInterceptors(
     FileInterceptor('photos', {
       storage: diskStorage({
-        destination: './Upload/hotelSchema',
+        destination: './Upload/image/hotelSchema',
         filename(req, file, cb) {
           const finalName = Array(20)
             .fill(null)

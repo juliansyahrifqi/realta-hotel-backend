@@ -25,8 +25,8 @@ export interface facilitiesAttributes {
   faci_low_price?: string;
   faci_high_price?: string;
   faci_rate_price?: string;
-  faci_discount?: string;
-  faci_tax_rate?: string;
+  faci_discount?: number;
+  faci_tax_rate?: number;
   faci_modified_date?: Date;
   faci_cagro_id?: number;
   faci_hotel_id?: number;
@@ -86,10 +86,10 @@ export class facilities
   faci_rate_price?: string;
 
   @Column({ allowNull: true, type: DataType.NUMBER })
-  faci_discount?: string;
+  faci_discount?: number;
 
   @Column({ allowNull: true, type: DataType.NUMBER })
-  faci_tax_rate?: string;
+  faci_tax_rate?: number;
 
   @Column({
     allowNull: true,

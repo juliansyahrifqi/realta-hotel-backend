@@ -9,8 +9,9 @@ import {
   ForeignKey,
   HasMany,
   BelongsTo,
+  BelongsToMany,
 } from 'sequelize-typescript';
-import { facilities_support } from '.';
+import { facilities_support, facility_support_hotels } from '.';
 import { facilities } from './facilities';
 import { hotel_reviews } from './hotel_reviews';
 
@@ -72,7 +73,7 @@ export class hotels
   @HasMany(() => hotel_reviews, { sourceKey: 'hotel_id' })
   hotel_reviews?: hotel_reviews[];
 
-  @HasMany(() => facilities_support, { sourceKey: 'hotel_id' })
+  @BelongsToMany(() => facilities_support, () => facility_support_hotels)
   facilities_support?: facilities_support[];
 
   @BelongsTo(() => address)

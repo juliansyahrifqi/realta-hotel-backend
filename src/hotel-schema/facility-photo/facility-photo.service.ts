@@ -75,7 +75,7 @@ export class FacilityPhotoService {
 
       let filePath = `${path.resolve(
         __dirname,
-        `../../../../Upload/hotelSchema/${idData.fapho_photo_filename}`,
+        `../../../../Upload/image/hotelSchema/${idData.fapho_photo_filename}`,
       )}`;
       // console.log(filePath);
       fs.unlink(filePath, async (err) => {
@@ -116,7 +116,7 @@ export class FacilityPhotoService {
 
       let filePath = `${path.resolve(
         __dirname,
-        `../../../../Upload/hotelSchema/${idData.fapho_photo_filename}`,
+        `../../../../Upload/image/hotelSchema/${idData.fapho_photo_filename}`,
       )}`;
 
       fs.unlink(filePath, async (err) => {

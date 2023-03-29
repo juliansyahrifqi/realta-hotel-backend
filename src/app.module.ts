@@ -8,6 +8,7 @@ import { FacilityPhotoModule } from './hotel-schema/facility-photo/facility-phot
 import { FacilityPriceHistoryModule } from './hotel-schema/facility-price-history/facility-price-history.module';
 import { FacilitiesSupportModule } from './hotel-schema/facilities-support/facilities-support.module';
 import { HotelsModule } from './hotel-schema/hotels/hotels.module';
+import { FacilitySupportHotelsModule } from './hotel-schema/facility-support-hotels/facility-support-hotels.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { HotelsModule } from './hotel-schema/hotels/hotels.module';
     FacilityPhotoModule,
     FacilityPriceHistoryModule,
     FacilitiesSupportModule,
+    FacilitySupportHotelsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

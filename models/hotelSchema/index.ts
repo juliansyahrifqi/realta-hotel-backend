@@ -4,3 +4,4 @@ export * from './facility_photos';
 export * from './facilities';
 export * from './facilities_support';
 export * from './facility_price_history';
+export * from './facility_support_hotels';

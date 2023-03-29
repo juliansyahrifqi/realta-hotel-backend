@@ -26,9 +26,9 @@ export class UpdateFacilityDto extends PartialType(CreateFacilityDto) {
   faci_rate_price: string;
   //===============
   @IsNotEmpty()
-  faci_discount: string;
+  faci_discount: number;
   @IsNotEmpty()
-  faci_tax_rate: string;
+  faci_tax_rate: number;
   @IsNotEmpty()
   faci_hotel_id: number;
   @IsNotEmpty()

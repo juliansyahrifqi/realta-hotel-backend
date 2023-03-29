@@ -21,6 +21,12 @@ export class FacilitiesService {
   ) {}
   async create(createFacilityDto: CreateFacilityDto) {
     try {
+      const discount = createFacilityDto.faci_discount / 100;
+      const tax = createFacilityDto.faci_tax_rate / 100;
+      const lowPrice = Number(createFacilityDto.faci_low_price);
+      const highPrice = Number(createFacilityDto.faci_high_price);
+      const ratePrice = ((lowPrice + highPrice) / 2).toString();
+
       const roomNumber = `H${createFacilityDto.faci_hotel_id}-${createFacilityDto.faci_room_number}`;
 
       const dataFaci = await this.faciModel
@@ -34,9 +40,9 @@ export class FacilitiesService {
           faci_enddate: createFacilityDto.faci_enddate,
           faci_low_price: createFacilityDto.faci_low_price,
           faci_high_price: createFacilityDto.faci_high_price,
-          faci_rate_price: createFacilityDto.faci_rate_price,
-          faci_discount: createFacilityDto.faci_discount,
-          faci_tax_rate: createFacilityDto.faci_tax_rate,
+          faci_rate_price: ratePrice,
+          faci_discount: discount,
+          faci_tax_rate: tax,
           faci_cagro_id: createFacilityDto.faci_cagro_id,
           faci_hotel_id: createFacilityDto.faci_hotel_id,
           faci_memb_name: createFacilityDto.faci_memb_name,
@@ -103,6 +109,12 @@ export class FacilitiesService {
 
   async update(id: number, updateFacilityDto: UpdateFacilityDto) {
     try {
+      const discount = updateFacilityDto.faci_discount / 100;
+      const tax = updateFacilityDto.faci_tax_rate / 100;
+      const lowPrice = Number(updateFacilityDto.faci_low_price);
+      const highPrice = Number(updateFacilityDto.faci_high_price);
+      const ratePrice = ((lowPrice + highPrice) / 2).toString();
+
       //Membuat Penamaan untuk Room Number
       const roomNumber = `H${updateFacilityDto.faci_hotel_id}-${updateFacilityDto.faci_room_number}`;
 
@@ -118,11 +130,11 @@ export class FacilitiesService {
           //===============
           faci_low_price: updateFacilityDto.faci_low_price,
           faci_high_price: updateFacilityDto.faci_high_price,
-          faci_rate_price: updateFacilityDto.faci_rate_price,
+          faci_rate_price: ratePrice,
           faci_modified_date: Sequelize.literal('CURRENT_TIMESTAMP'),
           //===============
-          faci_discount: updateFacilityDto.faci_discount,
-          faci_tax_rate: updateFacilityDto.faci_tax_rate,
+          faci_discount: discount,
+          faci_tax_rate: tax,
           faci_cagro_id: updateFacilityDto.faci_cagro_id,
           faci_hotel_id: updateFacilityDto.faci_hotel_id,
           faci_memb_name: updateFacilityDto.faci_memb_name,
