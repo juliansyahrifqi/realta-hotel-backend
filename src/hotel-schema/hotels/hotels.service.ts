@@ -48,7 +48,7 @@ export class HotelsService {
     }
   }
 
-  async findAll(pageNumber = 1, pageSize = 10) {
+  async findAll(pageNumber: number, pageSize: number) {
     try {
       const offset = (pageNumber - 1) * pageSize;
       const limit = pageSize;
@@ -63,7 +63,7 @@ export class HotelsService {
       return error;
     }
   }
-  async findAllSearch(searchQuery = '') {
+  async findAllSearch(searchQuery: string) {
     try {
       const data = await this.hotelsModel.findAll({
         where: {
