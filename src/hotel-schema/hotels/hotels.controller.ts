@@ -8,69 +8,136 @@ import {
   Delete,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { HotelsService } from './hotels.service';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { UpdateHotelDto } from './dto/update-hotel.dto';
 import { hotels } from 'models/hotelSchema';
+import { Response } from 'express';
 
 @Controller('hotels')
 export class HotelsController {
   constructor(private readonly hotelsService: HotelsService) {}
 
   @Post()
-  create(@Body() createHotelDto: CreateHotelDto) {
-    return this.hotelsService.create(createHotelDto);
+  create(@Res() response: Response, @Body() createHotelDto: CreateHotelDto) {
+    return this.hotelsService.create(response, createHotelDto);
   }
 
   @Get()
   async findAll(
+    @Res() response: Response,
     @Query('pageNumber') pageNumber: number = 1,
     @Query('pageSize') pageSize: number = 10,
   ) {
     try {
-      const hotels = await this.hotelsService.findAll(pageNumber, pageSize);
-      return {
-        data: hotels,
-        Halaman: pageNumber,
-        JmlhData: pageSize,
-      };
+      const hotels = await this.hotelsService.findAll(
+        response,
+        pageNumber,
+        pageSize,
+      );
+      return hotels;
     } catch (error) {
-      console.error(error);
-      return {
-        message: 'Internal server error',
-      };
-    }
-  }
-  @Get('search')
-  async findAllSeacrh(@Query('searchQuery') searchQuery: string = '') {
-    try {
-      const hotels = await this.hotelsService.findAllSearch(searchQuery);
-      return {
-        data: hotels,
-      };
-    } catch (error) {
-      console.error(error);
       return {
         message: 'Internal server error',
       };
     }
   }
   @Get('hotel-reviews')
-  findAllIncludeReviews() {
-    return this.hotelsService.findAllIncludeReviews();
+  async findAllIncludeReviews(
+    @Res() response: Response,
+    @Query('pageNumber') pageNumber: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+  ) {
+    try {
+      const hotels = await this.hotelsService.findAllIncludeReviews(
+        response,
+        pageNumber,
+        pageSize,
+      );
+      return hotels;
+    } catch (error) {
+      return {
+        message: 'Internal server error',
+      };
+    }
   }
   @Get('hotel-room')
-  findAllIncludeRoom() {
-    return this.hotelsService.findAllIncludeRoom();
+  async findAllIncludeRoom(
+    @Res() response: Response,
+    @Query('pageNumber') pageNumber: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+  ) {
+    try {
+      const hotels = await this.hotelsService.findAllIncludeRoom(
+        response,
+        pageNumber,
+        pageSize,
+      );
+      return hotels;
+    } catch (error) {
+      return {
+        message: 'Internal server error',
+      };
+    }
   }
   @Get('hotel-address')
-  findAllIncludeAddress() {
-    return this.hotelsService.findAllIncludeAddress();
+  async findAllIncludeAddress(
+    @Res() response: Response,
+    @Query('pageNumber') pageNumber: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+  ) {
+    try {
+      const hotels = await this.hotelsService.findAllIncludeAddress(
+        response,
+        pageNumber,
+        pageSize,
+      );
+      return hotels;
+    } catch (error) {
+      return {
+        message: 'Internal server error',
+      };
+    }
   }
   @Get('hotel-support')
-  findAllIncludeSupport() {
-    return this.hotelsService.findAllIncludeSupport();
+  async findAllIncludeSupport(
+    @Res() response: Response,
+    @Query('pageNumber') pageNumber: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+  ) {
+    try {
+      const hotels = await this.hotelsService.findAllIncludeSupport(
+        response,
+        pageNumber,
+        pageSize,
+      );
+      return hotels;
+    } catch (error) {
+      return {
+        message: 'Internal server error',
+      };
+    }
+  }
+  @Get('search')
+  async findAllSeacrh(
+    @Res() response: Response,
+    @Query('searchQuery') searchQuery: string = '',
+  ) {
+    try {
+      const hotels = await this.hotelsService.findAllSearch(
+        response,
+        searchQuery,
+      );
+      return {
+        data: hotels,
+      };
+    } catch (error) {
+      return {
+        message: 'Internal server error',
+      };
+    }
   }
 
   @Get(':id')
@@ -79,19 +146,24 @@ export class HotelsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updateHotelDto: UpdateHotelDto) {
-    return this.hotelsService.update(id, updateHotelDto);
-  }
-  @Put('switch-status/:id')
-  updateStatus(
+  update(
+    @Res() response: Response,
     @Param('id') id: number,
     @Body() updateHotelDto: UpdateHotelDto,
   ) {
-    return this.hotelsService.updateStatus(id, updateHotelDto);
+    return this.hotelsService.update(response, id, updateHotelDto);
+  }
+  @Put('switch-status/:id')
+  updateStatus(
+    @Res() response: Response,
+    @Param('id') id: number,
+    @Body() updateHotelDto: UpdateHotelDto,
+  ) {
+    return this.hotelsService.updateStatus(response, id, updateHotelDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.hotelsService.remove(id);
+  remove(@Res() response: Response, @Param('id') id: number) {
+    return this.hotelsService.remove(response, id);
   }
 }

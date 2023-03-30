@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Response } from 'express';
 import {
   facilities,
   facility_photos,
@@ -19,7 +20,10 @@ export class FacilitiesService {
     @InjectModel(facility_price_history)
     private faphModel: typeof facility_price_history,
   ) {}
-  async create(createFacilityDto: CreateFacilityDto) {
+  async create(
+    @Res() response: Response,
+    createFacilityDto: CreateFacilityDto,
+  ) {
     try {
       const discount = createFacilityDto.faci_discount / 100;
       const tax = createFacilityDto.faci_tax_rate / 100;
@@ -64,50 +68,89 @@ export class FacilitiesService {
           });
         });
 
-      return `Berhasil di Tambahkan`;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: 'Berhasil Di Tambahkan',
+        data: dataFaci,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAll() {
+  async findAll(@Res() response: Response) {
     try {
-      const data = await this.faciModel.findAll({});
-      return data;
+      const data = await this.faciModel.findAll();
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAllIncludePriceHistory() {
+  async findAllIncludePriceHistory(@Res() response: Response) {
     try {
       const data = await this.faciModel.findAll({
         include: [
           { model: facility_price_history, include: [{ model: users }] },
         ],
       });
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAllIncludePhotos() {
+  async findAllIncludePhotos(@Res() response: Response) {
     try {
       const data = await this.faciModel.findAll({
         include: [{ model: facility_photos }],
       });
-      return data;
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  findOne(id: number) {
+  findOne(@Res() response: Response, id: number) {
     return `This action returns a #${id} facility`;
   }
 
-  async update(id: number, updateFacilityDto: UpdateFacilityDto) {
+  async update(
+    @Res() response: Response,
+    id: number,
+    updateFacilityDto: UpdateFacilityDto,
+  ) {
     try {
       const discount = updateFacilityDto.faci_discount / 100;
       const tax = updateFacilityDto.faci_tax_rate / 100;
@@ -118,7 +161,7 @@ export class FacilitiesService {
       //Membuat Penamaan untuk Room Number
       const roomNumber = `H${updateFacilityDto.faci_hotel_id}-${updateFacilityDto.faci_room_number}`;
 
-      const data = await this.faciModel.update(
+      const dataFaci = await this.faciModel.update(
         {
           faci_name: updateFacilityDto.faci_name,
           faci_description: updateFacilityDto.faci_description,
@@ -163,18 +206,37 @@ export class FacilitiesService {
             faph_user_id: data.faci_user_id,
           });
         });
-      return `This action updates a #${id} facility`;
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${id} Berhasil Di Perbarui`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async remove(id: number) {
+  async remove(@Res() response: Response, id: number) {
     try {
       const data = await this.faciModel.destroy({
         where: { faci_id: id },
       });
-      return `This action removes a #${id} facility`;
-    } catch (error) {}
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${id} Berhasil Di Hapus`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
+    } catch (error) {
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
+    }
   }
 }

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Response } from 'express';
 import { hotels, hotel_reviews } from 'models/hotelSchema';
-import { async } from 'rxjs';
 import { Sequelize } from 'sequelize';
 import { CreateHotelReviewDto } from './dto/create-hotel-review.dto';
 import { UpdateHotelReviewDto } from './dto/update-hotel-review.dto';
@@ -16,9 +16,12 @@ export class HotelReviewsService {
     private hotelsModel: typeof hotels,
   ) {}
 
-  async create(createHotelReviewDto: CreateHotelReviewDto) {
+  async create(
+    @Res() response: Response,
+    createHotelReviewDto: CreateHotelReviewDto,
+  ) {
     try {
-      const data = await this.horeModel.create({
+      const dataHore = await this.horeModel.create({
         hore_user_review: createHotelReviewDto.hore_user_review,
         hore_rating: createHotelReviewDto.hore_rating,
         hore_users_id: createHotelReviewDto.hore_user_id,
@@ -51,35 +54,63 @@ export class HotelReviewsService {
         },
       );
 
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: 'Berhasil Di Tambahkan',
+        data: dataHore,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAll() {
+  async findAll(@Res() response: Response) {
     try {
-      const data = await this.horeModel.findAll({
-        include: [{ model: hotels }],
-      });
-      return data;
+      const data = await this.horeModel.findAll();
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findOne(id: number) {
+  async findOne(@Res() response: Response, id: number) {
     try {
       const data = await this.horeModel.findOne({
         where: { hore_id: id },
       });
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async update(id: number, updateHotelReviewDto: UpdateHotelReviewDto) {
+  async update(
+    @Res() response: Response,
+    id: number,
+    updateHotelReviewDto: UpdateHotelReviewDto,
+  ) {
     try {
       const dataHore = await this.horeModel.update(
         {
@@ -122,13 +153,21 @@ export class HotelReviewsService {
         },
       );
 
-      return dataHore;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${id} Berhasil Di Perbarui`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async remove(id: number) {
+  async remove(@Res() response: Response, id: number) {
     try {
       //Mencari data Hore
       const findOneHore = await this.horeModel.findOne({
@@ -166,9 +205,17 @@ export class HotelReviewsService {
         },
       );
 
-      return `This action removes a #${id} hotelReview`;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${id} Berhasil Di Hapus`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return `error`;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 }

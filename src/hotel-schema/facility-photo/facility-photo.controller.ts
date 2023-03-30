@@ -16,6 +16,7 @@ import { CreateFacilityPhotoDto } from './dto/create-facility-photo.dto';
 import { UpdateFacilityPhotoDto } from './dto/update-facility-photo.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { Response } from 'express';
 
 @Controller('facility-photos')
 export class FacilityPhotoController {
@@ -25,7 +26,7 @@ export class FacilityPhotoController {
   @UseInterceptors(
     FileInterceptor('photos', {
       storage: diskStorage({
-        destination: './Upload/image/hotelSchema',
+        destination: './uploads/image/hotel',
         filename(req, file, cb) {
           const finalName = Array(20)
             .fill(null)
@@ -38,32 +39,37 @@ export class FacilityPhotoController {
     }),
   )
   create(
+    @Res() response: Response,
     @Body() createFacilityPhotoDto: CreateFacilityPhotoDto,
     @UploadedFile() photos: Express.Multer.File,
   ) {
-    return this.facilityPhotoService.create(createFacilityPhotoDto, photos);
+    return this.facilityPhotoService.create(
+      response,
+      createFacilityPhotoDto,
+      photos,
+    );
   }
 
   @Get()
-  findAll() {
-    return this.facilityPhotoService.findAll();
+  findAll(@Res() response: Response) {
+    return this.facilityPhotoService.findAll(response);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.facilityPhotoService.findOne(id);
+  findOne(@Res() response: Response, @Param('id') id: number) {
+    return this.facilityPhotoService.findOne(response, id);
   }
 
   @Get('photos/:id')
   async getImage(@Res() res, @Param('id') id) {
-    res.sendFile(id, { root: './Upload/image/hotelSchema' });
+    res.sendFile(id, { root: './uploads/image/hotel' });
   }
 
   @Put(':id')
   @UseInterceptors(
     FileInterceptor('photos', {
       storage: diskStorage({
-        destination: './Upload/image/hotelSchema',
+        destination: './uploads/image/hotel',
         filename(req, file, cb) {
           const finalName = Array(20)
             .fill(null)
@@ -76,15 +82,21 @@ export class FacilityPhotoController {
     }),
   )
   update(
+    @Res() response: Response,
     @Param('id') id: number,
     @Body() updateFacilityPhotoDto: UpdateFacilityPhotoDto,
     @UploadedFile() photos: Express.Multer.File,
   ) {
-    return this.facilityPhotoService.update(id, updateFacilityPhotoDto, photos);
+    return this.facilityPhotoService.update(
+      response,
+      id,
+      updateFacilityPhotoDto,
+      photos,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.facilityPhotoService.remove(+id);
+  remove(@Res() response: Response, @Param('id') id: number) {
+    return this.facilityPhotoService.remove(response, id);
   }
 }

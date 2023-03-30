@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
 } from '@nestjs/common';
 import { FacilityPriceHistoryService } from './facility-price-history.service';
 import { CreateFacilityPriceHistoryDto } from './dto/create-facility-price-history.dto';
 import { UpdateFacilityPriceHistoryDto } from './dto/update-facility-price-history.dto';
+import { Response } from 'express';
 
 @Controller('facility-price-history')
 export class FacilityPriceHistoryController {
@@ -25,8 +27,8 @@ export class FacilityPriceHistoryController {
   }
 
   @Get()
-  findAll() {
-    return this.facilityPriceHistoryService.findAll();
+  findAll(@Res() response: Response) {
+    return this.facilityPriceHistoryService.findAll(response);
   }
 
   @Get(':id')
@@ -46,7 +48,7 @@ export class FacilityPriceHistoryController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.facilityPriceHistoryService.remove(id);
+  remove(@Res() response: Response, @Param('id') id: number) {
+    return this.facilityPriceHistoryService.remove(response, id);
   }
 }

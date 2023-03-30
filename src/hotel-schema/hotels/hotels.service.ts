@@ -1,5 +1,6 @@
-import { Injectable, Param } from '@nestjs/common';
+import { HttpStatus, Injectable, Param, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { response, Response } from 'express';
 import {
   facilities,
   facilities_support,
@@ -7,6 +8,7 @@ import {
   hotel_reviews,
 } from 'models/hotelSchema';
 import { address, category_group, city } from 'models/masterSchema';
+import { off } from 'process';
 import { Op, Sequelize } from 'sequelize';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { UpdateHotelDto } from './dto/update-hotel.dto';
@@ -16,16 +18,20 @@ export class HotelsService {
   constructor(
     @InjectModel(hotels)
     private hotelsModel: typeof hotels,
+    @InjectModel(address)
+    private addressModel: typeof address,
+    @InjectModel(city)
+    private cityModel: typeof city,
   ) {}
 
-  async create(createHotelDto: CreateHotelDto) {
+  async create(@Res() response: Response, createHotelDto: CreateHotelDto) {
     try {
-      const dataCity = await city
+      const dataCity = await this.cityModel
         .create({
           city_name: createHotelDto.city_name,
         })
         .then((data) => {
-          return address.create({
+          return this.addressModel.create({
             addr_line1: createHotelDto.addr_line1,
             addr_line2: createHotelDto.addr_line2,
             addr_postal_code: createHotelDto.addr_postal_code,
@@ -42,13 +48,26 @@ export class HotelsService {
           });
         });
 
-      return 'Berhasil Di Tambahkan';
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: 'Berhasil Di Tambahkan',
+        data: dataCity,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAll(pageNumber: number, pageSize: number) {
+  async findAll(
+    @Res() response: Response,
+    pageNumber: number,
+    pageSize: number,
+  ) {
     try {
       const offset = (pageNumber - 1) * pageSize;
       const limit = pageSize;
@@ -58,25 +77,47 @@ export class HotelsService {
         limit,
       });
 
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        page: offset + 1,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
-  async findAllSearch(searchQuery: string) {
+
+  async findAllSearch(@Res() response: Response, searchQuery: string) {
     try {
       const data = await this.hotelsModel.findAll({
         where: {
           hotel_name: { [Op.like]: `%${searchQuery}%` },
         },
       });
-
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
-  async findAllIncludeReviews(pageNumber = 1, pageSize = 10) {
+
+  async findAllIncludeReviews(
+    @Res() response: Response,
+    pageNumber: number,
+    pageSize: number,
+  ) {
     try {
       const offset = (pageNumber - 1) * pageSize;
       const limit = pageSize;
@@ -85,13 +126,26 @@ export class HotelsService {
         offset,
         limit,
       });
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        page: offset + 1,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAllIncludeRoom(pageNumber = 1, pageSize = 10) {
+  async findAllIncludeRoom(
+    @Res() response: Response,
+    pageNumber = 1,
+    pageSize = 10,
+  ) {
     try {
       const offset = (pageNumber - 1) * pageSize;
       const limit = pageSize;
@@ -100,13 +154,27 @@ export class HotelsService {
         offset,
         limit,
       });
-      return data;
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        page: offset + 1,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAllIncludeAddress(pageNumber = 1, pageSize = 10) {
+  async findAllIncludeAddress(
+    @Res() response: Response,
+    pageNumber = 1,
+    pageSize = 10,
+  ) {
     try {
       const offset = (pageNumber - 1) * pageSize;
       const limit = pageSize;
@@ -120,12 +188,26 @@ export class HotelsService {
         offset,
         limit,
       });
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        page: offset + 1,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
-  async findAllIncludeSupport(pageNumber = 1, pageSize = 10) {
+
+  async findAllIncludeSupport(
+    @Res() response: Response,
+    pageNumber = 1,
+    pageSize = 10,
+  ) {
     try {
       const offset = (pageNumber - 1) * pageSize;
       const limit = pageSize;
@@ -138,9 +220,18 @@ export class HotelsService {
         offset,
         limit,
       });
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        page: offset + 1,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
@@ -148,7 +239,11 @@ export class HotelsService {
     return `This action returns a #${id} hotel`;
   }
 
-  async update(hotel_id: number, updateHotelDto: UpdateHotelDto) {
+  async update(
+    @Res() response: Response,
+    hotel_id: number,
+    updateHotelDto: UpdateHotelDto,
+  ) {
     try {
       const dataHotel = await this.hotelsModel
         .update(
@@ -186,13 +281,25 @@ export class HotelsService {
           );
         });
 
-      return `This action updates a #${hotel_id} hotel`;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${hotel_id} Berhasil Di Perbarui`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async updateStatus(hotel_id: number, updateHotelDto: UpdateHotelDto) {
+  async updateStatus(
+    @Res() response: Response,
+    hotel_id: number,
+    updateHotelDto: UpdateHotelDto,
+  ) {
     try {
       const data = await this.hotelsModel.update(
         {
@@ -201,28 +308,38 @@ export class HotelsService {
         },
         { where: { hotel_id: hotel_id } },
       );
-      return `This action updates a #${hotel_id} hotel`;
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Status Berhasil Di Perbarui`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async remove(@Param('id') id: number) {
+  async remove(@Res() response: Response, @Param('id') id: number) {
     try {
-      const idData = await this.hotelsModel.findOne({
-        where: { hotel_id: id },
-      });
-      if (!idData) {
-        return 'Data Tidak Di Temukan';
-      }
-
       const hapus = await this.hotelsModel.destroy({
         where: { hotel_id: id },
       });
 
-      return `Id ke-${id} Telah Berhasil Di Hapus`;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${id} Berhasil Di Hapus`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 }

@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   Put,
+  Res,
 } from '@nestjs/common';
 import { FacilitySupportHotelsService } from './facility-support-hotels.service';
 import { CreateFacilitySupportHotelDto } from './dto/create-facility-support-hotel.dto';
 import { UpdateFacilitySupportHotelDto } from './dto/update-facility-support-hotel.dto';
+import { Response } from 'express';
 
 @Controller('facility-support-hotels')
 export class FacilitySupportHotelsController {
@@ -19,35 +21,41 @@ export class FacilitySupportHotelsController {
   ) {}
 
   @Post()
-  create(@Body() createFacilitySupportHotelDto: CreateFacilitySupportHotelDto) {
+  create(
+    @Res() response: Response,
+    @Body() createFacilitySupportHotelDto: CreateFacilitySupportHotelDto,
+  ) {
     return this.facilitySupportHotelsService.create(
+      response,
       createFacilitySupportHotelDto,
     );
   }
 
   @Get()
-  findAll() {
-    return this.facilitySupportHotelsService.findAll();
+  findAll(@Res() response: Response) {
+    return this.facilitySupportHotelsService.findAll(response);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.facilitySupportHotelsService.findOne(id);
+  findOne(@Res() response: Response, @Param('id') id: number) {
+    return this.facilitySupportHotelsService.findOne(response, id);
   }
 
   @Put(':id')
   update(
+    @Res() response: Response,
     @Param('id') id: number,
     @Body() updateFacilitySupportHotelDto: UpdateFacilitySupportHotelDto,
   ) {
     return this.facilitySupportHotelsService.update(
+      response,
       id,
       updateFacilitySupportHotelDto,
     );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.facilitySupportHotelsService.remove(id);
+  remove(@Res() response: Response, @Param('id') id: number) {
+    return this.facilitySupportHotelsService.remove(response, id);
   }
 }

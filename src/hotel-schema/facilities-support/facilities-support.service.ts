@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Response } from 'express';
 import { facilities_support, hotels } from 'models/hotelSchema';
 import { CreateFacilitiesSupportDto } from './dto/create-facilities-support.dto';
 import { UpdateFacilitiesSupportDto } from './dto/update-facilities-support.dto';
@@ -11,73 +12,125 @@ export class FacilitiesSupportService {
     private faciSupModel: typeof facilities_support,
   ) {}
 
-  async create(createFacilitiesSupportDto: CreateFacilitiesSupportDto) {
+  async create(
+    @Res() response: Response,
+    createFacilitiesSupportDto: CreateFacilitiesSupportDto,
+    icons: Express.Multer.File,
+  ) {
     try {
+      // Penamaan untuk URL
+      let finalURL = `http://localhost:${process.env.PORT}/facility-photos/photos/${icons.filename}`;
+
       const data = await this.faciSupModel.create({
         fs_name: createFacilitiesSupportDto.fs_name,
         fs_description: createFacilitiesSupportDto.fs_description,
-        fs_icon: createFacilitiesSupportDto.fs_icon,
-        fs_icon_url: createFacilitiesSupportDto.fs_icon_url,
+        fs_icon: icons.filename,
+        fs_icon_url: finalURL,
       });
-      return data;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: 'Berhasil Di Tambahkan',
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAll() {
+  async findAll(@Res() response: Response) {
     try {
-      const data = await this.faciSupModel.findAll({
-        include: [{ model: hotels }],
-      });
-      return data;
+      const data = await this.faciSupModel.findAll();
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  findOne(id: number) {
+  async findOne(@Res() response: Response, id: number) {
     try {
-      const data = this.faciSupModel.findOne({
+      const data = await this.faciSupModel.findOne({
         where: { fs_id: id },
       });
-      return data;
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
   async update(
+    @Res() response: Response,
     id: number,
     updateFacilitiesSupportDto: UpdateFacilitiesSupportDto,
+    icons: Express.Multer.File,
   ) {
     try {
+      // Penamaan untuk URL
+      let finalURL = `http://localhost:${process.env.PORT}/facility-photos/photos/${icons.filename}`;
+
       const data = await this.faciSupModel.update(
         {
           fs_name: updateFacilitiesSupportDto.fs_name,
           fs_description: updateFacilitiesSupportDto.fs_description,
-          fs_icon: updateFacilitiesSupportDto.fs_icon,
-          fs_icon_url: updateFacilitiesSupportDto.fs_icon_url,
+          fs_icon: icons.filename,
+          fs_icon_url: finalURL,
         },
         {
           where: { fs_id: id },
         },
       );
 
-      return `This action updates a #${id} facilitiesSupport`;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${id} Berhasil Di Perbarui`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async remove(id: number) {
+  async remove(@Res() response: Response, id: number) {
     try {
       const data = await this.faciSupModel.destroy({
         where: { fs_id: id },
       });
-      return `This action removes a #${id} facilitiesSupport`;
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${id} Berhasil Di Hapus`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 }

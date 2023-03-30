@@ -1,4 +1,5 @@
 import { address } from 'models/masterSchema';
+import sequelize from 'sequelize';
 import {
   Model,
   Table,
@@ -57,14 +58,18 @@ export class hotels
   @Column({ allowNull: true, type: DataType.STRING(15) })
   hotel_status?: string;
 
-  @Column({ allowNull: true, type: DataType.DATE })
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  })
   hotel_modified_date?: Date;
 
   @ForeignKey(() => address)
   @Column({ allowNull: true, type: DataType.INTEGER })
   hotel_addr_id?: number;
 
-  @Column({ allowNull: true, type: DataType.STRING(100) })
+  @Column({ allowNull: true, type: DataType.STRING(100), defaultValue: '' })
   hotel_reason?: string;
 
   @HasMany(() => facilities, { sourceKey: 'hotel_id' })

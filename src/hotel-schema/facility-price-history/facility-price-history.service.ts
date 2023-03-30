@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Response } from 'express';
 import { facility_price_history } from 'models/hotelSchema';
 import { users } from 'models/usersSchema';
 import { CreateFacilityPriceHistoryDto } from './dto/create-facility-price-history.dto';
@@ -15,14 +16,23 @@ export class FacilityPriceHistoryService {
     return 'This action adds a new facilityPriceHistory';
   }
 
-  async findAll() {
+  async findAll(@Res() response: Response) {
     try {
       const data = await this.faphModel.findAll({
         include: [{ model: users }],
       });
-      return data;
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
@@ -37,14 +47,23 @@ export class FacilityPriceHistoryService {
     return `This action updates a #${id} facilityPriceHistory`;
   }
 
-  async remove(id: number) {
+  async remove(@Res() response: Response, id: number) {
     try {
       const data = await this.faphModel.destroy({
         where: { faph_id: id },
       });
-      return `This action removes a #${id} facilityPriceHistory`;
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: `Data dengan id-${id} Berhasil Di Hapus`,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'gagal',
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 }
