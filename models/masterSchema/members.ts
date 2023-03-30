@@ -1,3 +1,4 @@
+import { facilities } from 'models/hotelSchema';
 import {
   Model,
   Table,
@@ -6,6 +7,7 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
 
 export interface membersAttributes {
@@ -27,4 +29,7 @@ export class members
     defaultValue: Sequelize.literal('NULL::character varying'),
   })
   memb_description?: string;
+
+  @HasMany(() => facilities, { sourceKey: 'memb_name' })
+  facilities?: facilities[];
 }

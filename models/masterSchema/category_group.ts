@@ -1,3 +1,4 @@
+import { facilities } from 'models/hotelSchema';
 import {
   Model,
   Table,
@@ -6,6 +7,7 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
 
 export interface category_groupAttributes {
@@ -62,4 +64,7 @@ export class category_group
     defaultValue: Sequelize.literal('NULL::character varying'),
   })
   cagro_icon_url?: string;
+
+  @HasMany(() => facilities, { sourceKey: 'cagro_id' })
+  facilities?: facilities[];
 }

@@ -14,6 +14,11 @@ import { user_bonus_points } from './user_bonus_points';
 import { user_members } from './user_members';
 import { user_roles } from './user_roles';
 import { user_profiles } from './user_profiles';
+import {
+  facilities,
+  facility_price_history,
+  hotel_reviews,
+} from 'models/hotelSchema';
 
 export interface usersAttributes {
   user_id?: number;
@@ -89,4 +94,13 @@ export class users
 
   @HasMany(() => user_profiles, { sourceKey: 'user_id' })
   user_profiles?: user_profiles[];
+
+  @HasMany(() => hotel_reviews, { sourceKey: 'user_id' })
+  hotels?: hotel_reviews[];
+
+  @HasMany(() => facility_price_history, { sourceKey: 'user_id' })
+  facility_price_history?: facility_price_history[];
+
+  @HasMany(() => facilities, { sourceKey: 'user_id' })
+  facilities?: facilities[];
 }

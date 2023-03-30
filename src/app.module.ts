@@ -28,7 +28,7 @@ import { CountryModule } from './master/country/country.module';
 import { ProvincesModule } from './master/provinces/provinces.module';
 import { CityModule } from './master/city/city.module';
 import { PolicyCategoryGroupModule } from './master/policy_category_group/policy_category_group.module';
-import { PolicyModule, PolicyModule } from './master/policy/policy.module';
+import { PolicyModule } from './master/policy/policy.module';
 import { MembersModule } from './master/members/members.module';
 import { PriceItemsModule } from './master/price_items/price_items.module';
 import { ServiceTaskModule } from './master/service_task/service_task.module';

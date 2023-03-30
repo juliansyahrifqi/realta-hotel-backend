@@ -1,3 +1,4 @@
+import { hotels } from 'models/hotelSchema';
 import {
   Model,
   Table,
@@ -6,7 +7,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { city } from './city';
 
 export interface addressAttributes {
   addr_id?: number;
@@ -44,6 +48,13 @@ export class address
   @Column({ allowNull: true, type: DataType.STRING(55) })
   addr_spatial_code?: string;
 
+  @ForeignKey(() => city)
   @Column({ allowNull: true, type: DataType.INTEGER })
   addr_city_id?: number;
+
+  @HasMany(() => hotels, { sourceKey: 'addr_id' })
+  hotels?: hotels[];
+
+  @BelongsTo(() => city)
+  city?: city;
 }
