@@ -3,9 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { WorkOrderDetailService } from './work_order_detail.service';
 import { CreateWorkOrderDetailDto } from './dto/create-work_order_detail.dto';
@@ -22,17 +22,17 @@ export class WorkOrderDetailController {
     return this.workOrderDetailService.create(createWorkOrderDetailDto);
   }
 
+  @Get('wodeDetail')
+  employeePage() {
+    return this.workOrderDetailService.wodeDetail();
+  }
+
   @Get()
   findAll() {
     return this.workOrderDetailService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.workOrderDetailService.findOne(+id);
-  }
-
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateWorkOrderDetailDto: UpdateWorkOrderDetailDto,

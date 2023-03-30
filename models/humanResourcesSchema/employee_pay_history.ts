@@ -6,7 +6,9 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { employee } from './employee';
 
 export interface employee_pay_historyAttributes {
   ephi_emp_id?: number;
@@ -25,10 +27,20 @@ export class employee_pay_history
   extends Model<employee_pay_historyAttributes, employee_pay_historyAttributes>
   implements employee_pay_historyAttributes
 {
-  @Column({ allowNull: true, type: DataType.INTEGER })
+  @ForeignKey(() => employee)
+  @Column({
+    primaryKey: true,
+    autoIncrement: true,
+    type: DataType.INTEGER,
+    defaultValue: Sequelize.literal(
+      "nextval('human_resources.employee_pay_history_ephi_emp_id_seq'::regclass)",
+    ),
+  })
+  @Index({ name: 'employee_pay_history_pkey', using: 'btree', unique: true })
   ephi_emp_id?: number;
 
   @Column({ primaryKey: true, type: DataType.DATE(6) })
+  @Index({ name: 'employee_pay_history_pkey', using: 'btree', unique: true })
   ephi_rate_change_date!: Date;
 
   @Column({ allowNull: true, type: DataType.NUMBER })
@@ -39,4 +51,7 @@ export class employee_pay_history
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
   ephi_modified_date?: Date;
+
+  @BelongsTo(() => employee)
+  employee?: employee;
 }

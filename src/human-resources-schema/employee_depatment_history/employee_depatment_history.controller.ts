@@ -3,9 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { EmployeeDepatmentHistoryService } from './employee_depatment_history.service';
 import { CreateEmployeeDepatmentHistoryDto } from './dto/create-employee_depatment_history.dto';
@@ -37,7 +37,7 @@ export class EmployeeDepatmentHistoryController {
     return this.employeeDepatmentHistoryService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body()

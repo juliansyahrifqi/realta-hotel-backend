@@ -3,9 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { EmployeePayHistoryService } from './employee_pay_history.service';
 import { CreateEmployeePayHistoryDto } from './dto/create-employee_pay_history.dto';
@@ -32,19 +32,19 @@ export class EmployeePayHistoryController {
     return this.employeePayHistoryService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') ephi_emp_id: number,
     @Body() updateEmployeePayHistoryDto: UpdateEmployeePayHistoryDto,
   ) {
     return this.employeePayHistoryService.update(
-      +id,
+      ephi_emp_id,
       updateEmployeePayHistoryDto,
     );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.employeePayHistoryService.remove(+id);
+  remove(@Param('id') ephi_emp_id: number) {
+    return this.employeePayHistoryService.remove(ephi_emp_id);
   }
 }

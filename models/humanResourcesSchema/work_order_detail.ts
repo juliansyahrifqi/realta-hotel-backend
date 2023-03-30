@@ -6,7 +6,12 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { work_orders } from './work_orders';
+import { facilites } from '../../models/hotelSchema/facilites';
+import { service_task } from '../../models/masterSchema/service_task';
+import { employee } from './employee';
 
 export interface work_order_detailAttributes {
   wode_id?: number;
@@ -38,6 +43,7 @@ export class work_order_detail
       "nextval('human_resources.work_order_detail_wode_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'work_order_detail_pkey', using: 'btree', unique: true })
   wode_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(225) })
@@ -55,15 +61,32 @@ export class work_order_detail
   @Column({ allowNull: true, type: DataType.STRING(225) })
   wode_notes?: string;
 
+  @ForeignKey(() => employee)
   @Column({ allowNull: true, type: DataType.INTEGER })
   wode_emp_id?: number;
 
+  @ForeignKey(() => service_task)
   @Column({ allowNull: true, type: DataType.INTEGER })
   wode_seta_id?: number;
 
+  @ForeignKey(() => facilites)
   @Column({ allowNull: true, type: DataType.INTEGER })
   wode_faci_id?: number;
 
+  @ForeignKey(() => work_orders)
   @Column({ allowNull: true, type: DataType.INTEGER })
   wode_woro_id?: number;
+
+  @BelongsTo(() => work_orders)
+  work_order?: work_orders;
+
+  @BelongsTo(() => facilites)
+  facilite?: facilites;
+
+  @BelongsTo(() => service_task)
+  service_task?: service_task;
+
+  @BelongsTo(() => employee)
+  employee?: employee;
+  length: any;
 }

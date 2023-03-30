@@ -11,32 +11,76 @@ export class ShiftService {
     private shiftModel: typeof shift,
   ) {}
 
-  async create(@Body() createShiftDto: CreateShiftDto): Promise<shift> {
-    const result = await this.shiftModel.create(createShiftDto);
-    return result;
+  async create(@Body() createShiftDto: CreateShiftDto): Promise<any> {
+    try {
+      const result = await this.shiftModel.create(createShiftDto);
+      return {
+        message: 'Departement Baru ditambahkan!',
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
-  async findAll(): Promise<shift[]> {
-    const result = await this.shiftModel.findAll();
-    return result;
+  async findAll(): Promise<any> {
+    try {
+      const result = await this.shiftModel.findAll();
+      if (result.length === 0) {
+        return {
+          message: 'Data department tidak ditemukan!',
+        };
+      }
+      return {
+        message: 'Departement ditemukan!',
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async findOne(shift_id: number) {
-    const result = await this.shiftModel.findByPk(shift_id);
-    return result;
+    try {
+      const result = await this.shiftModel.findByPk(shift_id);
+      if (!result) {
+        return {
+          message: `Shift dengan id ${shift_id} tidak ditemukan!`,
+        };
+      }
+      return {
+        message: `Shift dengan id ${shift_id} ditemukan!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async update(shift_id: number, updateShiftDto: UpdateShiftDto): Promise<any> {
-    await this.shiftModel.update(updateShiftDto, {
-      where: { shift_id },
-    });
-    return `shift_id ${shift_id} updated successfully`;
+    try {
+      const result = await this.shiftModel.update(updateShiftDto, {
+        where: { shift_id },
+      });
+      return {
+        message: `Shift dengan id ${shift_id} berhasil diupdate!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async remove(shift_id: number): Promise<any> {
-    await this.shiftModel.destroy({
-      where: { shift_id },
-    });
-    return `shift_id ${shift_id} deleted successfully`;
+    try {
+      await this.shiftModel.destroy({
+        where: { shift_id },
+      });
+      return {
+        message: `Employee Department History dengan id ${shift_id} berhasil dihapus!`,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }

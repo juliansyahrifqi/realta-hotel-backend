@@ -3,6 +3,7 @@
 1:N, faci_id, wode_faci_id, facilites, work_order_detail
 1:N, seta_id, wode_seta_id, service_task, work_order_detail
 1:N, emp_id, wode_emp_id, employee, work_order_detail
+1:N, users_id, emp_user_id, users, employee
 1:N, emp_id, emp_emp_id, employee, employee
 1:N, joro_id, emp_joro_id, job_role, employee
 1:N, emp_id, ephi_emp_id, employee, employee_pay_history

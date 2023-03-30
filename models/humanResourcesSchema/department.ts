@@ -6,7 +6,9 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
+import { employee_department_history } from './employee_department_history';
 
 export interface departmentAttributes {
   dept_id?: number;
@@ -31,6 +33,7 @@ export class department
       "nextval('human_resources.department_dept_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'department_pkey', using: 'btree', unique: true })
   dept_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(50) })
@@ -38,4 +41,7 @@ export class department
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
   dept_modified_date?: Date;
+
+  @HasMany(() => employee_department_history, { sourceKey: 'dept_id' })
+  employee_department_histories?: employee_department_history[];
 }
