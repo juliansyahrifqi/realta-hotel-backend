@@ -7,6 +7,7 @@ import { SignUpEmployeeDto } from './dto/signup-employee.dto';
 import { Sequelize } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
 import { QueryTypes } from 'sequelize';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -106,6 +107,35 @@ export class UsersService {
     } catch (e) {
       await t.rollback();
 
+      return { statusCode: HttpStatus.BAD_REQUEST, message: e };
+    }
+  }
+
+  async getUserByName(search: string) {
+    try {
+      const result = await this.userModel.findAll({
+        where: {
+          user_full_name: {
+            [Op.iLike]: `${search}`,
+          },
+        },
+        limit: 5,
+      });
+
+      if (result.length === 0) {
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'Users Not Found',
+          data: result,
+        };
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Users Found',
+        data: result,
+      };
+    } catch (e) {
       return { statusCode: HttpStatus.BAD_REQUEST, message: e };
     }
   }

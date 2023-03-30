@@ -12,6 +12,7 @@ import {
   ParseFilePipe,
   FileTypeValidator,
   MaxFileSizeValidator,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -25,6 +26,11 @@ import { existsSync, unlink } from 'fs';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('usersByName')
+  getUsersByName(@Query('search') search: string) {
+    return this.usersService.getUserByName(search);
+  }
 
   @Get(':id')
   async getUserById(@Param('id') id: string) {

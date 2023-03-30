@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { users } from './users';
-import { address } from './address';
+import { address } from '../masterSchema/address';
 
 export interface user_profilesAttributes {
   uspro_id?: number;

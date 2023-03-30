@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { users } from './users';
-import { members } from './members';
+import { members } from '../masterSchema/members';
 
 export interface user_membersAttributes {
   usme_user_id?: number;
