@@ -2,7 +2,7 @@
 
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { category_group } from '../../models/master_module';
+import { category_group } from '../../models/masterSchema';
 import { CategoryGroupService } from './category_group.service';
 import { CategoryGroupController } from './category_group.controller';
 import { MulterModule } from '@nestjs/platform-express/multer';

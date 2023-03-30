@@ -16,17 +16,17 @@ export class MembersController {
   constructor(private readonly membersService: MembersService) {}
 
   @Get()
-  async findAll() {
+  async findAll(): Promise<any> {
     return this.membersService.findAll();
   }
 
   @Get(':memb_name')
-  async findOne(@Param('memb_name') memb_name: string) {
+  async findOne(@Param('memb_name') memb_name: string): Promise<any> {
     return this.membersService.findOne(memb_name);
   }
 
   @Post()
-  async create(@Body() createMembersDto: CreateMembersDto) {
+  async create(@Body() createMembersDto: CreateMembersDto): Promise<any> {
     return this.membersService.create(createMembersDto);
   }
 
@@ -34,12 +34,12 @@ export class MembersController {
   async update(
     @Param('memb_name') memb_name: string,
     @Body() updateMembersDto: CreateMembersDto,
-  ) {
+  ): Promise<any> {
     return this.membersService.update(memb_name, updateMembersDto);
   }
 
   @Delete(':memb_name')
-  async delete(@Param('memb_name') memb_name: string) {
+  async delete(@Param('memb_name') memb_name: string): Promise<any> {
     return this.membersService.delete(memb_name);
   }
 }

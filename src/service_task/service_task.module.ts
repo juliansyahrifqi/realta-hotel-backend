@@ -2,7 +2,7 @@
 
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { service_task } from '../../models/master_module';
+import { service_task } from '../../models/masterSchema';
 import { ServiceTaskController } from './service_task.controller';
 import { ServiceTaskService } from './service_task.service';
 

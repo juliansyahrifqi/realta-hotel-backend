@@ -36,6 +36,7 @@ export class AddressController {
     @Param('id') id: string,
     @Body() updateAddressDto: UpdateAddressDto,
   ): Promise<[number, any]> {
+    console.log(updateAddressDto);
     return this.addressService.update(Number(id), updateAddressDto);
   }
 

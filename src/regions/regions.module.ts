@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { regions } from '../../models/master_module';
+import { regions } from '../../models/masterSchema';
 import { RegionsService } from './regions.service';
 import { RegionsController } from './regions.controller';
 

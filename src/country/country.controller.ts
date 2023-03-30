@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 //   import { CountryDto } from './dto/country.dto';
 import { CountryService } from './country.service';
-import { country } from '../../models/master_module';
+// import { country } from '../../models/masterSchema';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 

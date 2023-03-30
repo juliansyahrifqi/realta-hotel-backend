@@ -27,8 +27,8 @@ export class CityController {
     return this.citiesService.findAll();
   }
 
-  @Get()
-  async findAllSearch(@Query('searchQuery') searchQuery: string) {
+  @Get('search')
+  async findAllSearch(@Query('searchQuery') searchQuery: string): Promise<any> {
     try {
       const city = await this.citiesService.findAllSearch(searchQuery);
       return {
@@ -65,11 +65,11 @@ export class CityController {
     @Param('id') id: number,
     @Body() updateCityDto: UpdateCityDto,
   ): Promise<any> {
-    await this.citiesService.update(id, updateCityDto);
+    return await this.citiesService.update(id, updateCityDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<any> {
-    return this.citiesService.remove(id);
+    return await this.citiesService.remove(id);
   }
 }

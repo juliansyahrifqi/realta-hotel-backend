@@ -8,7 +8,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { ProvincesService } from './provinces.service';
-import { provinces } from '../../models/master_module';
+import { provinces } from '../../models/masterSchema';
 import { CreateProvincesDto } from './dto/create-province.dto';
 import { UpdateProvinceDto } from './dto/update-province.dto';
 
@@ -30,7 +30,7 @@ export class ProvincesController {
   async create(
     @Body() createProvinceDto: CreateProvincesDto,
   ): Promise<provinces> {
-    return this.provincesService.create(createProvinceDto);
+    return await this.provincesService.create(createProvinceDto);
   }
 
   @Put(':id')

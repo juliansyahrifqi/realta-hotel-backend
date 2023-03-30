@@ -6,11 +6,12 @@ import {
   Put,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PriceItemsService } from './price_items.service';
 import { CreatePriceItemDto } from './dto/create-price_item.dto';
 import { UpdatePriceItemDto } from './dto/update-price_item.dto';
-import { price_items } from '../../models/master_module';
+import { price_items } from '../../models/masterSchema';
 
 @Controller('price-items')
 export class PriceItemsController {
@@ -23,9 +24,30 @@ export class PriceItemsController {
     return await this.priceItemsService.create(createPriceItemDto);
   }
 
+  // @Get()
+  // async findAll(): Promise<price_items[]> {
+  //   return await this.priceItemsService.findAll();
+  // }
   @Get()
-  async findAll(): Promise<price_items[]> {
-    return await this.priceItemsService.findAll();
+  findAll(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.priceItemsService.findAll(page, limit);
+  }
+
+  @Get('search')
+  async findAllSearch(@Query('searchQuery') searchQuery: string) {
+    try {
+      const price_items = await this.priceItemsService.findAllSearch(
+        searchQuery,
+      );
+      return {
+        data: price_items,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Internal server error',
+      };
+    }
   }
 
   @Get(':id')

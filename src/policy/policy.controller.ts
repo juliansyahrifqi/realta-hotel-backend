@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import { PolicyService } from './policy.service';
 import { CreatePolicyDto } from './dto/create-policy.dto';
@@ -20,6 +21,20 @@ export class PolicyController {
     return this.policyService.findAll();
   }
 
+  @Get('search')
+  async findAllSearch(@Query('poli_name') poli_name: string) {
+    try {
+      const policy = await this.policyService.findAllSearch(poli_name);
+      return {
+        data: policy,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Internal server error',
+      };
+    }
+  }
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<any> {
     return this.policyService.findOne(id);

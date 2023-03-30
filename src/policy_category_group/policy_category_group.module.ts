@@ -2,7 +2,7 @@
 
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { policy_category_group } from '../../models/master_module';
+import { policy_category_group } from '../../models/masterSchema';
 import { PolicyCategoryGroupController } from './policy_category_group.controller';
 import { PolicyCategoryGroupService } from './policy_category_group.service';
 

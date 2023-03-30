@@ -9,9 +9,10 @@ import {
   Param,
   UploadedFile,
   UseInterceptors,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CategoryGroupService } from './category_group.service';
-import { category_group } from '../../models/master_module';
+import { category_group } from '../../models/masterSchema';
 import { CreateCategoryGroupDto } from './dto/create-category_group.dto';
 import { UpdateCategoryGroupDto } from './dto/update-category_group.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -25,12 +26,12 @@ export class CategoryGroupController {
   //   res.sendFile(path, { root: 'uploads' });
   // }
   @Get()
-  async findAll(): Promise<category_group[]> {
+  async findAll(): Promise<any> {
     return this.categoryGroupService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<category_group> {
+  async findOne(@Param('id') id: number): Promise<any> {
     return this.categoryGroupService.findOne(id);
   }
 
@@ -40,42 +41,98 @@ export class CategoryGroupController {
   // ): Promise<category_group> {
   //   return this.categoryGroupService.create(createCategoryGroupDto);
   // }
+  // @Post('upload')
+  // @UseInterceptors(
+  //   FileInterceptor('cagro_icon', {
+  //     storage: diskStorage({
+  //       destination: './files',
+  //       filename: (req, file, cb) => {
+  //         const uniqueSuffix =
+  //           Date.now() + '-' + Math.round(Math.random() * 1e9);
+  //         const filename = `${uniqueSuffix}-${file.originalname}`;
+  //         cb(null, filename);
+  //       },
+  //     }),
+  //   }),
+  // )
+  // async create(
+  //   @UploadedFile() file: Express.Multer.File,
+  //   @Body() createCategoryGroupDto: CreateCategoryGroupDto,
+  // ) {
+
+  //   const createdCategoryGroup = await this.categoryGroupService.create(
+  //     createCategoryGroupDto,
+  //     file,
+  //   );
+  //   return createdCategoryGroup;
+  // }
+
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('cagro_icon', {
       storage: diskStorage({
-        destination: './files',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const filename = `${uniqueSuffix}-${file.originalname}`;
-          cb(null, filename);
+        destination: './uploads/image/master',
+        filename: function (req, file, cb) {
+          const uniqueSuffix = Math.round(Math.random() * 1e9);
+          const fileName = `${uniqueSuffix}-${file.originalname}`;
+          cb(null, fileName);
         },
       }),
     }),
   )
-  async create(
-    @UploadedFile() file: Express.Multer.File,
+  async createProduct(
+    @UploadedFile() image: Express.Multer.File,
     @Body() createCategoryGroupDto: CreateCategoryGroupDto,
-  ) {
-    
-    const createdCategoryGroup = await this.categoryGroupService.create(
+  ): Promise<any> {
+    const product = await this.categoryGroupService.create(
       createCategoryGroupDto,
-      file,
+      image,
     );
-    return createdCategoryGroup;
+    return product;
   }
+
+  // @Put(':id')
+  // async update(
+  //   @Param('id') id: number,
+  //   @Body() updateCategoryGroupDto: UpdateCategoryGroupDto,
+  // ): Promise<void> {
+  //   await this.categoryGroupService.update(id, updateCategoryGroupDto);
+  // }
 
   @Put(':id')
-  async update(
-    @Param('id') id: number,
+  @UseInterceptors(
+    FileInterceptor('cagro_icon', {
+      storage: diskStorage({
+        destination: './uploads/image/master',
+        filename: function (req, file, cb) {
+          const uniqueSuffix = Math.round(Math.random() * 1e9);
+          const fileName = `${uniqueSuffix}-${file.originalname}`;
+          cb(null, fileName);
+        },
+      }),
+    }),
+  )
+  async updateProduct(
+    @UploadedFile() image: Express.Multer.File,
     @Body() updateCategoryGroupDto: UpdateCategoryGroupDto,
-  ): Promise<void> {
-    await this.categoryGroupService.update(id, updateCategoryGroupDto);
+    @Param('id') id: string,
+  ): Promise<any> {
+    const product = await this.categoryGroupService.update(
+      id,
+      updateCategoryGroupDto,
+      image,
+    );
+    return product;
   }
 
+  //   @Delete(':id')
+  //   async delete(@Param('id') id: number): Promise<void> {
+  //     await this.categoryGroupService.delete(id);
+  //   }
+  // }
+
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<void> {
-    await this.categoryGroupService.delete(id);
+  remove(@Param('id') id: string): Promise<any> {
+    return this.categoryGroupService.remove(+id);
   }
 }

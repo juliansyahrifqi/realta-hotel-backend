@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 // import { RegionsDto } from './dto/';
 import { RegionsService } from './regions.service';
-import { regions } from '../../models/master_module';
+import { regions } from '../../models/masterSchema';
 import { CreateRegionDto } from './dto/create-region.dto';
 import { UpdateRegionDto } from './dto/update-region.dto';
 

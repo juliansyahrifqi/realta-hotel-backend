@@ -22,5 +22,5 @@ export class UpdatePriceItemDto extends PartialType(CreatePriceItemDto) {
 
   @IsOptional()
   @IsDate()
-  prit_modified_date?: Date;
+  prit_modified_date?: Date = new Date();
 }

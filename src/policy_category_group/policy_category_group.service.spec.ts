@@ -9,7 +9,9 @@ describe('PolicyCategoryGroupService', () => {
       providers: [PolicyCategoryGroupService],
     }).compile();
 
-    service = module.get<PolicyCategoryGroupService>(PolicyCategoryGroupService);
+    service = module.get<PolicyCategoryGroupService>(
+      PolicyCategoryGroupService,
+    );
   });
 
   it('should be defined', () => {
