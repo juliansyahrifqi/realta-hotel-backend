@@ -1,7 +1,19 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { UsersModule } from './users/users/users.module';
+import { UserMembersModule } from './users/user-members/user-members.module';
+import { UserBonusPointsModule } from './users/user-bonus-points/user-bonus-points.module';
+import { RolesModule } from './users/roles/roles.module';
+import { UserPasswordModule } from './users/user-password/user-password.module';
+import { AuthModule } from './users/auth/auth.module';
+import { JwtMiddleware } from './users/auth/jwt.middleware';
 import { RegionsModule } from './master/regions/regions.module';
 import { AddressModule } from './master/address/address.module';
 import { CategoryGroupModule } from './master/category_group/category_group.module';
@@ -27,6 +39,12 @@ import { ServiceTaskModule } from './master/service_task/service_task.module';
       autoLoadModels: true,
       synchronize: true,
     }),
+    UsersModule,
+    UserMembersModule,
+    UserBonusPointsModule,
+    RolesModule,
+    UserPasswordModule,
+    AuthModule,
     RegionsModule,
     AddressModule,
     CategoryGroupModule,
@@ -42,4 +60,15 @@ import { ServiceTaskModule } from './master/service_task/service_task.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(JwtMiddleware)
+      .exclude(
+        { path: 'users/signUpGuest', method: RequestMethod.POST },
+        { path: 'users/signUpEmployee', method: RequestMethod.POST },
+        'auth/(.*)',
+      )
+      .forRoutes('*');
+  }
+}
