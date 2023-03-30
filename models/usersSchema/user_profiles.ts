@@ -6,7 +6,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { users } from './users';
+import { address } from './address';
 
 export interface user_profilesAttributes {
   uspro_id?: number;
@@ -32,6 +35,7 @@ export class user_profiles
       "nextval('users.user_profiles_uspro_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'pkey_user_profiles', using: 'btree', unique: true })
   uspro_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(20) })
@@ -49,9 +53,17 @@ export class user_profiles
   @Column({ allowNull: true, type: DataType.STRING(1) })
   uspro_gender?: string;
 
+  @ForeignKey(() => address)
   @Column({ allowNull: true, type: DataType.INTEGER })
   uspro_addr_id?: number;
 
+  @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   uspro_user_id?: number;
+
+  @BelongsTo(() => users)
+  user?: users;
+
+  @BelongsTo(() => address)
+  address?: address;
 }
