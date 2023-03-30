@@ -1,0 +1,5 @@
+1:N, region_code,country_region_id,regions,country
+1:N, country_id,prov_country_id,country,provinces
+1:N, prov_id,city_prov_id,provinces,city
+1:N, city_id,addr_city_id,city,address
+N:N, poca_poli_id,poca_cagro_id,category_group,policy,policy_category_group
