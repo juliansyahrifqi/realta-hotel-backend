@@ -19,7 +19,7 @@ export class FacilitiesSupportService {
   ) {
     try {
       // Penamaan untuk URL
-      let finalURL = `http://localhost:${process.env.PORT}/facility-photos/photos/${icons.filename}`;
+      let finalURL = `http://localhost:${process.env.PORT}/facilities-support/icons/${icons.filename}`;
 
       const data = await this.faciSupModel.create({
         fs_name: createFacilitiesSupportDto.fs_name,

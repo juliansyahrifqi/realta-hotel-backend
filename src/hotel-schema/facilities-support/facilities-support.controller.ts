@@ -52,6 +52,11 @@ export class FacilitiesSupportController {
     );
   }
 
+  @Get('icons/:id')
+  async getImage(@Res() res, @Param('id') id) {
+    res.sendFile(id, { root: './uploads/icons/hotel' });
+  }
+
   @Get()
   findAll(@Res() response: Response) {
     return this.facilitiesSupportService.findAll(response);
