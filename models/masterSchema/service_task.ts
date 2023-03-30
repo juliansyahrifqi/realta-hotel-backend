@@ -10,6 +10,8 @@ import {
 
 export interface service_taskAttributes {
   seta_id?: number;
+  seta_name?: string;
+  seta_seq?: number;
 }
 
 @Table({ tableName: 'service_task', schema: 'master', timestamps: false })
@@ -26,4 +28,10 @@ export class service_task
     ),
   })
   seta_id?: number;
+
+  @Column({ allowNull: true, type: DataType.STRING(85) })
+  seta_name?: string;
+
+  @Column({ allowNull: true, type: DataType.INTEGER })
+  seta_seq?: number;
 }

@@ -10,3 +10,20 @@
 1:N, shift_id, edhi_shift_id, shift, employee_department_history
 1:N, dept_id, edhi_dept_id, department, employee_department_history
 1:N, emp_id, edhi_emp_id, employee, employee_department_history
+1:N, user_id, hore_user_id , users, hotel_reviews,  
+
+
+
+1:N, region_code,country_region_id,regions,country
+1:N, country_id,prov_country_id,country,provinces
+1:N, prov_id,city_prov_id,provinces,city
+1:N, city_id,addr_city_id,city,address
+N:N, poca_poli_id,poca_cagro_id,category_group,policy,policy_category_group
+1:1, user_id, uspa_user_id, users, user_password
+1:N, user_id, ubpo_user_id, users, user_bonus_points
+1:N, user_id, usme_user_id, users, user_members
+1:1, user_id, usro_user_id, users, user_roles
+1:N, user_id, uspro_user_id, users, user_profiles
+1:N, role_id, usro_role_id, roles, user_roles
+1:N, memb_name, usme_memb_name, members, user_members
+1:N, addr_id, uspro_addr_id, address, user_profiles
