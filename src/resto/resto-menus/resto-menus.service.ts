@@ -31,7 +31,7 @@ export class RestoMenusService {
     const result = await this.restoMenuModel.findAndCountAll({
       limit,
       offset,
-      include: 'facilities',
+      include: 'facility',
     });
     return { rows: result.rows, count: result.count };
   }
