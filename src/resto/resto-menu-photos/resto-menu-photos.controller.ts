@@ -17,7 +17,7 @@ import {
 } from '@nestjs/common';
 import { CreateRestoMenuPhotoDto } from './dto/create-resto-menu-photo.dto';
 import { UpdateRestoMenuPhotoDto } from './dto/update-resto-menu-photo.dto';
-import { resto_menu_photos } from '../../models/restoSchema';
+import { resto_menu_photos } from 'models/restoSchema';
 import { RestoMenuPhotosService } from './resto-menu-photos.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateRestoMenuPhotoDto } from './dto/create-resto-menu-photo.dto';
 import { UpdateRestoMenuPhotoDto } from './dto/update-resto-menu-photo.dto';
-import { resto_menu_photos } from '../../models/restoSchema';
+import { resto_menu_photos } from 'models/restoSchema';
 
 @Injectable()
 export class RestoMenuPhotosService {
