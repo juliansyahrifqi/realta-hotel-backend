@@ -3,11 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 
-import { UsersModule } from './users-schema/users/users.module';
 import { JobRoleModule } from './human-resources-schema/job_role/job_role.module';
 import { ShiftModule } from './human-resources-schema/shift/shift.module';
-import { ServiceTaskModule } from './master-schema/service_task/service_task.module';
-import { FacilitesModule } from './hotel-schema/facilites/facilites.module';
 import { DepartmentModule } from './human-resources-schema/department/department.module';
 import { EmployeeModule } from './human-resources-schema/employee/employee.module';
 import { EmployeeDepatmentHistoryModule } from './human-resources-schema/employee_depatment_history/employee_depatment_history.module';
@@ -28,11 +25,8 @@ import { WorkOrderDetailModule } from './human-resources-schema/work_order_detai
       autoLoadModels: true,
       synchronize: true,
     }),
-    UsersModule,
     JobRoleModule,
     ShiftModule,
-    ServiceTaskModule,
-    FacilitesModule,
     DepartmentModule,
     EmployeeModule,
     EmployeeDepatmentHistoryModule,

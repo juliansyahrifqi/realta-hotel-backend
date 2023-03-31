@@ -13,39 +13,85 @@ export class EmployeePayHistoryService {
 
   async create(
     @Body() createEmployeePayHistoryDto: CreateEmployeePayHistoryDto,
-  ): Promise<employee_pay_history> {
-    const result = await this.employeePayHistoryModel.create(
-      createEmployeePayHistoryDto,
-    );
-    return result;
+  ): Promise<any> {
+    try {
+      const result = await this.employeePayHistoryModel.create(
+        createEmployeePayHistoryDto,
+      );
+      return {
+        message: 'Employee Pay History Baru ditambahkan!',
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
-  async findAll(): Promise<employee_pay_history[]> {
-    const result = await this.employeePayHistoryModel.findAll();
-    return result;
+  async findAll(): Promise<any> {
+    try {
+      const result = await this.employeePayHistoryModel.findAll();
+      if (result.length === 0) {
+        return {
+          message: 'Data Employee Pay History tidak ditemukan!',
+        };
+      }
+      return {
+        message: 'Data Employee Pay History ditemukan!',
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
-  async findOne(ephi_rate_change_date: number) {
-    const result = await this.employeePayHistoryModel.findByPk(
-      ephi_rate_change_date,
-    );
-    return result;
+  async findOne(ephi_emp_id: number) {
+    try {
+      const result = await this.employeePayHistoryModel.findByPk(ephi_emp_id);
+      if (!result) {
+        return {
+          message: `Employee Department History dengan id ${ephi_emp_id} tidak ditemukan!`,
+        };
+      }
+      return {
+        message: `Employee Department History dengan id ${ephi_emp_id} ditemukan!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async update(
-    ephi_rate_change_date: number,
+    ephi_emp_id: number,
     updateEmployeePayHistoryDto: UpdateEmployeePayHistoryDto,
   ): Promise<any> {
-    await this.employeePayHistoryModel.update(updateEmployeePayHistoryDto, {
-      where: { ephi_rate_change_date },
-    });
-    return `Updated ephi_rate_change_date : ${ephi_rate_change_date} success`;
+    try {
+      const result = await this.employeePayHistoryModel.update(
+        updateEmployeePayHistoryDto,
+        {
+          where: { ephi_emp_id },
+        },
+      );
+      return {
+        message: `Employee Department History dengan id ${ephi_emp_id} berhasil diupdate!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
-  async remove(ephi_rate_change_date: number): Promise<any> {
-    await this.employeePayHistoryModel.destroy({
-      where: { ephi_rate_change_date },
-    });
-    return `Deleted ephi_rate_change_date : ${ephi_rate_change_date} success`;
+  async remove(ephi_emp_id: number): Promise<any> {
+    try {
+      const result = await this.employeePayHistoryModel.destroy({
+        where: { ephi_emp_id },
+      });
+      return {
+        message: `Employee Pay History dengan id ${ephi_emp_id} berhasil dihapus!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }

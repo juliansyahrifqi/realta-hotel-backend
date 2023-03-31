@@ -6,7 +6,9 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
+import { employee } from './employee';
 
 export interface job_roleAttributes {
   joro_id?: number;
@@ -27,11 +29,16 @@ export class job_role
       "nextval('human_resources.job_role_joro_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'job_role_pkey', using: 'btree', unique: true })
   joro_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(55) })
+  @Index({ name: 'job_role_joro_name_key', using: 'btree', unique: true })
   joro_name?: string;
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
   joro_modified_date?: Date;
+
+  @HasMany(() => employee, { sourceKey: 'joro_id' })
+  employees?: employee[];
 }

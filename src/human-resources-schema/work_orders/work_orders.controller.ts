@@ -3,9 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { WorkOrdersService } from './work_orders.service';
 import { CreateWorkOrderDto } from './dto/create-work_order.dto';
@@ -20,17 +21,21 @@ export class WorkOrdersController {
     return this.workOrdersService.create(createWorkOrderDto);
   }
 
-  @Get()
-  findAll() {
-    return this.workOrdersService.findAll();
+  @Get() // pagination
+  findAll(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.workOrdersService.findAll(page, limit);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.workOrdersService.findOne(+id);
+  @Get('search')
+  search(
+    @Query('from') from: Date,
+    @Query('to') to: Date,
+    @Query('status') status: string,
+  ) {
+    return this.workOrdersService.findOne(new Date(), from, to, status);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateWorkOrderDto: UpdateWorkOrderDto,

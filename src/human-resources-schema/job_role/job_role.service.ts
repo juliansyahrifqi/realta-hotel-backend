@@ -11,35 +11,77 @@ export class JobRoleService {
     private jobRoleModel: typeof job_role,
   ) {}
 
-  async create(createJobRoleDto: CreateJobRoleDto): Promise<job_role> {
-    const result = await this.jobRoleModel.create(createJobRoleDto);
-    return result;
+  async create(createJobRoleDto: CreateJobRoleDto): Promise<any> {
+    try {
+      const result = await this.jobRoleModel.create(createJobRoleDto);
+      return {
+        message: 'Job Role Baru ditambahkan!',
+        data: result,
+      };
+    } catch (error) {}
   }
 
-  async findAll(): Promise<job_role[]> {
-    const result = await this.jobRoleModel.findAll();
-    return result;
+  async findAll(): Promise<any> {
+    try {
+      const result = await this.jobRoleModel.findAll();
+      if (result.length === 0) {
+        return {
+          message: 'Job Role tidak ditemukan!',
+        };
+      }
+      return {
+        message: 'Job Role ditemukan!',
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async findOne(joro_id: number) {
-    const result = this.jobRoleModel.findByPk(joro_id);
-    return result;
+    try {
+      const result = await this.jobRoleModel.findByPk(joro_id);
+      if (!result) {
+        return {
+          message: `Job Role dengan id ${joro_id} tidak ditemukan!`,
+        };
+      }
+      return {
+        message: `Job Role dengan id ${joro_id} ditemukan!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async update(
     joro_id: number,
     updateJobRoleDto: UpdateJobRoleDto,
   ): Promise<any> {
-    await this.jobRoleModel.update(updateJobRoleDto, {
-      where: { joro_id },
-    });
-    return `Updated joro_id : ${joro_id} success`;
+    try {
+      const result = await this.jobRoleModel.update(updateJobRoleDto, {
+        where: { joro_id },
+      });
+      return {
+        message: `Job Role dengan id ${joro_id} berhasil diupdate!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async remove(joro_id: number): Promise<any> {
-    await this.jobRoleModel.destroy({
-      where: { joro_id },
-    });
-    `deleted joro : ${joro_id} success`;
+    try {
+      await this.jobRoleModel.destroy({
+        where: { joro_id },
+      });
+      return {
+        message: `Job Role dengan id ${joro_id} berhasil dihapus!`,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }

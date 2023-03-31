@@ -14,40 +14,86 @@ export class EmployeeDepatmentHistoryService {
   async create(
     @Body()
     createEmployeeDepatmentHistoryDto: CreateEmployeeDepatmentHistoryDto,
-  ): Promise<employee_department_history> {
-    const result = await this.employeeDepartmentHistoryModel.create(
-      createEmployeeDepatmentHistoryDto,
-    );
-    return result;
+  ): Promise<any> {
+    try {
+      const result = await this.employeeDepartmentHistoryModel.create(
+        createEmployeeDepatmentHistoryDto,
+      );
+      return {
+        message: 'Employee Departement History Baru ditambahkan!',
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
-  async findAll(): Promise<employee_department_history[]> {
-    const result = await this.employeeDepartmentHistoryModel.findAll();
-    return result;
+  async findAll(): Promise<any> {
+    try {
+      const result = await this.employeeDepartmentHistoryModel.findAll();
+      if (result.length === 0) {
+        return {
+          message: 'Data Employee Departement History tidak ditemukan!',
+        };
+      }
+      return {
+        message: 'Data Employee Departement History ditemukan!',
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async findOne(edhi_id: number) {
-    const result = await this.employeeDepartmentHistoryModel.findByPk(edhi_id);
-    return result;
+    try {
+      const result = await this.employeeDepartmentHistoryModel.findByPk(
+        edhi_id,
+      );
+      if (!result) {
+        return {
+          message: `Employee Department History dengan id ${edhi_id} tidak ditemukan!`,
+        };
+      }
+      return {
+        message: `Employee Department History dengan id ${edhi_id} ditemukan!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async update(
     edhi_id: number,
     updateEmployeeDepatmentHistoryDto: UpdateEmployeeDepatmentHistoryDto,
   ): Promise<any> {
-    await this.employeeDepartmentHistoryModel.update(
-      updateEmployeeDepatmentHistoryDto,
-      {
-        where: { edhi_id },
-      },
-    );
-    return `Updated edhi_id : ${edhi_id} success`;
+    try {
+      const result = await this.employeeDepartmentHistoryModel.update(
+        updateEmployeeDepatmentHistoryDto,
+        {
+          where: { edhi_id },
+        },
+      );
+      return {
+        message: `Employee Department History dengan id ${edhi_id} berhasil diupdate!`,
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   async remove(edhi_id: number): Promise<any> {
-    await this.employeeDepartmentHistoryModel.destroy({
-      where: { edhi_id },
-    });
-    return `Deleted edhi_id : ${edhi_id} success`;
+    try {
+      await this.employeeDepartmentHistoryModel.destroy({
+        where: { edhi_id },
+      });
+      return {
+        message: `Employee Department History dengan id ${edhi_id} berhasil dihapus!`,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }

@@ -3,13 +3,14 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseInterceptors,
   UploadedFile,
   Req,
   Res,
+  Put,
+  Query,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -23,9 +24,9 @@ export class EmployeeController {
 
   @Post()
   @UseInterceptors(
-    FileInterceptor('image', {
+    FileInterceptor('emp_photo', {
       storage: diskStorage({
-        destination: './assetEmployeeImages',
+        destination: './uploads/image',
         filename: function (req, file, cb) {
           const uniqueSuffix = Math.round(Math.random() * 1e9);
           const fileName = `${uniqueSuffix}-${file.originalname}`;
@@ -42,9 +43,14 @@ export class EmployeeController {
     return result;
   }
 
+  @Get('employeePage')
+  employeePage(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.employeeService.employeePage(page, limit);
+  }
+
   @Get()
-  findAll() {
-    return this.employeeService.findAll();
+  findAll(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.employeeService.findAll(page, limit);
   }
 
   @Get(':id')
@@ -52,11 +58,11 @@ export class EmployeeController {
     return this.employeeService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @UseInterceptors(
-    FileInterceptor('image', {
+    FileInterceptor('emp_photo', {
       storage: diskStorage({
-        destination: './assetEmployeeImages',
+        destination: './uploads/image',
         filename: function (req, file, cb) {
           const uniqueSuffix = Math.round(Math.random() * 1e9);
           const fileName = `${uniqueSuffix}-${file.originalname}`;
