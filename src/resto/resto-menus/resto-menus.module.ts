@@ -1,7 +1,7 @@
 // resto-menus.module.ts
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { resto_menus } from '../../models/restoSchema';
+import { resto_menus } from 'models/restoSchema';
 import { RestoMenusController } from './resto-menus.controller';
 import { RestoMenusService } from './resto-menus.service';
 

@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { RestoMenusModule } from './resto-menus/resto-menus.module';
-import { RestoMenuPhotosController } from './resto-menu-photos/resto-menu-photos.controller';
-import { RestoMenuPhotosModule } from './resto-menu-photos/resto-menu-photos.module';
-import { OrderMenusModule } from './order-menus/order-menus.module';
-import { OrderMenuDetailModule } from './order-menu-detail/order-menu-detail.module';
+import { RestoMenusModule } from './resto/resto-menus/resto-menus.module';
+import { RestoMenuPhotosController } from './resto/resto-menu-photos/resto-menu-photos.controller';
+import { RestoMenuPhotosModule } from './resto/resto-menu-photos/resto-menu-photos.module';
+import { OrderMenusModule } from './resto/order-menus/order-menus.module';
+import { OrderMenuDetailModule } from './resto/order-menu-detail/order-menu-detail.module';
 import { diskStorage } from 'multer';
 import { MulterModule } from '@nestjs/platform-express';
 

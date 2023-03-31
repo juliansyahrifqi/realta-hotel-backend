@@ -9,6 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { order_menu_detail } from './order_menu_detail';
+import { users } from '../usersSchema/users';
 
 export interface order_menusAttributes {
   orme_id?: number;
@@ -69,4 +70,7 @@ export class order_menus
 
   @BelongsTo(() => order_menu_detail)
   order_menu_detail?: order_menu_detail;
+
+  @BelongsTo(() => users)
+  user?: users;
 }

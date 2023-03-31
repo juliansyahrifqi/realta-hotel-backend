@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { resto_menus } from '../../models/restoSchema';
+import { resto_menus } from 'models/restoSchema';
 import { CreateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { UpdateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 
@@ -31,6 +31,7 @@ export class RestoMenusService {
     const result = await this.restoMenuModel.findAndCountAll({
       limit,
       offset,
+      include: 'facilities',
     });
     return { rows: result.rows, count: result.count };
   }

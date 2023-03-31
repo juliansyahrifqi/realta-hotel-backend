@@ -10,6 +10,7 @@ import {
 } from 'sequelize-typescript';
 import { resto_menu_photos } from './resto_menu_photos';
 import { order_menu_detail } from './order_menu_detail';
+import { facilities } from '../hotelSchema/facilities';
 
 export interface resto_menusAttributes {
   reme_id?: number;
@@ -58,4 +59,7 @@ export class resto_menus
 
   @BelongsTo(() => order_menu_detail)
   order_menu_detail?: order_menu_detail;
+
+  @BelongsTo(() => facilities)
+  facility?: facilities;
 }

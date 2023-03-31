@@ -1,3 +1,5 @@
 1:1, remp_reme_id, reme_id, resto_menu_photos, resto_menus
 1:N, omde_orme_id, orme_id, order_menu_detail, order_menus
 1:N, omde_reme_id, reme_id, order_menu_detail, resto_menus
+1:N, faci_id, reme_faci_id, facilities, resto_menus
+1:N, user_id, orme_user_id, users, order_menus

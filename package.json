@@ -18,7 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "pgScript": "stg -D postgres -o models/restoSchema -h localhost -p 5432 -d HotelRealtaDB -u postgres -x 12345 --indices --associations-file association.csv -s resto"
+    "pgScriptResto": "stg -D postgres -o models/restoSchema -h localhost -p 5432 -d HotelRealtaDB -u postgres -x 12345 --indices --associations-file association.csv -s resto",
+    "pgScriptHotel": "stg -D postgres -o models/hotelSchema -h localhost -p 5432 -d HotelRealtaDB -u postgres -x 12345 -s hotel"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

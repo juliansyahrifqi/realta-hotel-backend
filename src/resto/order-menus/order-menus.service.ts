@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { order_menus } from '../../models/restoSchema';
+import { order_menus } from 'models/restoSchema';
 import { CreateOrderMenuDto } from './dto/create-order-menu.dto';
 import { UpdateOrderMenuDto } from './dto/update-order-menu.dto';
 
@@ -21,7 +21,9 @@ export class OrderMenusService {
   }
 
   async findAll(): Promise<order_menus[]> {
-    return this.orderMenusModel.findAll();
+    return this.orderMenusModel.findAll({
+      include: 'user',
+    });
   }
 
   async findOne(id: number): Promise<order_menus> {

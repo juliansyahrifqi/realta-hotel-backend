@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { order_menu_detail } from '../../models/restoSchema';
+import { order_menu_detail } from 'models/restoSchema';
 import { CreateOrderMenuDetailDto } from './dto/create-order-menu-detail.dto';
 import { UpdateOrderMenuDetailDto } from './dto/update-order-menu-detail.dto';
 
