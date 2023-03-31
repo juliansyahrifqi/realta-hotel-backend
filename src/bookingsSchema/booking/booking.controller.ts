@@ -264,9 +264,9 @@ export class BookingController {
   }
 
   @Post('hotel/rooms/coupons/')
-  async pickSpecialOffer(@Body() pick: any, @Res() res: Response) {
+  async pickSpecialOffer(@Body() pick: any, @Query('IdUser') IdUser: string, @Query('TotalGuest') TotalGuest: string, @Query('TotalRooms') TotalRooms: string, @Res() res: Response) {
     try {
-      const dataResponse = await this.bookingService.pickSpecialOfferFinal(pick)
+      const dataResponse = await this.bookingService.pickSpecialOfferFinal(pick, IdUser, Number(TotalGuest), Number(TotalRooms))
 
       return res.status(200).json({
         status_code: HttpStatus.OK,
@@ -281,4 +281,20 @@ export class BookingController {
     }
   }
 
+  @Post('hotel/rooms/extra/')
+  async pickExtraItemsBuy(@Body() pick: any, @Query('IdUser') IdUser: string, @Query('TotalGuest') TotalGuest: string, @Query('TotalRooms') TotalRooms: string, @Res() res: Response) {
+    try {
+      const dataResponse = await this.bookingService.pickExtraItemsBuyFinal(pick, IdUser, Number(TotalGuest), Number(TotalRooms))
+      return res.status(200).json({
+        status_code: HttpStatus.OK,
+        message: 'success',
+        data: dataResponse
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status_code: HttpStatus.BAD_REQUEST,
+        message: error
+      })
+    }
+  }
 }

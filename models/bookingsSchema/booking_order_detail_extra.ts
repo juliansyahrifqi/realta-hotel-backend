@@ -6,6 +6,7 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { booking_order_detail } from './booking_order_detail';
 import { price_items } from '../mastersSchema/price_items';
@@ -60,4 +61,8 @@ export class booking_order_detail_extra
   @ForeignKey(() => price_items)
   @Column({ allowNull: true, type: DataType.INTEGER })
   boex_prit_id?: number;
+
+  @BelongsTo(() => booking_order_detail)
+  booking_order_detail?: booking_order_detail
+
 }

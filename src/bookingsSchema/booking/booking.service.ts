@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { address, category_group, city, country, members, policy, policy_category_group, provinces, regions } from '../../../models/mastersSchema';
+import { address, category_group, city, country, members, policy, policy_category_group, price_items, provinces, regions } from '../../../models/mastersSchema';
 import { DataType, Sequelize } from 'sequelize-typescript';
 import { facilities, hotels, facilities_support, facility_photos, facility_support_hotels, hotel_reviews } from '../../../models/hotelsSchema';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { user_members, users } from 'models/usersSchema';
 import { Op, where } from 'sequelize';
-import { booking_order_detail, booking_orders, special_offer_coupons, special_offers } from 'models/bookingsSchema';
+import { booking_order_detail, booking_order_detail_extra, booking_orders, special_offer_coupons, special_offers } from 'models/bookingsSchema';
+import { subtle } from 'crypto';
 
 
 
 @Injectable()
 export class BookingService {
-  constructor(@InjectModel(hotels) private hotelsModel: typeof hotels, @InjectModel(facilities) private facilityModel: typeof facilities, @InjectModel(booking_orders) private bookingOrdersModel: typeof booking_orders, @InjectModel(booking_order_detail) private bookingOrderDetailModel: typeof booking_order_detail, @InjectModel(special_offers) private specialOfferModel: typeof special_offers, @InjectModel(special_offer_coupons) private specialOfferCouponsModel: typeof special_offer_coupons, sequelize: Sequelize) { }
+  constructor(@InjectModel(hotels) private hotelsModel: typeof hotels, @InjectModel(facilities) private facilityModel: typeof facilities, @InjectModel(booking_orders) private bookingOrdersModel: typeof booking_orders, @InjectModel(booking_order_detail) private bookingOrderDetailModel: typeof booking_order_detail, @InjectModel(special_offers) private specialOfferModel: typeof special_offers, @InjectModel(special_offer_coupons) private specialOfferCouponsModel: typeof special_offer_coupons, @InjectModel(booking_order_detail_extra) private bookingOrderDetailExtraModel: typeof booking_order_detail_extra, sequelize: Sequelize) { }
   create(createBookingDto: CreateBookingDto) {
     return 'This action adds a new booking';
   }
@@ -431,7 +432,7 @@ export class BookingService {
         },
       })
       let bonusMember = 0
-      let bonusCoupon = 0;
+
       dataOrderDetail.forEach((data) => {
         dataUser.members.forEach((data2) => {
           if (data.facility.faci_memb_name === data2.memb_name) {
@@ -461,8 +462,9 @@ export class BookingService {
         let subTotalConverse = parseFloat(data.borde_subtotal.replace(/[^0-9.-]+/g, ''))
 
         totalPrice = totalPrice + priceTotalConverse
-        subTotal = subTotal + subTotalConverse
+        subTotal = (subTotal + subTotalConverse)
       })
+      subTotal = subTotal - bonusMember
       const dataRes = {
         boor_id: dataOrderDetail[0].border_boor_id,
         boor_border_hotel_book_name: dataOrderDetail[0].facility.hotel.hotel_name,
@@ -480,7 +482,7 @@ export class BookingService {
         boor_border_rooms_percent_tax: `${100 * Number(dataOrderDetail[0].facility.faci_tax_rate)}%`,
         boor_border_rooms_price_total: totalPrice,
         boor_border_rooms_sub_total: subTotal,
-        boor_border_rooms_bonus_member: 0
+        boor_border_rooms_bonus_member: bonusMember
       }
       // console.log(dataOrderDetail.facility.faci_memb_name)
       return { dataRes, dataCache: dataOrderDetail }
@@ -536,13 +538,317 @@ export class BookingService {
     }
   }
 
-  async pickSpecialOfferFinal(pick: any) {
+  async pickSpecialOfferFinal(pick: any, IdUser: any, TotalGuest: number, TotalRooms: number) {
     try {
-      // const dataSpecialOfferCoupons = await this.specialOfferCouponsModel.bulkCreate()
 
-      return pick
+      // console.log([...pick.special_offers])
+      const dataSpecialOfferCoupons = await this.specialOfferCouponsModel.bulkCreate([...pick.special_offers], { fields: ['soco_borde_id', 'soco_spof_id'] })
+
+      let dataUser = await users.findOne({
+        where: {
+          user_id: Number(IdUser)
+        },
+        include: [{
+          model: members
+        }]
+      })
+
+      const dataAllBookingDetailSpecialOffers = await this.bookingOrderDetailModel.findAll({
+        where: {
+          borde_id: {
+            [Op.in]: [...dataSpecialOfferCoupons.map((data) => {
+              return data.soco_borde_id
+            })]
+          }
+        },
+        include: [{
+          model: special_offers,
+
+          where: {
+            spof_id: {
+              [Op.in]: [...dataSpecialOfferCoupons.map((data) => {
+                return data.soco_spof_id
+              })]
+            }
+          }
+        }, {
+          model: facilities,
+          include: [{
+            model: hotels,
+            include: [{
+              model: address,
+              include: [{
+                model: city,
+                include: [
+                  {
+                    model: provinces,
+
+                    include: [
+                      {
+                        model: country,
+                        include: [
+                          {
+                            model: regions,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              }]
+            }, { model: hotel_reviews }]
+          }]
+
+        }]
+      })
+      let totalBonusCoupons = 0
+
+      dataAllBookingDetailSpecialOffers.forEach((item) => {
+        totalBonusCoupons = totalBonusCoupons + item.special_offers[0].spof_discount
+      })
+
+
+      let bonusMember = 0
+
+      dataAllBookingDetailSpecialOffers.forEach((data) => {
+        dataUser.members.forEach((data2) => {
+          if (data.facility.faci_memb_name === data2.memb_name) {
+            bonusMember = bonusMember + data2.user_members.usme_points
+          }
+        })
+      })
+
+      let ratingStarStatus = ''
+
+      if (Number(dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star) >= 4.5) {
+        ratingStarStatus += 'Excellent';
+      } else if (Number(dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star) >= 4) {
+        ratingStarStatus += 'Very Good';
+      } else if (Number(dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star) >= 3.5) {
+        ratingStarStatus += 'Good';
+      } else if (Number(dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star) >= 3) {
+        ratingStarStatus += 'Fair';
+      } else {
+        ratingStarStatus += 'Poor';
+      }
+
+
+      let totalPrice = 0;
+      let subTotal = 0
+
+      dataAllBookingDetailSpecialOffers.forEach((data) => {
+        let priceTotalConverse = parseFloat(data.borde_price.replace(/[^0-9.-]+/g, ''))
+        let subTotalConverse = parseFloat(data.borde_subtotal.replace(/[^0-9.-]+/g, ''))
+
+        totalPrice = totalPrice + priceTotalConverse
+        subTotal = subTotal + subTotalConverse
+      })
+      console.log(subTotal)
+      subTotal = subTotal - totalBonusCoupons
+      subTotal = subTotal - bonusMember
+
+      const dataRes = {
+        boor_id: dataAllBookingDetailSpecialOffers[0].border_boor_id,
+        boor_border_hotel_book_name: dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_name,
+        boor_border_rooms_address1: dataAllBookingDetailSpecialOffers[0].facility.hotel.address.addr_line1,
+        boor_border_rooms_address_city: dataAllBookingDetailSpecialOffers[0].facility.hotel.address.city.city_name,
+        boor_border_hotel_rating: dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star,
+        boor_border_hotel_rating_length: dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_reviews.length,
+        boor_border_hotel_rating_status: ratingStarStatus,
+        boor_border_hotel_checkin_checkout: `${dataAllBookingDetailSpecialOffers[0].borde_checkin} ${dataAllBookingDetailSpecialOffers[0].borde_checkout}`,
+        boor_border_hotel_rooms_total_rooms: TotalRooms,
+        boor_border_hotel_rooms_total_guest: TotalGuest,
+        boor_border_rooms_name: dataAllBookingDetailSpecialOffers[0].facility.faci_name,
+        boor_border_rooms_price: dataAllBookingDetailSpecialOffers[0].borde_price,
+        boor_border_rooms_percent_discount: `${100 * Number(dataAllBookingDetailSpecialOffers[0].facility.faci_discount)}%`,
+        boor_border_rooms_percent_tax: `${100 * Number(dataAllBookingDetailSpecialOffers[0].facility.faci_tax_rate)}%`,
+        boor_border_rooms_price_total: totalPrice,
+        boor_border_rooms_sub_total: subTotal,
+        boor_border_rooms_bonus_member: bonusMember,
+        boor_borde_room_bonus_coupons: totalBonusCoupons
+      }
+      // console.log(dataOrderDetail.facility.faci_memb_name)
+      return { dataRes, dataCache: dataAllBookingDetailSpecialOffers }
+
     } catch (error) {
       return error
     }
   }
+
+
+  async pickExtraItemsBuyFinal(pick: any, IdUser: any, TotalGuest: number, TotalRooms: number) {
+    try {
+      const dataExtraItems = await this.bookingOrderDetailExtraModel.bulkCreate([...pick.booking_order_detail_extra], {
+        fields: ['boex_price', 'boex_qty', 'boex_subtotal', 'boex_measure_unit', 'boex_borde_id', 'boex_prit_id']
+      })
+
+
+      let dataUser = await users.findOne({
+        where: {
+          user_id: Number(IdUser)
+        },
+        include: [{
+          model: members
+        }]
+      })
+
+      // let dataBorderCoupons = await this.specialOfferCouponsModel.findAll({
+      //   where: {
+      //     soco_spof_id: {
+      //       [Op.in]: [...new Set([...dataExtraItems.map((data) => {
+      //         return data.boex_borde_id
+      //       })])]
+      //     }
+      //   }, include: [{
+      //     model: special_offers
+      //   }]
+      // })
+
+
+
+      const dataAllBookingDetailExtraItems = await this.bookingOrderDetailModel.findAll({
+
+        where: {
+          borde_id: {
+            [Op.in]: [...new Set([...dataExtraItems.map((data) => {
+              return data.boex_borde_id
+            })])]
+          }
+        },
+        include: [{
+          model: special_offer_coupons,
+
+          where: {
+            soco_borde_id: {
+              [Op.in]: [...new Set([...dataExtraItems.map((data) => {
+                return data.boex_borde_id
+              })])]
+            },
+          },
+          include: [{
+            model: special_offers
+          }]
+        }, {
+          model: facilities,
+          include: [{
+            model: hotels,
+            include: [{
+              model: address,
+              include: [{
+                model: city,
+                include: [
+                  {
+                    model: provinces,
+
+                    include: [
+                      {
+                        model: country,
+                        include: [
+                          {
+                            model: regions,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              }]
+            }, { model: hotel_reviews }]
+          }]
+
+        }, { model: booking_order_detail_extra }]
+      })
+      let totalBonusCoupons = 0
+
+      dataAllBookingDetailExtraItems.forEach((item) => {
+        totalBonusCoupons = totalBonusCoupons + item.special_offer_coupons_borde[0].special_offers.spof_discount
+      })
+
+      // console.log(totalBonusCoupons)
+      let bonusMember = 0
+
+      dataAllBookingDetailExtraItems.forEach((data) => {
+        dataUser.members.forEach((data2) => {
+          if (data.facility.faci_memb_name === data2.memb_name) {
+            bonusMember = bonusMember + data2.user_members.usme_points
+          }
+        })
+      })
+
+
+
+      let bodePrice = 0
+      let bordePriceSub = 0
+      dataAllBookingDetailExtraItems.forEach((item) => {
+        item.boex.forEach((data3) => {
+          bordePriceSub = bordePriceSub + parseInt(data3.boex_subtotal.replace(/[^0-9.-]+/g, ''))
+        })
+
+        bodePrice = bodePrice + bordePriceSub
+      })
+
+      console.log(bodePrice)
+
+
+
+      let ratingStarStatus = ''
+
+      if (Number(dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star) >= 4.5) {
+        ratingStarStatus += 'Excellent';
+      } else if (Number(dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star) >= 4) {
+        ratingStarStatus += 'Very Good';
+      } else if (Number(dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star) >= 3.5) {
+        ratingStarStatus += 'Good';
+      } else if (Number(dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star) >= 3) {
+        ratingStarStatus += 'Fair';
+      } else {
+        ratingStarStatus += 'Poor';
+      }
+
+
+      let totalPrice = 0;
+      let subTotal = 0
+
+      dataAllBookingDetailExtraItems.forEach((data) => {
+        let priceTotalConverse = parseFloat(data.borde_price.replace(/[^0-9.-]+/g, ''))
+        let subTotalConverse = parseFloat(data.borde_subtotal.replace(/[^0-9.-]+/g, ''))
+
+        totalPrice = totalPrice + priceTotalConverse
+        subTotal = subTotal + subTotalConverse
+      })
+      console.log(subTotal)
+      subTotal = subTotal - totalBonusCoupons
+      subTotal = subTotal - bonusMember
+      subTotal = subTotal + bodePrice
+
+
+      const dataRes = {
+        boor_id: dataAllBookingDetailExtraItems[0].border_boor_id,
+        boor_border_hotel_book_name: dataAllBookingDetailExtraItems[0].facility.hotel.hotel_name,
+        boor_border_rooms_address1: dataAllBookingDetailExtraItems[0].facility.hotel.address.addr_line1,
+        boor_border_rooms_address_city: dataAllBookingDetailExtraItems[0].facility.hotel.address.city.city_name,
+        boor_border_hotel_rating: dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star,
+        boor_border_hotel_rating_length: dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews.length,
+        boor_border_hotel_rating_status: ratingStarStatus,
+        boor_border_hotel_checkin_checkout: `${dataAllBookingDetailExtraItems[0].borde_checkin} ${dataAllBookingDetailExtraItems[0].borde_checkout}`,
+        boor_border_hotel_rooms_total_rooms: TotalRooms,
+        boor_border_hotel_rooms_total_guest: TotalGuest,
+        boor_border_rooms_name: dataAllBookingDetailExtraItems[0].facility.faci_name,
+        boor_border_rooms_price: dataAllBookingDetailExtraItems[0].borde_price,
+        boor_border_rooms_percent_discount: `${100 * Number(dataAllBookingDetailExtraItems[0].facility.faci_discount)}%`,
+        boor_border_rooms_percent_tax: `${100 * Number(dataAllBookingDetailExtraItems[0].facility.faci_tax_rate)}%`,
+        boor_border_rooms_price_total: totalPrice,
+        boor_border_rooms_sub_total: subTotal,
+        boor_border_rooms_bonus_member: bonusMember,
+        boor_borde_room_bonus_coupons: totalBonusCoupons,
+        boor_borde_room_bonus_extra_price_items: bodePrice
+      }
+      return { dataRes, dataCache: dataAllBookingDetailExtraItems }
+
+    } catch (error) {
+      return error
+    }
+  }
+
+
 }

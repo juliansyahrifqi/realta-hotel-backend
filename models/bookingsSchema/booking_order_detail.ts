@@ -102,4 +102,14 @@ export class booking_order_detail
 
   @BelongsTo(() => booking_orders)
   booking_orders?: booking_orders
+
+  @HasMany(() => special_offer_coupons, { foreignKey: 'soco_borde_id' })
+  special_offer_coupons_borde?: special_offer_coupons[];
+
+  @HasMany(() => booking_order_detail_extra)
+  boex?: booking_order_detail_extra[]
+
+
+
+
 }

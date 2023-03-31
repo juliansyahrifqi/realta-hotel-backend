@@ -6,9 +6,12 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { booking_order_detail } from './booking_order_detail';
 import { special_offers } from './special_offers';
+import { facilities } from 'models/hotelsSchema';
 
 export interface special_offer_couponsAttributes {
   soco_id?: number;
@@ -26,8 +29,7 @@ export class special_offer_coupons
     special_offer_couponsAttributes,
     special_offer_couponsAttributes
   >
-  implements special_offer_couponsAttributes
-{
+  implements special_offer_couponsAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -46,4 +48,12 @@ export class special_offer_coupons
   @ForeignKey(() => special_offers)
   @Column({ allowNull: true, type: DataType.INTEGER })
   soco_spof_id?: number;
+
+  @BelongsTo(() => booking_order_detail)
+  booking_order_detail?: booking_order_detail
+
+  @BelongsTo(() => special_offers)
+  special_offers?: special_offers
+
+
 }

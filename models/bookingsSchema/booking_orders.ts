@@ -125,4 +125,7 @@ export class booking_orders
 
   @BelongsTo(() => users)
   users?: users
+
+  @BelongsTo(() => hotels)
+  hotels?: hotels
 }

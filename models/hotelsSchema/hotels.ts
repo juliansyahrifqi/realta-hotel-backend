@@ -91,4 +91,7 @@ export class hotels
 
   @BelongsToMany(() => users, () => booking_orders)
   users_booking_orders?: users[];
+
+  @HasMany(() => booking_orders)
+  booking_orders?: booking_orders[]
 }

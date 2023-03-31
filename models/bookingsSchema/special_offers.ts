@@ -7,6 +7,8 @@ import {
   Sequelize,
   ForeignKey,
   BelongsToMany,
+  BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { booking_order_detail } from './booking_order_detail';
 import { special_offer_coupons } from './special_offer_coupons';
@@ -27,8 +29,7 @@ export interface special_offersAttributes {
 @Table({ tableName: 'special_offers', schema: 'booking', timestamps: false })
 export class special_offers
   extends Model<special_offersAttributes, special_offersAttributes>
-  implements special_offersAttributes
-{
+  implements special_offersAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -69,4 +70,7 @@ export class special_offers
 
   @BelongsToMany(() => booking_order_detail, () => special_offer_coupons)
   booking_order_details?: booking_order_detail[];
+
+  @HasMany(() => special_offer_coupons)
+  special_offer_coupons?: special_offer_coupons[]
 }

@@ -17,6 +17,7 @@ import { booking_order_detail } from '../bookingsSchema/booking_order_detail';
 import { category_group } from '../mastersSchema/category_group';
 import { hotels } from './hotels';
 import { members } from '../mastersSchema/members';
+import { special_offer_coupons } from 'models/bookingsSchema';
 
 export interface facilitiesAttributes {
   faci_id?: number;
@@ -125,4 +126,9 @@ export class facilities
 
   @HasMany(() => booking_order_detail)
   booking_order_details?: booking_order_detail[]
+
+
+
+
+
 }
