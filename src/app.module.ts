@@ -7,6 +7,13 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { RestoMenusModule } from './resto/resto-menus/resto-menus.module';
+import { RestoMenuPhotosController } from './resto/resto-menu-photos/resto-menu-photos.controller';
+import { RestoMenuPhotosModule } from './resto/resto-menu-photos/resto-menu-photos.module';
+import { OrderMenusModule } from './resto/order-menus/order-menus.module';
+import { OrderMenuDetailModule } from './resto/order-menu-detail/order-menu-detail.module';
+import { diskStorage } from 'multer';
+import { MulterModule } from '@nestjs/platform-express';
 import { FacilitiesModule } from './hotel-schema/facilities/facilities.module';
 import { HotelReviewsModule } from './hotel-schema/hotel-reviews/hotel-reviews.module';
 import { FacilityPhotoModule } from './hotel-schema/facility-photo/facility-photo.module';
@@ -45,6 +52,18 @@ import { ServiceTaskModule } from './master/service_task/service_task.module';
       models: [],
       autoLoadModels: true,
       synchronize: true,
+    }),
+    RestoMenusModule,
+    RestoMenuPhotosModule,
+    OrderMenusModule,
+    OrderMenuDetailModule,
+    MulterModule.register({
+      storage: diskStorage({
+        destination: './uploads/image/resto',
+        filename: (req, file, cb) => {
+          cb(null, file.originalname);
+        },
+      }),
     }),
     HotelsModule,
     FacilitiesModule,
