@@ -1,18 +1,24 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import * as path from 'path'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  const port = process.env.PORT || 8000;
-
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule,
+  )
   app.enableCors({
-    origin: true,
+    origin: true
   });
 
-  await app.listen(port, () => {
-    console.log(`App run on port ${port}`);
+
+  const PORT = process.env.PORT || 5001
+
+  await app.listen(PORT, () => {
+    console.log(`Server listen di port ${PORT}`)
   });
+
+
 }
 bootstrap();

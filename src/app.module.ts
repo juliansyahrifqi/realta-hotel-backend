@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { BookingModule } from './bookingsSchema/booking/booking.module';
+import { HotelModule } from './hotelsSchema/hotel/hotel.module';
 
 @Module({
   imports: [
@@ -15,9 +17,13 @@ import { SequelizeModule } from '@nestjs/sequelize';
       models: [],
       autoLoadModels: true,
       synchronize: true,
+
     }),
+    BookingModule,
+    HotelModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
