@@ -13,6 +13,7 @@ import { order_menu_detail } from './order_menu_detail';
 import { facilities } from '../hotelSchema/facilities';
 
 export interface resto_menusAttributes {
+  reme_faci_id: number;
   reme_id?: number;
   reme_name?: string;
   reme_description?: string;
@@ -26,16 +27,22 @@ export class resto_menus
   extends Model<resto_menusAttributes, resto_menusAttributes>
   implements resto_menusAttributes
 {
+  @ForeignKey(() => facilities)
+  @Column({ primaryKey: true, type: DataType.INTEGER })
+  @Index({ name: 'pk_resto_menus', using: 'btree', unique: true })
+  reme_faci_id!: number;
+
   @ForeignKey(() => order_menu_detail)
   @ForeignKey(() => resto_menu_photos)
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('resto.resto_menus_reme_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'pk_resto_menus', using: 'btree', unique: true })
+  @Index({ name: 'resto_menus_reme_id_key', using: 'btree', unique: true })
   @Index({ name: 'pk_reme_id', using: 'btree', unique: true })
   reme_id?: number;
 

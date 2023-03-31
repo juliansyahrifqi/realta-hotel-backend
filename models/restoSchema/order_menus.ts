@@ -22,6 +22,7 @@ export interface order_menusAttributes {
   orme_cardnumber?: string;
   orme_is_paid?: string;
   orme_modified_date?: Date;
+  orme_user_id?: number;
 }
 
 @Table({ tableName: 'order_menus', schema: 'resto', timestamps: false })
@@ -32,7 +33,6 @@ export class order_menus
   @ForeignKey(() => order_menu_detail)
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('resto.order_menus_orme_id_seq'::regclass)",
@@ -67,6 +67,10 @@ export class order_menus
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
   orme_modified_date?: Date;
+
+  @ForeignKey(() => users)
+  @Column({ allowNull: true, type: DataType.INTEGER })
+  orme_user_id?: number;
 
   @BelongsTo(() => order_menu_detail)
   order_menu_detail?: order_menu_detail;
