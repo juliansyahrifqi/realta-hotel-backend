@@ -1,3 +1,7 @@
+1:N, user_id, hore_user_id , users, hotel_reviews,  
+
+
+
 1:N, region_code,country_region_id,regions,country
 1:N, country_id,prov_country_id,country,provinces
 1:N, prov_id,city_prov_id,provinces,city
