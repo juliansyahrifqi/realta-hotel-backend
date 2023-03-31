@@ -11,7 +11,7 @@ import { CreatePurchaseOrderDetailDto } from './dto/create-purchase-order-detail
 import { UpdatePurchaseOrderDetailDto } from './dto/update-purchase-order-detail.dto';
 import { PurchaseOrderDetailService } from './purchase-order-detail.service';
 
-@Controller('purchase-order-detail')
+@Controller('purchasing/listorderdetail')
 export class PurchaseOrderDetailController {
   constructor(
     private readonly purchaseOrderDetailService: PurchaseOrderDetailService,

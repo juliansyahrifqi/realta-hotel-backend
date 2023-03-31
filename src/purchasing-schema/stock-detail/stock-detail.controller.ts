@@ -12,7 +12,7 @@ import { CreateStockDetailDto } from './dto/create-stock-detail.dto';
 import { UpdateStockDetailDto } from './dto/update-stock-detail.dto';
 import { StockDetailService } from './stock-detail.service';
 
-@Controller('stock-detail')
+@Controller('purchasing/stock/detail')
 export class StockDetailController {
   constructor(private readonly stockDetailService: StockDetailService) {}
 

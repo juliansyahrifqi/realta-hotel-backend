@@ -11,12 +11,10 @@ PR:
 ~ satukan size dan color di table, kalau dari mockup size dan 
 color di input terpisah
 ~ buat search di stock detail dibawah switch status sesaui mockup
-~ satukan table sesuai mockup url gallery sampai seterusnya
 ~ di listorder / detail order ada add tapi gatau bener gak
-~ association blm di pake
-~ kalo bisa benerin api spec buat ke postman
+
 HINT:
-~vendor pagination dan search sudah komplit
+~ vendor pagination dan search sudah komplit
 
 gallery:
 image -> stock_photo ~ spho_photo_filename

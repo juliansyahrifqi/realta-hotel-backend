@@ -81,12 +81,15 @@ export class StockPhotoService {
     }
   }
 
-  async remove(spho_id: number): Promise<any> {
+  async remove(spho_stock_id: number): Promise<string> {
     try {
-      const result = await stock_photo.findOne({ where: { spho_id } });
+      const result = await stock_photo.findOne({
+        where: { spho_stock_id },
+      });
       if (!result) {
-        return `Data dengan id ${spho_id} tidak di temukan`;
+        return `Data dengan id ${spho_stock_id} tidak ditemukan`;
       }
+
       const uploadPath = join(__dirname, '../../../../uploads/image/stock');
       const files = await fs.promises.readdir(uploadPath);
 
@@ -94,7 +97,9 @@ export class StockPhotoService {
         const filePath = join(uploadPath, file);
         await fs.promises.unlink(filePath);
       }
-      return `Data dengan id ${spho_id} terhapus`;
+
+      await stock_photo.destroy({ where: { spho_stock_id } });
+      return `Data dengan id ${spho_stock_id} telah dihapus dari database`;
     } catch (error) {
       return error.message;
     }

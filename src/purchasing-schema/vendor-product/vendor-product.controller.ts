@@ -12,7 +12,7 @@ import { VendorProductService } from './vendor-product.service';
 import { CreateVendorProductDto } from './dto/create-vendor-product.dto';
 import { UpdateVendorProductDto } from './dto/update-vendor-product.dto';
 
-@Controller('vendor-product')
+@Controller('purchasing/vendor/product')
 export class VendorProductController {
   constructor(private readonly vendorProductService: VendorProductService) {}
 

@@ -9,8 +9,13 @@ export class PurchaseOrderDetailService {
     return 'This action adds a new purchaseOrderDetail';
   }
 
-  findAll() {
-    return `This action returns all purchaseOrderDetail`;
+  async findAll() {
+    try {
+      const result = await purchase_order_detail.findAll();
+      return { message: `Data di temukan`, data: result };
+    } catch (error) {
+      return error;
+    }
   }
 
   findOne(id: number) {

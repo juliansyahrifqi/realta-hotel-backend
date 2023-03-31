@@ -1,12 +1,10 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreatePurchaseOrderHeaderDto } from './create-purchase-order-header.dto';
 
-export class UpdatePurchaseOrderHeaderDto extends PartialType(
-  CreatePurchaseOrderHeaderDto,
-) {
+export class UpdatePurchaseOrderHeaderDto {
   pohe_id: number;
   pohe_number: string;
-  pohe_status: string;
+  pohe_status: number;
   pohe_order_date: Date;
   pohe_subtotal: string;
   pohe_tax: string;

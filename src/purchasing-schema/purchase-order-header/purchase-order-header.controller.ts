@@ -5,12 +5,14 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { CreatePurchaseOrderHeaderDto } from './dto/create-purchase-order-header.dto';
 import { PurchaseOrderHeaderService } from './purchase-order-header.service';
+import { UpdatePurchaseOrderHeaderDto } from './dto/update-purchase-order-header.dto';
 
-@Controller('purchase-order-header')
+@Controller('purchasing/listorder')
 export class PurchaseOrderHeaderController {
   constructor(
     private readonly purchaseOrderHeaderService: PurchaseOrderHeaderService,
@@ -94,16 +96,16 @@ export class PurchaseOrderHeaderController {
     return this.purchaseOrderHeaderService.findOne(+id);
   }
 
-  // @Put(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updatePurchaseOrderHeaderDto: UpdatePurchaseOrderHeaderDto,
-  // ) {
-  //   return this.purchaseOrderHeaderService.update(
-  //     +id,
-  //     updatePurchaseOrderHeaderDto,
-  //   );
-  // }
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updatePurchaseOrderHeaderDto: UpdatePurchaseOrderHeaderDto,
+  ) {
+    return this.purchaseOrderHeaderService.update(
+      +id,
+      updatePurchaseOrderHeaderDto,
+    );
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

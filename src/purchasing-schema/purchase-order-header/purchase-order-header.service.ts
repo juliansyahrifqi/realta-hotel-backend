@@ -6,6 +6,7 @@ import {
 } from 'models/purchasingSchema';
 import { Op } from 'sequelize';
 import { CreatePurchaseOrderHeaderDto } from './dto/create-purchase-order-header.dto';
+import { UpdatePurchaseOrderHeaderDto } from './dto/update-purchase-order-header.dto';
 
 @Injectable()
 export class PurchaseOrderHeaderService {
@@ -225,18 +226,18 @@ export class PurchaseOrderHeaderService {
     return result;
   }
 
-  // async update(
-  //   pohe_id: number,
-  //   updatePurchaseOrderHeaderDto: UpdatePurchaseOrderHeaderDto,
-  // ): Promise<any> {
-  //   await purchase_order_header.update(updatePurchaseOrderHeaderDto, {
-  //     where: { pohe_id },
-  //   });
-  //   return {
-  //     message: `dengan id ${pohe_id} telah di update`,
-  //     updatePurchaseOrderHeaderDto,
-  //   };
-  // }
+  async update(
+    pohe_id: number,
+    updatePurchaseOrderHeaderDto: UpdatePurchaseOrderHeaderDto,
+  ): Promise<any> {
+    await purchase_order_header.update(updatePurchaseOrderHeaderDto, {
+      where: { pohe_id },
+    });
+    return {
+      message: `dengan id ${pohe_id} telah di update`,
+      updatePurchaseOrderHeaderDto,
+    };
+  }
 
   async remove(pohe_id: number) {
     await purchase_order_header.destroy({ where: { pohe_id } });

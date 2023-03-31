@@ -15,7 +15,7 @@ import { UpdateStockPhotoDto } from './dto/update-stock-photo.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
-@Controller('hr/purchasing/photo/:id')
+@Controller('purchasing/photo/:id')
 export class StockPhotoController {
   constructor(private readonly stockPhotoService: StockPhotoService) {}
 
