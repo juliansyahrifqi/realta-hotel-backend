@@ -6,9 +6,7 @@ import {
   Index,
   Sequelize,
   ForeignKey,
-  BelongsTo,
 } from 'sequelize-typescript';
-import { facilities } from './facilities';
 
 export interface facility_photosAttributes {
   fapho_faci_id: number;
@@ -25,7 +23,6 @@ export class facility_photos
   extends Model<facility_photosAttributes, facility_photosAttributes>
   implements facility_photosAttributes
 {
-  @ForeignKey(() => facilities)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pk_fapho_id', using: 'btree', unique: true })
   fapho_faci_id!: number;
@@ -53,13 +50,6 @@ export class facility_photos
   @Column({ allowNull: true, type: DataType.STRING(255) })
   fapho_url?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.DATE,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-  })
+  @Column({ allowNull: true, type: DataType.DATE })
   fapho_modified_date?: Date;
-
-  @BelongsTo(() => facilities)
-  facilities?: facilities;
 }

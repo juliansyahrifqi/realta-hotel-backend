@@ -10,10 +10,7 @@
 1:N, shift_id, edhi_shift_id, shift, employee_department_history
 1:N, dept_id, edhi_dept_id, department, employee_department_history
 1:N, emp_id, edhi_emp_id, employee, employee_department_history
-1:N, user_id, hore_user_id , users, hotel_reviews,
-
-
-
+1:N, user_id, hore_user_id , users, hotel_reviews
 1:N, region_code,country_region_id,regions,country
 1:N, country_id,prov_country_id,country,provinces
 1:N, prov_id,city_prov_id,provinces,city

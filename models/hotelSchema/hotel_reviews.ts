@@ -1,4 +1,3 @@
-import { users } from 'models/usersSchema';
 import {
   Model,
   Table,
@@ -9,7 +8,7 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { hotels } from './hotels';
+import { users } from './users';
 
 export interface hotel_reviewsAttributes {
   hore_id?: number;
@@ -42,24 +41,15 @@ export class hotel_reviews
   @Column({ allowNull: true, type: DataType.INTEGER })
   hore_rating?: number;
 
-  @Column({
-    allowNull: true,
-    type: DataType.DATE,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-  })
+  @Column({ allowNull: true, type: DataType.DATE })
   hore_created_on?: Date;
 
-  @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   hore_users_id?: number;
 
-  @ForeignKey(() => hotels)
   @Column({ allowNull: true, type: DataType.INTEGER })
   hore_hotel_id?: number;
 
   @BelongsTo(() => users)
-  users?: users;
-
-  @BelongsTo(() => hotels)
-  hotels?: hotels;
+  user?: users;
 }
