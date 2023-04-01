@@ -1,0 +1,8 @@
+1:1, entity_id, bank_entity_id, entity, bank
+1:1, entity_id, fint_entity_id, entity, fintech
+1:N, usac_entity_id, bank_entity_id, entity_id, user_accounts, bank, entity
+1:N, usac_entity_id, fint_entity_id, entity_id, user_accounts, fintech, entity
+1:N, user_id, usac_user_id, users, user_accounts
+1:N, user_id, patr_user_id, users, payment_transaction
+1:1, orme_order_number,patr_orme_order_number, order_menus, payment_transaction
+1:1, boor_order_number, patr_boor_order_number, booking_orders, payment_transaction

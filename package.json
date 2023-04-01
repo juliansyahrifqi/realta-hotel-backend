@@ -17,12 +17,17 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "pg:generate-payment": "stg -D postgres -o models/paymentSchema -s payment -h localhost -p 5432 -d HotelRealtaDB -u postgres -x catecute07 --indices --associations-file ./association.csv ",
+    "pg:generate-users": "stg -D postgres -o models/usersSchema -s users -h localhost -p 5432 -d HotelRealtaDB -u postgres -x catecute07 --indices --associations-file association.csv ",
+    "pg:generate-booking": "stg -D postgres -o models/bookingSchema -s booking -h localhost -p 5432 -d HotelRealtaDB -u postgres -x catecute07 --indices --associations-file association.csv ",
+    "pg:generate-resto": "stg -D postgres -o models/restoSchema -s resto -h localhost -p 5432 -d HotelRealtaDB -u postgres -x catecute07 --indices --associations-file association.csv "
   },
   "dependencies": {
-    "@nestjs/common": "^9.0.0",
-    "@nestjs/core": "^9.0.0",
-    "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/common": "^9.3.12",
+    "@nestjs/core": "^9.3.12",
+    "@nestjs/mapped-types": "^1.2.2",
+    "@nestjs/platform-express": "^9.3.12",
     "@nestjs/sequelize": "^9.0.0",
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
