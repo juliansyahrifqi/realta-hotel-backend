@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { booking_order_detail } from './booking_order_detail';
-import { price_items } from '../mastersSchema/price_items';
+import { price_items } from '../master/price_items';
 
 export interface booking_order_detail_extraAttributes {
   boex_id?: number;

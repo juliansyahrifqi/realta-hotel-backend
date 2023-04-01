@@ -10,15 +10,15 @@ import {
   BelongsToMany,
   HasMany,
 } from 'sequelize-typescript';
-import { address } from '../mastersSchema/address';
+import { address } from '../master/address';
 import { facilities_support } from './facilities_support';
 import { facility_support_hotels } from './facility_support_hotels';
-import { category_group } from '../mastersSchema/category_group';
+import { category_group } from '../master/category_group';
 import { facilities } from './facilities';
-import { members } from '../mastersSchema/members';
-import { users } from '../usersSchema/users';
+import { members } from '../master/members';
+import { users } from '../users/users';
 import { hotel_reviews } from './hotel_reviews';
-import { booking_orders } from '../bookingsSchema/booking_orders';
+import { booking_orders } from '../booking/booking_orders';
 
 export interface hotelsAttributes {
   hotel_id?: number;

@@ -8,8 +8,8 @@ import {
   ForeignKey,
   BelongsToMany,
 } from 'sequelize-typescript';
-import { hotels } from '../hotelsSchema/hotels';
-import { facilities } from '../hotelsSchema/facilities';
+import { hotels } from '../hotel0/hotels';
+import { facilities } from '../hotel0/facilities';
 import { policy } from './policy';
 import { policy_category_group } from './policy_category_group';
 

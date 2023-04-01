@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 import { booking_order_detail } from './booking_order_detail';
 import { special_offers } from './special_offers';
-import { facilities } from 'models/hotelsSchema';
+import { facilities } from 'models/hotel0';
 
 export interface special_offer_couponsAttributes {
   soco_id?: number;

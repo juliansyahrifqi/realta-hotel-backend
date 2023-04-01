@@ -12,12 +12,12 @@ import {
 } from 'sequelize-typescript';
 import { facility_photos } from './facility_photos';
 import { facility_price_history } from './facility_price_history';
-import { booking_orders } from '../bookingsSchema/booking_orders';
-import { booking_order_detail } from '../bookingsSchema/booking_order_detail';
-import { category_group } from '../mastersSchema/category_group';
+import { booking_orders } from '../booking/booking_orders';
+import { booking_order_detail } from '../booking/booking_order_detail';
+import { category_group } from '../master/category_group';
 import { hotels } from './hotels';
-import { members } from '../mastersSchema/members';
-import { special_offer_coupons } from 'models/bookingsSchema';
+import { members } from '../master/members';
+import { special_offer_coupons } from 'models/booking';
 
 export interface facilitiesAttributes {
   faci_id?: number;

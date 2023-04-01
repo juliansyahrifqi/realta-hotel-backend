@@ -9,7 +9,7 @@ import {
   HasMany,
   BelongsTo,
 } from 'sequelize-typescript';
-import { hotels } from '../hotelsSchema/hotels';
+import { hotels } from '../hotel-schema/hotels';
 import { city } from './city';
 
 export interface addressAttributes {

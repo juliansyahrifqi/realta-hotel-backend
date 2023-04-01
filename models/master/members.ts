@@ -8,10 +8,10 @@ import {
   ForeignKey,
   BelongsToMany,
 } from 'sequelize-typescript';
-import { users } from '../usersSchema/users';
-import { user_members } from '../usersSchema/user_members';
-import { hotels } from '../hotelsSchema/hotels';
-import { facilities } from '../hotelsSchema/facilities';
+import { users } from '../users/users';
+import { user_members } from '../users/user_members';
+import { hotels } from '../hotel0/hotels';
+import { facilities } from '../hotel0/facilities';
 
 export interface membersAttributes {
   memb_name: string;

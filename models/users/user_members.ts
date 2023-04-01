@@ -8,7 +8,7 @@ import {
   ForeignKey,
 } from 'sequelize-typescript';
 import { users } from './users';
-import { members } from '../mastersSchema/members';
+import { members } from '../master/members';
 
 export interface user_membersAttributes {
   usme_user_id?: number;

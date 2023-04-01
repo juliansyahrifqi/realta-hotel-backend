@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { hotels } from './hotels';
-import { users } from '../usersSchema';
+import { users } from '../users';
 
 export interface hotel_reviewsAttributes {
   hore_id?: number;

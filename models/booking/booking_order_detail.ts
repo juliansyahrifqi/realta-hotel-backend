@@ -13,10 +13,10 @@ import {
 import { special_offers } from './special_offers';
 import { special_offer_coupons } from './special_offer_coupons';
 import { user_breakfeast } from './user_breakfeast';
-import { price_items } from '../mastersSchema/price_items';
+import { price_items } from '../master/price_items';
 import { booking_order_detail_extra } from './booking_order_detail_extra';
 import { booking_orders } from './booking_orders';
-import { facilities } from '../hotelsSchema/facilities';
+import { facilities } from '../hotel-schema/facilities';
 
 export interface booking_order_detailAttributes {
   borde_id?: number;
