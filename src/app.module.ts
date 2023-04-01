@@ -40,6 +40,15 @@ import { MembersModule } from './master/members/members.module';
 import { PriceItemsModule } from './master/price_items/price_items.module';
 import { ServiceTaskModule } from './master/service_task/service_task.module';
 
+import { JobRoleModule } from './human-resources-schema/job_role/job_role.module';
+import { ShiftModule } from './human-resources-schema/shift/shift.module';
+import { DepartmentModule } from './human-resources-schema/department/department.module';
+import { EmployeeModule } from './human-resources-schema/employee/employee.module';
+import { EmployeeDepatmentHistoryModule } from './human-resources-schema/employee_depatment_history/employee_depatment_history.module';
+import { EmployeePayHistoryModule } from './human-resources-schema/employee_pay_history/employee_pay_history.module';
+import { WorkOrdersModule } from './human-resources-schema/work_orders/work_orders.module';
+import { WorkOrderDetailModule } from './human-resources-schema/work_order_detail/work_order_detail.module';
+
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -65,6 +74,14 @@ import { ServiceTaskModule } from './master/service_task/service_task.module';
         },
       }),
     }),
+    JobRoleModule,
+    ShiftModule,
+    DepartmentModule,
+    EmployeeModule,
+    EmployeeDepatmentHistoryModule,
+    EmployeePayHistoryModule,
+    WorkOrdersModule,
+    WorkOrderDetailModule,
     HotelsModule,
     FacilitiesModule,
     HotelReviewsModule,
