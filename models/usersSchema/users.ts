@@ -8,11 +8,11 @@ import {
   BelongsToMany,
   HasMany,
 } from 'sequelize-typescript';
-import { members } from '../master/members';
+import { members } from '../masterSchema/members';
 import { user_members } from './user_members';
 import { hotels } from '../hotel0/hotels';
 import { hotel_reviews } from '../hotel0/hotel_reviews';
-import { booking_orders } from '../booking/booking_orders';
+import { booking_orders } from '../bookingSchema/booking_orders';
 
 @Table({ tableName: 'users', schema: 'users', timestamps: false })
 export class users extends Model<users> {

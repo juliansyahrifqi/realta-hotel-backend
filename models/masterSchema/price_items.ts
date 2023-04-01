@@ -8,8 +8,8 @@ import {
   ForeignKey,
   BelongsToMany,
 } from 'sequelize-typescript';
-import { booking_order_detail } from '../booking/booking_order_detail';
-import { booking_order_detail_extra } from '../booking/booking_order_detail_extra';
+import { booking_order_detail } from '../bookingSchema/booking_order_detail';
+import { booking_order_detail_extra } from '../bookingSchema/booking_order_detail_extra';
 
 export interface price_itemsAttributes {
   prit_id?: number;

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { address, category_group, city, country, members, policy, policy_category_group, price_items, provinces, regions } from '../../../models/master';
+import { address, category_group, city, country, members, policy, policy_category_group, price_items, provinces, regions } from '../../../models/masterSchema';
 import { DataType, Sequelize } from 'sequelize-typescript';
-import { facilities, hotels, facilities_support, facility_photos, facility_support_hotels, hotel_reviews } from '../../../models/hotel-schema';
+import { facilities, hotels, facilities_support, facility_photos, facility_support_hotels, hotel_reviews } from '../../../models/hotelSchema';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import { user_members, users } from 'models/users';
+import { user_members, users } from 'models/usersSchema';
 import { Op, where } from 'sequelize';
-import { booking_order_detail, booking_order_detail_extra, booking_orders, special_offer_coupons, special_offers } from 'models/booking';
+import { booking_order_detail, booking_order_detail_extra, booking_orders, special_offer_coupons, special_offers } from 'models/bookingSchema';
 import { subtle } from 'crypto';
 
 
