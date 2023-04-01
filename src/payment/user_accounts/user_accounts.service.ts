@@ -23,7 +23,8 @@ async create(createUserAccountDto: CreateUserAccountDto) {
     });
     return userAccounts;
   } catch (error) {
-    return "Terjadi kesalahan saat membuat akun pengguna";
+    return error;
+    // return "Terjadi kesalahan saat membuat akun pengguna";
   }
 }
 

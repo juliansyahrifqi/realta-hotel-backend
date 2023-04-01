@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
-import { bank, entity } from '../../models/paymentSchema';
+import { bank, entity } from '../../../models/paymentSchema';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 

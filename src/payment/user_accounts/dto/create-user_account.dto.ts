@@ -2,31 +2,31 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-val
 
 export class CreateUserAccountDto {
   @IsNotEmpty()
-  @IsNumber()
+  // @IsNumber()
   usac_entity_id: number;
 
   @IsNotEmpty()
-  @IsNumber()
+  // @IsNumber()
   usac_user_id: number;
 
   @IsNotEmpty()
-  @IsString()
+  // @IsString()
   usac_account_number: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  // @IsNumber()
   usac_saldo: number;
 
   @IsNotEmpty()
-  @IsString()
+  // @IsString()
   usac_type: string;
 
   @IsOptional()
-  @IsNumber()
+  // @IsNumber()
   usac_expmonth?: number;
 
   @IsOptional()
-  @IsNumber()
+  // @IsNumber()
   usac_expyear?: number;
 
   @IsOptional()

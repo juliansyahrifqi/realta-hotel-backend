@@ -21,6 +21,7 @@ import {
   facility_price_history,
   hotel_reviews,
 } from 'models/hotelSchema';
+import { payment_transaction, user_accounts } from 'models/paymentSchema';
 
 export interface usersAttributes {
   user_id?: number;

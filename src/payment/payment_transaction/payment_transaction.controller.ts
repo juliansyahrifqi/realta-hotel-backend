@@ -2,8 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Res } fr
 import { PaymentTransactionService } from './payment_transaction.service';
 import { CreatePaymentTransactionDto } from './dto/create-payment_transaction.dto';
 import { UpdatePaymentTransactionDto } from './dto/update-payment_transaction.dto';
-import { CreateBookingOrderDto } from 'src/booking_orders/dto/create-booking_order.dto';
-import { CreateOrderMenuDto } from 'src/order_menus/dto/create-order_menu.dto';
 import { payment_transaction } from 'models/paymentSchema';
 
 @Controller('payment-transaction')

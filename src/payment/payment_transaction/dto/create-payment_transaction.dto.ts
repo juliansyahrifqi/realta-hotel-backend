@@ -2,26 +2,26 @@ import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Length } from 'class
 
 export class CreatePaymentTransactionDto  { 
   @IsOptional()
-  @IsInt()
+  // @IsInt()
   id?: number;
 
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   trxNumber: string;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   debit: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  // @IsNumber()
   credit: string;
 
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   payType: string;
 
   @IsOptional()
-  @IsString()
+  // @IsString()
   payNote?: string;
 
   @IsOptional()
@@ -34,19 +34,19 @@ export class CreatePaymentTransactionDto  {
   ormeOrderNumber: string;
 
   @IsOptional()
-  @IsInt()
+  // @IsInt()
   sourceId?: string;
 
   @IsOptional()
-  @IsInt()
+  // @IsInt()
   targetId?: string;
 
   @IsOptional()
-  @IsString()
+  // @IsString()
   trxNumberRef?: string;
 
   @IsOptional()
-  @IsInt()
+  // @IsInt()
   userId?: number;
 }
 

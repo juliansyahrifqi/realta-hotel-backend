@@ -48,15 +48,11 @@ import { EmployeeDepatmentHistoryModule } from './human-resources-schema/employe
 import { EmployeePayHistoryModule } from './human-resources-schema/employee_pay_history/employee_pay_history.module';
 import { WorkOrdersModule } from './human-resources-schema/work_orders/work_orders.module';
 import { WorkOrderDetailModule } from './human-resources-schema/work_order_detail/work_order_detail.module';
-import { BankModule } from './bank/bank.module';
-import { UserAccountsModule } from './user_accounts/user_accounts.module';
-import { PaymentTransactionModule } from './payment_transaction/payment_transaction.module';
-import { UsersModule } from './users/users.module';
-import { EntityModule } from './entity/entity.module';
-import { FintechModule } from './fintech/fintech.module';
-import { OrderMenusModule } from './order_menus/order_menus.module';
-import { BookingOrdersModule } from './booking_orders/booking_orders.module';
-
+import { BankModule } from '../src/payment/bank/bank.module';
+import { UserAccountsModule } from '../src/payment/user_accounts/user_accounts.module';
+import { PaymentTransactionModule } from '../src/payment/payment_transaction/payment_transaction.module';
+import { EntityModule } from '../src/payment/entity/entity.module';
+import { FintechModule } from '../src/payment/fintech/fintech.module';
 
 @Module({
   imports: [
@@ -122,20 +118,21 @@ import { BookingOrdersModule } from './booking_orders/booking_orders.module';
     UserAccountsModule,
     EntityModule,
     OrderMenusModule,
-    BookingOrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(JwtMiddleware)
-      .exclude(
-        { path: 'users/signUpGuest', method: RequestMethod.POST },
-        { path: 'users/signUpEmployee', method: RequestMethod.POST },
-        'auth/(.*)',
-      )
-      .forRoutes('*');
-  }
-}
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(JwtMiddleware)
+//       .exclude(
+//         { path: 'users/signUpGuest', method: RequestMethod.POST },
+//         { path: 'users/signUpEmployee', method: RequestMethod.POST },
+//         'auth/(.*)',
+//       )
+//       .forRoutes('*');
+//   }
+// }
+
+export class AppModule {}

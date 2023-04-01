@@ -6,12 +6,10 @@ import {
   payment_transaction,
   user_accounts,
 } from 'models/paymentSchema';
-import { CreateUserAccountDto } from 'src/user_accounts/dto/create-user_account.dto';
+import { CreateUserAccountDto } from '../user_accounts/dto/create-user_account.dto';
 import {Sequelize, Transaction} from 'sequelize';
 import { booking_orders } from 'models/bookingSchema';
 import { order_menus } from 'models/restoSchema';
-import { CreateBookingOrderDto } from 'src/booking_orders/dto/create-booking_order.dto';
-import { CreateOrderMenuDto } from 'src/order_menus/dto/create-order_menu.dto';
 import { Op } from 'sequelize';
 import { FindOptions } from 'sequelize/types';
 
