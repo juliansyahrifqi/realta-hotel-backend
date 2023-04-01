@@ -1,3 +1,5 @@
+import { category_group, members } from 'models/masterSchema';
+import { users } from 'models/usersSchema';
 import {
   Model,
   Table,
@@ -6,9 +8,12 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { work_order_detail } from '../humanResourcesSchema/work_order_detail';
+import { facility_photos, facility_price_history, hotels } from '.';
+import { resto_menus } from 'models/restoSchema';
+import { work_order_detail } from 'models/humanResourcesSchema';
 
 export interface facilitiesAttributes {
   faci_id?: number;
@@ -22,11 +27,13 @@ export interface facilitiesAttributes {
   faci_low_price?: string;
   faci_high_price?: string;
   faci_rate_price?: string;
-  faci_discount?: string;
-  faci_tax_rate?: string;
+  faci_discount?: number;
+  faci_tax_rate?: number;
   faci_modified_date?: Date;
   faci_cagro_id?: number;
   faci_hotel_id?: number;
+  faci_memb_name?: string;
+  faci_user_id?: number;
 }
 
 @Table({ tableName: 'facilities', schema: 'hotel', timestamps: false })
@@ -80,20 +87,55 @@ export class facilities
   @Column({ allowNull: true, type: DataType.NUMBER })
   faci_rate_price?: string;
 
-  @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
-  faci_discount?: string;
+  @Column({ allowNull: true, type: DataType.NUMBER })
+  faci_discount?: number;
 
-  @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
-  faci_tax_rate?: string;
+  @Column({ allowNull: true, type: DataType.NUMBER })
+  faci_tax_rate?: number;
 
-  @Column({ allowNull: true, type: DataType.DATE })
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  })
   faci_modified_date?: Date;
 
+  @ForeignKey(() => category_group)
   @Column({ allowNull: true, type: DataType.INTEGER })
   faci_cagro_id?: number;
 
+  @ForeignKey(() => hotels)
   @Column({ allowNull: true, type: DataType.INTEGER })
   faci_hotel_id?: number;
+
+  @ForeignKey(() => members)
+  @Column({ allowNull: true, type: DataType.STRING(125) })
+  faci_memb_name?: string;
+
+  @ForeignKey(() => users)
+  @Column({ allowNull: true, type: DataType.INTEGER })
+  faci_user_id?: number;
+
+  @BelongsTo(() => category_group)
+  category_group?: category_group;
+
+  @BelongsTo(() => hotels)
+  hotels?: hotels;
+
+  @BelongsTo(() => members)
+  members?: members;
+
+  @BelongsTo(() => users)
+  users?: users;
+
+  @HasMany(() => facility_photos, { sourceKey: 'faci_id' })
+  facility_photos?: facility_photos[];
+
+  @HasMany(() => facility_price_history, { sourceKey: 'faci_id' })
+  facility_price_history?: facility_price_history[];
+
+  @HasMany(() => resto_menus, { sourceKey: 'faci_id' })
+  resto_menus?: resto_menus[];
 
   @HasMany(() => work_order_detail, { sourceKey: 'faci_id' })
   work_order_details?: work_order_detail[];

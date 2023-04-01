@@ -7,6 +7,13 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { RestoMenusModule } from './resto/resto-menus/resto-menus.module';
+import { RestoMenuPhotosController } from './resto/resto-menu-photos/resto-menu-photos.controller';
+import { RestoMenuPhotosModule } from './resto/resto-menu-photos/resto-menu-photos.module';
+import { OrderMenusModule } from './resto/order-menus/order-menus.module';
+import { OrderMenuDetailModule } from './resto/order-menu-detail/order-menu-detail.module';
+import { diskStorage } from 'multer';
+import { MulterModule } from '@nestjs/platform-express';
 import { FacilitiesModule } from './hotel-schema/facilities/facilities.module';
 import { HotelReviewsModule } from './hotel-schema/hotel-reviews/hotel-reviews.module';
 import { FacilityPhotoModule } from './hotel-schema/facility-photo/facility-photo.module';
@@ -55,6 +62,18 @@ import { WorkOrderDetailModule } from './human-resources-schema/work_order_detai
       autoLoadModels: true,
       synchronize: true,
     }),
+    RestoMenusModule,
+    RestoMenuPhotosModule,
+    OrderMenusModule,
+    OrderMenuDetailModule,
+    MulterModule.register({
+      storage: diskStorage({
+        destination: './uploads/image/resto',
+        filename: (req, file, cb) => {
+          cb(null, file.originalname);
+        },
+      }),
+    }),
     JobRoleModule,
     ShiftModule,
     DepartmentModule,
@@ -91,16 +110,15 @@ import { WorkOrderDetailModule } from './human-resources-schema/work_order_detai
   controllers: [AppController],
   providers: [AppService],
 })
-// export class AppModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer
-//       .apply(JwtMiddleware)
-//       .exclude(
-//         { path: 'users/signUpGuest', method: RequestMethod.POST },
-//         { path: 'users/signUpEmployee', method: RequestMethod.POST },
-//         'auth/(.*)',
-//       )
-//       .forRoutes('*');
-//   }
-// }
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(JwtMiddleware)
+      .exclude(
+        { path: 'users/signUpGuest', method: RequestMethod.POST },
+        { path: 'users/signUpEmployee', method: RequestMethod.POST },
+        'auth/(.*)',
+      )
+      .forRoutes('*');
+  }
+}

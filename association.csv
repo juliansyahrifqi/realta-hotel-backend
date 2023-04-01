@@ -1,3 +1,9 @@
+1:1, remp_reme_id, reme_id, resto_menu_photos, resto_menus
+1:N, omde_orme_id, orme_id, order_menu_detail, order_menus
+1:N, omde_reme_id, reme_id, order_menu_detail, resto_menus
+1:N, faci_id, reme_faci_id, facilities, resto_menus
+1:N, user_id, orme_user_id, users, order_menus
+1:N, user_id, hore_user_id , users, hotel_reviews
 1:N, user_id, woro_user_id, users, work_orders
 1:N, woro_id, wode_woro_id, work_orders, work_order_detail
 1:N, faci_id, wode_faci_id, facilities, work_order_detail

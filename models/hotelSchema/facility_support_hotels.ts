@@ -6,7 +6,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { facilities_support } from './facilities_support';
+import { hotels } from './hotels';
 
 export interface facility_support_hotelsAttributes {
   fsh_id?: number;
@@ -37,9 +40,17 @@ export class facility_support_hotels
   @Index({ name: 'pk_fsh_id', using: 'btree', unique: true })
   fsh_id?: number;
 
+  @ForeignKey(() => hotels)
   @Column({ allowNull: true, type: DataType.INTEGER })
   fsh_hotel_id?: number;
 
+  @ForeignKey(() => facilities_support)
   @Column({ allowNull: true, type: DataType.INTEGER })
   fsh_fs_id?: number;
+
+  @BelongsTo(() => hotels, 'fsh_hotel_id')
+  hotel?: hotels;
+
+  @BelongsTo(() => facilities_support, 'fsh_fs_id')
+  facilities_support?: facilities_support;
 }
