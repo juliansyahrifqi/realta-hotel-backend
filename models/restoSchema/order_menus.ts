@@ -6,7 +6,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { order_menu_detail } from './order_menu_detail';
+import { users } from '../usersSchema/users';
 
 export interface order_menusAttributes {
   orme_id?: number;
@@ -27,9 +30,9 @@ export class order_menus
   extends Model<order_menusAttributes, order_menusAttributes>
   implements order_menusAttributes
 {
+  @ForeignKey(() => order_menu_detail)
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('resto.order_menus_orme_id_seq'::regclass)",
@@ -39,7 +42,6 @@ export class order_menus
   orme_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(20) })
-  @Index({ name: 'orme_order_number_unique', using: 'btree', unique: true })
   orme_order_number?: string;
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
@@ -66,6 +68,13 @@ export class order_menus
   @Column({ allowNull: true, type: DataType.DATE(6) })
   orme_modified_date?: Date;
 
+  @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   orme_user_id?: number;
+
+  @BelongsTo(() => order_menu_detail)
+  order_menu_detail?: order_menu_detail;
+
+  @BelongsTo(() => users)
+  user?: users;
 }
