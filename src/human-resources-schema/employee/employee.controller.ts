@@ -18,7 +18,7 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('employee')
+@Controller('hr/employee')
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
@@ -48,10 +48,10 @@ export class EmployeeController {
     return this.employeeService.employeePage(page, limit);
   }
 
-  @Get()
-  findAll(@Query('page') page: number, @Query('limit') limit: number) {
-    return this.employeeService.findAll(page, limit);
-  }
+  // @Get()
+  // findAll(@Query('page') page: number, @Query('limit') limit: number) {
+  //   return this.employeeService.findAll(page, limit);
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

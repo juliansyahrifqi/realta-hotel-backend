@@ -11,7 +11,7 @@ import { WorkOrderDetailService } from './work_order_detail.service';
 import { CreateWorkOrderDetailDto } from './dto/create-work_order_detail.dto';
 import { UpdateWorkOrderDetailDto } from './dto/update-work_order_detail.dto';
 
-@Controller('work-order-detail')
+@Controller('hr/work-order-detail')
 export class WorkOrderDetailController {
   constructor(
     private readonly workOrderDetailService: WorkOrderDetailService,

@@ -10,7 +10,8 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { work_order_detail } from './work_order_detail';
-import { users } from '../usersSchema/users';
+import { users } from '../../models/usersSchema/users';
+// import { employee } from './employee';
 import { job_role } from './job_role';
 import { employee_pay_history } from './employee_pay_history';
 import { employee_department_history } from './employee_department_history';
@@ -38,6 +39,9 @@ export class employee
   extends Model<employeeAttributes, employeeAttributes>
   implements employeeAttributes
 {
+  // static query(arg0: string) {
+  //   throw new Error('Method not implemented.');
+  // }
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -120,4 +124,5 @@ export class employee
 
   @HasMany(() => employee_department_history, { sourceKey: 'emp_id' })
   employee_department_histories?: employee_department_history[];
+  static query: any;
 }

@@ -6,7 +6,9 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { users } from './users';
 
 export interface user_bonus_pointsAttributes {
   ubpo_id?: number;
@@ -32,6 +34,7 @@ export class user_bonus_points
   @Index({ name: 'pkey_user_bonus_points', using: 'btree', unique: true })
   ubpo_id?: number;
 
+  @ForeignKey(() => users)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pkey_user_bonus_points', using: 'btree', unique: true })
   ubpo_user_id!: number;
@@ -44,4 +47,7 @@ export class user_bonus_points
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
   ubpo_created_on?: Date;
+
+  @BelongsTo(() => users)
+  user?: users;
 }

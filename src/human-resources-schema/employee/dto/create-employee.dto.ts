@@ -11,6 +11,7 @@ export class CreateEmployeeDto {
   emp_current_flag: number;
   emp_photo: string;
   emp_modified_date: Date;
+  emp_user_id: number;
   emp_emp_id: number;
   emp_joro_id: number;
 }

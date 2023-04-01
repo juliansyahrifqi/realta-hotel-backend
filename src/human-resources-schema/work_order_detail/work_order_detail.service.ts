@@ -11,9 +11,6 @@ import { users } from '../../../models/usersSchema';
 
 @Injectable()
 export class WorkOrderDetailService {
-  findAll() {
-    throw new Error('Method not implemented.');
-  }
   constructor(
     @InjectModel(work_order_detail)
     private workOrderDetailModel: typeof work_order_detail,
@@ -66,22 +63,22 @@ export class WorkOrderDetailService {
     }
   }
 
-  // async findAll(): Promise<any> {
-  //   try {
-  //     const result = await this.workOrderDetailModel.findAll();
-  //     if (result.length === 0) {
-  //       return {
-  //         message: 'Data work order detail tidak ditemukan!',
-  //       };
-  //     }
-  //     return {
-  //       message: 'Data work order detail ditemukan!',
-  //       data: result,
-  //     };
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }
+  async findAll(): Promise<any> {
+    try {
+      const result = await this.workOrderDetailModel.findAll();
+      if (result.length === 0) {
+        return {
+          message: 'Data work order detail tidak ditemukan!',
+        };
+      }
+      return {
+        message: 'Data work order detail ditemukan!',
+        data: result,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
 
   // by tanggal
 

@@ -6,7 +6,9 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { users } from './users';
 
 export interface user_passwordAttributes {
   uspa_user_id: number;
@@ -19,6 +21,7 @@ export class user_password
   extends Model<user_passwordAttributes, user_passwordAttributes>
   implements user_passwordAttributes
 {
+  @ForeignKey(() => users)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pkey_user_password', using: 'btree', unique: true })
   uspa_user_id!: number;
@@ -28,4 +31,7 @@ export class user_password
 
   @Column({ allowNull: true, type: DataType.STRING(128) })
   uspa_passwordsalt?: string;
+
+  @BelongsTo(() => users)
+  user?: users;
 }

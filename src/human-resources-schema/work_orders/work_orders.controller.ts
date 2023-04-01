@@ -12,7 +12,7 @@ import { WorkOrdersService } from './work_orders.service';
 import { CreateWorkOrderDto } from './dto/create-work_order.dto';
 import { UpdateWorkOrderDto } from './dto/update-work_order.dto';
 
-@Controller('work-orders')
+@Controller('hr/work-orders')
 export class WorkOrdersController {
   constructor(private readonly workOrdersService: WorkOrdersService) {}
 

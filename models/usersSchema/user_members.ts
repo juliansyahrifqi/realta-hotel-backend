@@ -6,7 +6,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { users } from './users';
+import { members } from '../masterSchema/members';
 
 export interface user_membersAttributes {
   usme_user_id?: number;
@@ -21,6 +24,7 @@ export class user_members
   extends Model<user_membersAttributes, user_membersAttributes>
   implements user_membersAttributes
 {
+  @ForeignKey(() => users)
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -32,6 +36,7 @@ export class user_members
   @Index({ name: 'pkey_user_members', using: 'btree', unique: true })
   usme_user_id?: number;
 
+  @ForeignKey(() => members)
   @Column({ primaryKey: true, type: DataType.STRING(15) })
   @Index({ name: 'pkey_user_members', using: 'btree', unique: true })
   usme_memb_name!: string;
@@ -44,4 +49,10 @@ export class user_members
 
   @Column({ allowNull: true, type: DataType.STRING(15) })
   usme_type?: string;
+
+  @BelongsTo(() => users)
+  user?: users;
+
+  @BelongsTo(() => members)
+  member?: members;
 }

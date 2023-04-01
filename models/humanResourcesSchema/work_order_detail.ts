@@ -88,4 +88,5 @@ export class work_order_detail
 
   @BelongsTo(() => employee)
   employee?: employee;
+  length: any;
 }

@@ -9,6 +9,7 @@ import { users } from '../../../models/usersSchema/users';
 
 @Injectable()
 export class EmployeeService {
+  // sequelize: any;
   constructor(
     @InjectModel(employee)
     private employeeModel: typeof employee,
@@ -31,6 +32,9 @@ export class EmployeeService {
         emp_current_flag: createEmployeeDto.emp_current_flag,
         emp_photo: image.filename,
         emp_modified_date: createEmployeeDto.emp_modified_date,
+        emp_user_id: createEmployeeDto.emp_user_id,
+        emp_emp_id: createEmployeeDto.emp_emp_id,
+        emp_joro_id: createEmployeeDto.emp_joro_id,
       });
 
       result.emp_photo = `http://localhost:${process.env.PORT}/employee/upload/${result.emp_photo}`;

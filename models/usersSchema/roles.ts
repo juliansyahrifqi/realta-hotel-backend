@@ -6,7 +6,9 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
+import { user_roles } from './user_roles';
 
 export interface rolesAttributes {
   role_id?: number;
@@ -31,4 +33,7 @@ export class roles
 
   @Column({ allowNull: true, type: DataType.STRING(35) })
   role_name?: string;
+
+  @HasMany(() => user_roles, { sourceKey: 'role_id' })
+  user_roles?: user_roles[];
 }

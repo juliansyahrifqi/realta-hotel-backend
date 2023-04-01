@@ -9,7 +9,7 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { users } from '../usersSchema/users';
+import { users } from '../../models/usersSchema/users';
 import { work_order_detail } from './work_order_detail';
 
 export interface work_ordersAttributes {
@@ -54,4 +54,5 @@ export class work_orders
 
   @HasMany(() => work_order_detail, { sourceKey: 'woro_id' })
   work_order_details?: work_order_detail[];
+  length: any;
 }
