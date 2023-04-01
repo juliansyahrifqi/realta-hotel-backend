@@ -37,7 +37,7 @@ export class EmployeeService {
         emp_joro_id: createEmployeeDto.emp_joro_id,
       });
 
-      result.emp_photo = `http://localhost:${process.env.PORT}/employee/upload/${result.emp_photo}`;
+      result.emp_photo = `http://localhost:${process.env.PORT}/uploads/image/hr/${result.emp_photo}`;
 
       await result.save();
 
@@ -152,7 +152,7 @@ export class EmployeeService {
       const imagefilename = imageUrl.split('/').pop();
       const imagePath = join(
         __dirname,
-        '../../../../uploads/image',
+        '../../../../uploads/image/hr',
         imagefilename,
       );
 
@@ -171,7 +171,7 @@ export class EmployeeService {
           emp_vacation_hours: updateEmployeeDto.emp_vacation_hours,
           emp_sickleave_hours: updateEmployeeDto.emp_sickleave_hours,
           emp_current_flag: updateEmployeeDto.emp_current_flag,
-          emp_photo: `http://localhost:${process.env.PORT}/employee/upload/${image.filename}`,
+          emp_photo: `http://localhost:${process.env.PORT}/uploads/image/hr/${image.filename}`,
           emp_modified_date: updateEmployeeDto.emp_modified_date,
         },
         {
@@ -191,7 +191,7 @@ export class EmployeeService {
       const imagefilename = imageUrl.split('/').pop();
       const imagePath = join(
         __dirname,
-        '../../../../uploads/image',
+        '../../../../uploads/image/hr',
         imagefilename,
       );
       if (fs.existsSync(imagePath)) {

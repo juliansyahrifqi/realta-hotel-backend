@@ -26,7 +26,7 @@ export class EmployeeController {
   @UseInterceptors(
     FileInterceptor('emp_photo', {
       storage: diskStorage({
-        destination: './uploads/image',
+        destination: './uploads/image/hr',
         filename: function (req, file, cb) {
           const uniqueSuffix = Math.round(Math.random() * 1e9);
           const fileName = `${uniqueSuffix}-${file.originalname}`;
@@ -62,7 +62,7 @@ export class EmployeeController {
   @UseInterceptors(
     FileInterceptor('emp_photo', {
       storage: diskStorage({
-        destination: './uploads/image',
+        destination: './uploads/image/hr',
         filename: function (req, file, cb) {
           const uniqueSuffix = Math.round(Math.random() * 1e9);
           const fileName = `${uniqueSuffix}-${file.originalname}`;
