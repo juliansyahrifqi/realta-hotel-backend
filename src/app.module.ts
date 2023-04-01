@@ -7,6 +7,13 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { RestoMenusModule } from './resto/resto-menus/resto-menus.module';
+import { RestoMenuPhotosController } from './resto/resto-menu-photos/resto-menu-photos.controller';
+import { RestoMenuPhotosModule } from './resto/resto-menu-photos/resto-menu-photos.module';
+import { OrderMenusModule } from './resto/order-menus/order-menus.module';
+import { OrderMenuDetailModule } from './resto/order-menu-detail/order-menu-detail.module';
+import { diskStorage } from 'multer';
+import { MulterModule } from '@nestjs/platform-express';
 import { FacilitiesModule } from './hotel-schema/facilities/facilities.module';
 import { HotelReviewsModule } from './hotel-schema/hotel-reviews/hotel-reviews.module';
 import { FacilityPhotoModule } from './hotel-schema/facility-photo/facility-photo.module';
@@ -33,6 +40,15 @@ import { MembersModule } from './master/members/members.module';
 import { PriceItemsModule } from './master/price_items/price_items.module';
 import { ServiceTaskModule } from './master/service_task/service_task.module';
 
+import { JobRoleModule } from './human-resources-schema/job_role/job_role.module';
+import { ShiftModule } from './human-resources-schema/shift/shift.module';
+import { DepartmentModule } from './human-resources-schema/department/department.module';
+import { EmployeeModule } from './human-resources-schema/employee/employee.module';
+import { EmployeeDepatmentHistoryModule } from './human-resources-schema/employee_depatment_history/employee_depatment_history.module';
+import { EmployeePayHistoryModule } from './human-resources-schema/employee_pay_history/employee_pay_history.module';
+import { WorkOrdersModule } from './human-resources-schema/work_orders/work_orders.module';
+import { WorkOrderDetailModule } from './human-resources-schema/work_order_detail/work_order_detail.module';
+
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -46,6 +62,26 @@ import { ServiceTaskModule } from './master/service_task/service_task.module';
       autoLoadModels: true,
       synchronize: true,
     }),
+    RestoMenusModule,
+    RestoMenuPhotosModule,
+    OrderMenusModule,
+    OrderMenuDetailModule,
+    MulterModule.register({
+      storage: diskStorage({
+        destination: './uploads/image/resto',
+        filename: (req, file, cb) => {
+          cb(null, file.originalname);
+        },
+      }),
+    }),
+    JobRoleModule,
+    ShiftModule,
+    DepartmentModule,
+    EmployeeModule,
+    EmployeeDepatmentHistoryModule,
+    EmployeePayHistoryModule,
+    WorkOrdersModule,
+    WorkOrderDetailModule,
     HotelsModule,
     FacilitiesModule,
     HotelReviewsModule,

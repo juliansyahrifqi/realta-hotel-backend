@@ -12,6 +12,8 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { facility_photos, facility_price_history, hotels } from '.';
+import { resto_menus } from 'models/restoSchema';
+import { work_order_detail } from 'models/humanResourcesSchema';
 
 export interface facilitiesAttributes {
   faci_id?: number;
@@ -131,4 +133,10 @@ export class facilities
 
   @HasMany(() => facility_price_history, { sourceKey: 'faci_id' })
   facility_price_history?: facility_price_history[];
+
+  @HasMany(() => resto_menus, { sourceKey: 'faci_id' })
+  resto_menus?: resto_menus[];
+
+  @HasMany(() => work_order_detail, { sourceKey: 'faci_id' })
+  work_order_details?: work_order_detail[];
 }

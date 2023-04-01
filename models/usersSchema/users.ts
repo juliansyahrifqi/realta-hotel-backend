@@ -6,9 +6,11 @@ import {
   Index,
   Sequelize,
   ForeignKey,
-  HasOne,
   HasMany,
+  HasOne,
 } from 'sequelize-typescript';
+import { work_orders } from '../humanResourcesSchema/work_orders';
+import { employee } from '../humanResourcesSchema/employee';
 import { user_password } from './user_password';
 import { user_bonus_points } from './user_bonus_points';
 import { user_members } from './user_members';
@@ -47,7 +49,6 @@ export class users
   })
   @Index({ name: 'pkey_users_user_id', using: 'btree', unique: true })
   user_id?: number;
-
   @Column({
     allowNull: true,
     type: DataType.STRING,
@@ -103,4 +104,10 @@ export class users
 
   @HasMany(() => facilities, { sourceKey: 'user_id' })
   facilities?: facilities[];
+
+  @HasMany(() => work_orders, { sourceKey: 'user_id' })
+  work_orders?: work_orders[];
+
+  @HasMany(() => employee, { sourceKey: 'user_id' })
+  employees?: employee[];
 }
