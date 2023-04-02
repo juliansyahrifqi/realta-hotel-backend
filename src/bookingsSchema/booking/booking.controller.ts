@@ -209,7 +209,7 @@ export class BookingController {
 
     try {
       const dataResponse = await this.bookingService.createTemporaryBooking(dataOrder)
-
+      // const dataResponse = dataOrder
       return res.status(200).json({
         status_code: HttpStatus.OK,
         message: 'success',

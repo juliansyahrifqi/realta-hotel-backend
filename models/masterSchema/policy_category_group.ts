@@ -25,8 +25,7 @@ export class policy_category_group
     policy_category_groupAttributes,
     policy_category_groupAttributes
   >
-  implements policy_category_groupAttributes
-{
+  implements policy_category_groupAttributes {
   @ForeignKey(() => category_group)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pk_poca_poli_id', using: 'btree', unique: true })

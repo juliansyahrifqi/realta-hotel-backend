@@ -20,8 +20,7 @@ export interface policyAttributes {
 @Table({ tableName: 'policy', schema: 'master', timestamps: false })
 export class policy
   extends Model<policyAttributes, policyAttributes>
-  implements policyAttributes
-{
+  implements policyAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,

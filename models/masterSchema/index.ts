@@ -8,3 +8,4 @@ export * from './address';
 export * from './policy';
 export * from './policy_category_group';
 export * from './category_group';
+export * from './service_task';

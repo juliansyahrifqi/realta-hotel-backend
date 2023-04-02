@@ -18,6 +18,7 @@ import { category_group } from '../masterSchema/category_group';
 import { hotels } from './hotels';
 import { members } from '../masterSchema/members';
 import { special_offer_coupons } from 'models/bookingSchema';
+import { users } from 'models/usersSchema';
 
 export interface facilitiesAttributes {
   faci_id?: number;
@@ -37,6 +38,7 @@ export interface facilitiesAttributes {
   faci_cagro_id?: number;
   faci_hotel_id?: number;
   faci_memb_name?: string;
+  faci_user_id?: number;
 }
 
 @Table({ tableName: 'facilities', schema: 'hotel', timestamps: false })
@@ -109,6 +111,10 @@ export class facilities
   @Column({ allowNull: true, type: DataType.STRING(15) })
   faci_memb_name?: string;
 
+  @ForeignKey(() => users)
+  @Column({ allowNull: true, type: DataType.INTEGER })
+  faci_user_id?: number;
+
   @BelongsTo(() => hotels)
   hotel?: hotels
 
@@ -127,8 +133,7 @@ export class facilities
   @HasMany(() => booking_order_detail)
   booking_order_details?: booking_order_detail[]
 
-
-
-
+  @BelongsTo(() => users)
+  users?: users
 
 }

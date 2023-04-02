@@ -21,8 +21,7 @@ export interface countryAttributes {
 @Table({ tableName: 'country', schema: 'master', timestamps: false })
 export class country
   extends Model<countryAttributes, countryAttributes>
-  implements countryAttributes
-{
+  implements countryAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,

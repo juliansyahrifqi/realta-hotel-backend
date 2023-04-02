@@ -21,8 +21,7 @@ export interface cityAttributes {
 @Table({ tableName: 'city', schema: 'master', timestamps: false })
 export class city
   extends Model<cityAttributes, cityAttributes>
-  implements cityAttributes
-{
+  implements cityAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,

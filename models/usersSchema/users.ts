@@ -14,8 +14,23 @@ import { hotels } from '../hotelSchema/hotels';
 import { hotel_reviews } from '../hotelSchema/hotel_reviews';
 import { booking_orders } from '../bookingSchema/booking_orders';
 
+export interface usersAttributes {
+  user_id?: number;
+  user_full_name?: string;
+  user_type?: string;
+  user_company_name?: string;
+  user_email?: string;
+  user_phone_number?: string;
+  user_photo_profile?: string;
+  user_modified_date?: Date;
+  user_hotel_id?: number;
+}
+
+
 @Table({ tableName: 'users', schema: 'users', timestamps: false })
-export class users extends Model<users> {
+export class users
+  extends Model<usersAttributes, usersAttributes>
+  implements usersAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -60,6 +75,9 @@ export class users extends Model<users> {
   })
   user_modified_date!: Date;
 
+  @Column({ allowNull: true, type: DataType.INTEGER })
+  user_hotel_id?: number;
+
   @BelongsToMany(() => members, () => user_members)
   members?: members[];
 
@@ -70,5 +88,6 @@ export class users extends Model<users> {
   bookedHotels?: hotels[];
 
   @HasMany(() => user_members, { as: 'user_members_booking' })
-  user_members?: user_members[]
+  user_members?: user_members[];
+
 }

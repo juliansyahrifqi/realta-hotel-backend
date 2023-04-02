@@ -18,10 +18,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "pg:generate-users": "stg -D postgres -o models/usersSchema -s users --cm c -h localhost -p 5432 -d HotelRealtaDB -u postgres -x root --indices --associations-file association.csv --clean",
-    "pg:generate-master": "stg -D postgres -o models/mastersSchema -s master --cm c -h localhost -p 5432 -d HotelRealtaDB -u postgres -x root --indices --associations-file association.csv --clean",
-    "pg:generate-hotel": "stg -D postgres -o models/hotelsSchema -s hotel --cm c -h localhost -p 5432 -d HotelRealtaDB -u postgres -x root --indices --associations-file association.csv --clean",
-    "pg:generate-booking": "stg -D postgres -o models/bookingsSchema -s booking --cm c -h localhost -p 5432 -d HotelRealtaDB -u postgres -x root --indices --associations-file association.csv --clean"
+    "db_resto": "stg -D postgres -o models/restoSchema -h localhost -p 5432 -d HotelRealtaDB -u postgres -x 12345 --indices --associations-file association.csv -s resto",
+    "db_hotels": "stg -D postgres -o models/hotelSchema -h localhost -p 5432 -s hotel -d HotelRealtaDB -u postgres -x 123456 --indices",
+    "db_master": "stg -D postgres -o models/masterSchema -h localhost -s master -p 5432 -d HotelRealtaDB -u postgres -x 123456 --indices ",
+    "db_user": "stg -D postgres -o models/usersSchema -h localhost -p 5432 -s users -d HotelRealtaDB -u postgres -x 123456 --indices",
+    "pgScript": "stg -D postgres -o models/masterSchema -h localhost -p 5432 -d HotelRealtaDB -s master -u postgres -x root --indices --associations-file association.csv --clean",
+    "db_booking": "stg -D postgres -o models/bookingSchema -s booking --cm c -h localhost -p 5432 -d HotelRealtaDB -u postgres -x root --indices --associations-file association.csv --clean"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
