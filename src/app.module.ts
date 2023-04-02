@@ -1,12 +1,8 @@
-import {
-  Module,
-  NestModule,
-  MiddlewareConsumer,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { BookingModule } from './bookingsSchema/booking/booking.module';
+import { HotelModule } from './hotelsSchema/hotel/hotel.module';
 import { RestoMenusModule } from './resto/resto-menus/resto-menus.module';
 import { RestoMenuPhotosController } from './resto/resto-menu-photos/resto-menu-photos.controller';
 import { RestoMenuPhotosModule } from './resto/resto-menu-photos/resto-menu-photos.module';
@@ -48,6 +44,7 @@ import { EmployeeDepatmentHistoryModule } from './human-resources-schema/employe
 import { EmployeePayHistoryModule } from './human-resources-schema/employee_pay_history/employee_pay_history.module';
 import { WorkOrdersModule } from './human-resources-schema/work_orders/work_orders.module';
 import { WorkOrderDetailModule } from './human-resources-schema/work_order_detail/work_order_detail.module';
+import { SequelizeModule } from '@nestjs/sequelize';
 
 @Module({
   imports: [
@@ -106,19 +103,20 @@ import { WorkOrderDetailModule } from './human-resources-schema/work_order_detai
     MembersModule,
     PriceItemsModule,
     ServiceTaskModule,
+    BookingModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(JwtMiddleware)
-      .exclude(
-        { path: 'users/signUpGuest', method: RequestMethod.POST },
-        { path: 'users/signUpEmployee', method: RequestMethod.POST },
-        'auth/(.*)',
-      )
-      .forRoutes('*');
+    // consumer
+    //   .apply(JwtMiddleware)
+    //   .exclude(
+    //     { path: 'users/signUpGuest', method: RequestMethod.POST },
+    //     { path: 'users/signUpEmployee', method: RequestMethod.POST },
+    //     'auth/(.*)',
+    //   )
+    //   .forRoutes('*');
   }
 }

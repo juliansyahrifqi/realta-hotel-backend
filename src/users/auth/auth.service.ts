@@ -12,7 +12,7 @@ export class AuthService {
     @InjectModel(users) private userModel: typeof users,
     @InjectModel(user_password) private userPasswordModel: typeof user_password,
     @InjectModel(user_roles) private userRoleModel: typeof user_roles,
-  ) {}
+  ) { }
 
   async loginEmployee(loginEmployeeDto: LoginEmployeeDto) {
     try {

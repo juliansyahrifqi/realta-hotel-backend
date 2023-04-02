@@ -22,7 +22,8 @@
     "db_hotels": "stg -D postgres -o models/hotelSchema -h localhost -p 5432 -s hotel -d HotelRealtaDB -u postgres -x 123456 --indices",
     "db_master": "stg -D postgres -o models/masterSchema -h localhost -s master -p 5432 -d HotelRealtaDB -u postgres -x 123456 --indices ",
     "db_user": "stg -D postgres -o models/usersSchema -h localhost -p 5432 -s users -d HotelRealtaDB -u postgres -x 123456 --indices",
-    "pgScript": "stg -D postgres -o models/masterSchema -h localhost -p 5432 -d HotelRealtaDB -s master -u postgres -x root --indices --associations-file association.csv --clean"
+    "pgScript": "stg -D postgres -o models/masterSchema -h localhost -p 5432 -d HotelRealtaDB -s master -u postgres -x root --indices --associations-file association.csv --clean",
+    "db_booking": "stg -D postgres -o models/bookingSchema -s booking --cm c -h localhost -p 5432 -d HotelRealtaDB -u postgres -x root --indices --associations-file association.csv --clean"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
