@@ -6,7 +6,11 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
+import { provinces } from './provinces';
+import { regions } from './regions';
 
 export interface countryAttributes {
   country_id?: number;
@@ -31,6 +35,13 @@ export class country
   @Column({ allowNull: true, type: DataType.STRING(55) })
   country_name?: string;
 
+  @ForeignKey(() => regions)
   @Column({ allowNull: true, type: DataType.INTEGER })
   country_region_id?: number;
+
+  @BelongsTo(() => regions)
+  regions?: regions;
+
+  @HasMany(() => provinces)
+  provinces?: provinces;
 }

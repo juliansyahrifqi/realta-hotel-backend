@@ -26,6 +26,12 @@ export class ProvincesController {
     return this.provincesService.findOne(+id);
   }
 
+  @Get('/province/:id')
+  async getCityByRegion(@Param('id') id: number) {
+    const city = await this.provincesService.getCityById(id);
+    return { data: city };
+  }
+
   @Post()
   async create(
     @Body() createProvinceDto: CreateProvincesDto,

@@ -34,10 +34,14 @@ export class PriceItemsController {
   }
 
   @Get('search')
-  async findAllSearch(@Query('searchQuery') searchQuery: string) {
+  async findAllSearch(
+    @Query('searchQuery') searchQuery: string,
+    @Query('searchType') searchType: string,
+  ) {
     try {
       const price_items = await this.priceItemsService.findAllSearch(
         searchQuery,
+        searchType,
       );
       return {
         data: price_items,

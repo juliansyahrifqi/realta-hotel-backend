@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { regions } from '../../../models/masterSchema';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { regions, country } from '../../../models/masterSchema';
 import { CreateRegionDto } from './dto/create-region.dto';
 import { UpdateRegionDto } from './dto/update-region.dto';
 
@@ -9,12 +10,14 @@ export class RegionsService {
   constructor(
     @InjectModel(regions)
     private readonly regionsModel: typeof regions,
+    @InjectModel(country)
+    private readonly countryModel: typeof country,
   ) {}
 
   async findAll(): Promise<any> {
     try {
-      const regions = await this.regionsModel.findAll();
-      return { message: 'Data found', data: regions };
+      const region = await this.regionsModel.findAll();
+      return { message: 'Data found', data: region };
     } catch (error) {
       return { message: 'Error fetching data', error: error.message };
     }
@@ -31,6 +34,18 @@ export class RegionsService {
     } catch (error) {
       return { message: 'Error fetching data', error: error.message };
     }
+  }
+
+  async getCountryById(id: number): Promise<any> {
+    const country = await this.regionsModel.findOne({
+      include: [
+        {
+          model: this.countryModel,
+        },
+      ],
+      where: { region_code: id },
+    });
+    return country;
   }
 
   async create(dto: CreateRegionDto): Promise<any> {

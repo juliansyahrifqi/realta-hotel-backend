@@ -1,12 +1,12 @@
 import {
-  Model,
-  Table,
   Column,
   DataType,
-  Index,
+  HasMany,
+  Model,
   Sequelize,
-  ForeignKey,
+  Table,
 } from 'sequelize-typescript';
+import { country } from './country';
 
 export interface regionsAttributes {
   region_code?: number;
@@ -29,4 +29,7 @@ export class regions
 
   @Column({ allowNull: true, type: DataType.STRING(35) })
   region_name?: string;
+
+  @HasMany(() => country)
+  countries?: country;
 }

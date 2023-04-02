@@ -61,11 +61,12 @@ export class PriceItemsService {
     }
   }
 
-  async findAllSearch(searchQuery: string): Promise<any> {
+  async findAllSearch(searchQuery: string, searchType: string): Promise<any> {
     try {
       const data = await this.priceItemsModel.findAll({
         where: {
           prit_name: { [Op.like]: `%${searchQuery}%` },
+          prit_type: { [Op.like]: `%${searchType}%` },
         },
       });
       return data;

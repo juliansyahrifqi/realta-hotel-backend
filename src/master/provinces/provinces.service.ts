@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { provinces } from '../../../models/masterSchema';
+import { city, provinces } from '../../../models/masterSchema';
 import { CreateProvincesDto } from './dto/create-province.dto';
 import { UpdateProvinceDto } from './dto/update-province.dto';
 
@@ -9,6 +9,8 @@ export class ProvincesService {
   constructor(
     @InjectModel(provinces)
     private readonly provincesModel: typeof provinces,
+    @InjectModel(city)
+    private readonly cityModel: typeof city,
   ) {}
 
   async create(createProvinceDto: CreateProvincesDto): Promise<any> {
@@ -40,6 +42,18 @@ export class ProvincesService {
     } catch (error) {
       return { message: 'Error fetching data', error: error.message };
     }
+  }
+
+  async getCityById(id: number): Promise<any> {
+    const provinces = await this.provincesModel.findOne({
+      include: [
+        {
+          model: this.cityModel,
+        },
+      ],
+      where: { prov_id: id },
+    });
+    return provinces;
   }
 
   async update(id: number, updateProvinceDto: UpdateProvinceDto): Promise<any> {
