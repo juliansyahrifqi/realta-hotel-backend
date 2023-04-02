@@ -10,10 +10,10 @@ import {
   HasMany,
   BelongsTo,
 } from 'sequelize-typescript';
-import { facilities } from '../hotel0/facilities';
+import { facilities } from '../hotelSchema/facilities';
 import { booking_order_detail } from './booking_order_detail';
 import { users } from '../usersSchema/users';
-import { hotels } from '../hotel0/hotels';
+import { hotels } from '../hotelSchema/hotels';
 
 export interface booking_ordersAttributes {
   boor_id?: number;

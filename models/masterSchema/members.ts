@@ -10,8 +10,8 @@ import {
 } from 'sequelize-typescript';
 import { users } from '../usersSchema/users';
 import { user_members } from '../usersSchema/user_members';
-import { hotels } from '../hotel0/hotels';
-import { facilities } from '../hotel0/facilities';
+import { hotels } from '../hotelSchema/hotels';
+import { facilities } from '../hotelSchema/facilities';
 
 export interface membersAttributes {
   memb_name: string;

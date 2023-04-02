@@ -10,8 +10,8 @@ import {
 } from 'sequelize-typescript';
 import { members } from '../masterSchema/members';
 import { user_members } from './user_members';
-import { hotels } from '../hotel0/hotels';
-import { hotel_reviews } from '../hotel0/hotel_reviews';
+import { hotels } from '../hotelSchema/hotels';
+import { hotel_reviews } from '../hotelSchema/hotel_reviews';
 import { booking_orders } from '../bookingSchema/booking_orders';
 
 @Table({ tableName: 'users', schema: 'users', timestamps: false })
