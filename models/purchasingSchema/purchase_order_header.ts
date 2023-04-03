@@ -10,7 +10,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { stock_detail } from './stock_detail';
-import { employee } from 'models/humanResourceSchema';
+import { employee } from 'models/humanResourcesSchema';
 import { vendor } from './vendor';
 import { purchase_order_detail } from './purchase_order_detail';
 

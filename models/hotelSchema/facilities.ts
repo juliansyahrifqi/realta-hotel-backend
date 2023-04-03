@@ -44,7 +44,8 @@ export interface facilitiesAttributes {
 @Table({ tableName: 'facilities', schema: 'hotel', timestamps: false })
 export class facilities
   extends Model<facilitiesAttributes, facilitiesAttributes>
-  implements facilitiesAttributes {
+  implements facilitiesAttributes
+{
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,
@@ -116,10 +117,10 @@ export class facilities
   faci_user_id?: number;
 
   @BelongsTo(() => hotels)
-  hotel?: hotels
+  hotel?: hotels;
 
   @BelongsTo(() => category_group)
-  category_group?: category_group
+  category_group?: category_group;
 
   @HasMany(() => facility_photos, { sourceKey: 'faci_id' })
   facility_photos?: facility_photos[];
@@ -131,9 +132,8 @@ export class facilities
   booking_orders?: booking_orders[];
 
   @HasMany(() => booking_order_detail)
-  booking_order_details?: booking_order_detail[]
+  booking_order_details?: booking_order_detail[];
 
   @BelongsTo(() => users)
-  users?: users
-
+  users?: users;
 }

@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { stocks } from './stocks';
-import { facilities } from 'models/hotelResourceSchema';
+import { facilities } from 'models/hotelSchema';
 import { purchase_order_header } from './purchase_order_header';
 
 export interface stock_detailAttributes {

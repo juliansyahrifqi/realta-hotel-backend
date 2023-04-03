@@ -1,6 +1,6 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
-import { LoginGuestDto } from '../dto/login-guest.dto';
+import { LoginGuestDto } from './dto/login-guest.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { user_password, user_roles, users } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt';
@@ -12,7 +12,7 @@ export class AuthService {
     @InjectModel(users) private userModel: typeof users,
     @InjectModel(user_password) private userPasswordModel: typeof user_password,
     @InjectModel(user_roles) private userRoleModel: typeof user_roles,
-  ) {}
+  ) { }
 
   async loginEmployee(loginEmployeeDto: LoginEmployeeDto) {
     try {
