@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BookingModule } from './bookingsSchema/booking/booking.module';
@@ -44,6 +49,13 @@ import { EmployeeDepatmentHistoryModule } from './human-resources-schema/employe
 import { EmployeePayHistoryModule } from './human-resources-schema/employee_pay_history/employee_pay_history.module';
 import { WorkOrdersModule } from './human-resources-schema/work_orders/work_orders.module';
 import { WorkOrderDetailModule } from './human-resources-schema/work_order_detail/work_order_detail.module';
+import { PurchaseOrderDetailModule } from './purchasing-schema/purchase-order-detail/purchase-order-detail.module';
+import { PurchaseOrderHeaderModule } from './purchasing-schema/purchase-order-header/purchase-order-header.module';
+import { StockDetailModule } from './purchasing-schema/stock-detail/stock-detail.module';
+import { StockPhotoModule } from './purchasing-schema/stock-photo/stock-photo.module';
+import { StocksModule } from './purchasing-schema/stocks/stocks.module';
+import { VendorProductModule } from './purchasing-schema/vendor-product/vendor-product.module';
+import { VendorModule } from './purchasing-schema/vendor/vendor.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 @Module({
@@ -103,7 +115,14 @@ import { SequelizeModule } from '@nestjs/sequelize';
     MembersModule,
     PriceItemsModule,
     ServiceTaskModule,
-    BookingModule
+    BookingModule,
+    VendorModule,
+    VendorProductModule,
+    StocksModule,
+    StockPhotoModule,
+    StockDetailModule,
+    PurchaseOrderHeaderModule,
+    PurchaseOrderDetailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
