@@ -1,4 +1,3 @@
-import { hotels } from 'models/hotelSchema';
 import {
   Model,
   Table,
@@ -10,6 +9,7 @@ import {
   HasMany,
   BelongsTo,
 } from 'sequelize-typescript';
+import { hotels } from '../hotelSchema/hotels';
 import { city } from './city';
 
 export interface addressAttributes {
@@ -31,9 +31,10 @@ export class address
     autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('master.address_addr_id_seq'::regclass)",
+      "nextval('master.address_addr_id_seq1'::regclass)",
     ),
   })
+  @Index({ name: 'pk_addr_id', using: 'btree', unique: true })
   addr_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(225) })

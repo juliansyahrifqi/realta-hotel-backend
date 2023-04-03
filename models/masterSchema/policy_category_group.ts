@@ -7,6 +7,8 @@ import {
   Sequelize,
   ForeignKey,
 } from 'sequelize-typescript';
+import { category_group } from './category_group';
+import { policy } from './policy';
 
 export interface policy_category_groupAttributes {
   poca_poli_id: number;
@@ -23,11 +25,14 @@ export class policy_category_group
     policy_category_groupAttributes,
     policy_category_groupAttributes
   >
-  implements policy_category_groupAttributes
-{
+  implements policy_category_groupAttributes {
+  @ForeignKey(() => category_group)
   @Column({ primaryKey: true, type: DataType.INTEGER })
+  @Index({ name: 'pk_poca_poli_id', using: 'btree', unique: true })
   poca_poli_id!: number;
 
+  @ForeignKey(() => policy)
   @Column({ primaryKey: true, type: DataType.INTEGER })
+  @Index({ name: 'pk_poca_poli_id', using: 'btree', unique: true })
   poca_cagro_id!: number;
 }

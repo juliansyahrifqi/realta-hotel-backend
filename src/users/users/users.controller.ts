@@ -61,6 +61,13 @@ export class UsersController {
         message: 'Guest success created',
       };
     } catch (error) {
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        return {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Phone number already registered',
+        };
+      }
+
       return {
         statusCode: HttpStatus.BAD_REQUEST,
         message: error,
@@ -82,6 +89,23 @@ export class UsersController {
 
       return { statusCode: HttpStatus.OK, message: 'Employee success created' };
     } catch (e) {
+      if (e.name === 'SequelizeUniqueConstraintError' && e.fields.user_email) {
+        return {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Email already registered',
+        };
+      }
+
+      if (
+        e.name === 'SequelizeUniqueConstraintError' &&
+        e.fields.user_phone_number
+      ) {
+        return {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Phone number already registered',
+        };
+      }
+
       return { statusCode: HttpStatus.BAD_REQUEST, message: e };
     }
   }

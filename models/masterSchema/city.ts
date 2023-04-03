@@ -6,8 +6,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
+import { provinces } from './provinces';
 import { address } from './address';
 
 export interface cityAttributes {
@@ -23,11 +25,13 @@ export class city
 {
   @Column({
     primaryKey: true,
+    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('master.city_city_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'pk_city_id', using: 'btree', unique: true })
   city_id?: number;
 
   @Column({
@@ -37,9 +41,13 @@ export class city
   })
   city_name?: string;
 
+  @ForeignKey(() => provinces)
   @Column({ allowNull: true, type: DataType.INTEGER })
   city_prov_id?: number;
 
+  @BelongsTo(() => provinces)
+  provinces?: provinces;
+
   @HasMany(() => address, { sourceKey: 'city_id' })
-  address?: address[];
+  addresses?: address[];
 }

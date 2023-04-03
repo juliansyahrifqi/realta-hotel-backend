@@ -1,14 +1,13 @@
 import {
+  MiddlewareConsumer,
   Module,
   NestModule,
-  MiddlewareConsumer,
   RequestMethod,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { BookingModule } from './bookingsSchema/booking/booking.module';
 import { RestoMenusModule } from './resto/resto-menus/resto-menus.module';
-import { RestoMenuPhotosController } from './resto/resto-menu-photos/resto-menu-photos.controller';
 import { RestoMenuPhotosModule } from './resto/resto-menu-photos/resto-menu-photos.module';
 import { OrderMenusModule } from './resto/order-menus/order-menus.module';
 import { OrderMenuDetailModule } from './resto/order-menu-detail/order-menu-detail.module';
@@ -48,6 +47,14 @@ import { EmployeeDepatmentHistoryModule } from './human-resources-schema/employe
 import { EmployeePayHistoryModule } from './human-resources-schema/employee_pay_history/employee_pay_history.module';
 import { WorkOrdersModule } from './human-resources-schema/work_orders/work_orders.module';
 import { WorkOrderDetailModule } from './human-resources-schema/work_order_detail/work_order_detail.module';
+import { PurchaseOrderDetailModule } from './purchasing-schema/purchase-order-detail/purchase-order-detail.module';
+import { PurchaseOrderHeaderModule } from './purchasing-schema/purchase-order-header/purchase-order-header.module';
+import { StockDetailModule } from './purchasing-schema/stock-detail/stock-detail.module';
+import { StockPhotoModule } from './purchasing-schema/stock-photo/stock-photo.module';
+import { StocksModule } from './purchasing-schema/stocks/stocks.module';
+import { VendorProductModule } from './purchasing-schema/vendor-product/vendor-product.module';
+import { VendorModule } from './purchasing-schema/vendor/vendor.module';
+import { SequelizeModule } from '@nestjs/sequelize';
 
 @Module({
   imports: [
@@ -106,19 +113,27 @@ import { WorkOrderDetailModule } from './human-resources-schema/work_order_detai
     MembersModule,
     PriceItemsModule,
     ServiceTaskModule,
+    BookingModule,
+    VendorModule,
+    VendorProductModule,
+    StocksModule,
+    StockPhotoModule,
+    StockDetailModule,
+    PurchaseOrderHeaderModule,
+    PurchaseOrderDetailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(JwtMiddleware)
-      .exclude(
-        { path: 'users/signUpGuest', method: RequestMethod.POST },
-        { path: 'users/signUpEmployee', method: RequestMethod.POST },
-        'auth/(.*)',
-      )
-      .forRoutes('*');
+    // consumer
+    //   .apply(JwtMiddleware)
+    //   .exclude(
+    //     { path: 'users/signUpGuest', method: RequestMethod.POST },
+    //     { path: 'users/signUpEmployee', method: RequestMethod.POST },
+    //     'auth/(.*)',
+    //   )
+    //   .forRoutes('*');
   }
 }

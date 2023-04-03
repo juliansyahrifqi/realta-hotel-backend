@@ -14,7 +14,7 @@ export class HotelReviewsService {
 
     @InjectModel(hotels)
     private hotelsModel: typeof hotels,
-  ) {}
+  ) { }
 
   async create(
     @Res() response: Response,
@@ -45,7 +45,7 @@ export class HotelReviewsService {
       // Update nilai rating pada model hotels
       const updatedHotel = await this.hotelsModel.update(
         {
-          hotel_rating_star: avgRating,
+          hotel_rating_star: String(avgRating),
         },
         {
           where: {
@@ -144,7 +144,7 @@ export class HotelReviewsService {
       // Update nilai rating pada model hotels
       const updatedHotel = await this.hotelsModel.update(
         {
-          hotel_rating_star: avgRating,
+          hotel_rating_star: String(avgRating),
         },
         {
           where: {
@@ -196,7 +196,7 @@ export class HotelReviewsService {
       // Update nilai rating pada model hotels
       const updatedHotel = await this.hotelsModel.update(
         {
-          hotel_rating_star: avgRating,
+          hotel_rating_star: String(avgRating),
         },
         {
           where: {
