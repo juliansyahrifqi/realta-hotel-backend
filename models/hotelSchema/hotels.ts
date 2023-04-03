@@ -35,7 +35,8 @@ export interface hotelsAttributes {
 @Table({ tableName: 'hotels', schema: 'hotel', timestamps: false })
 export class hotels
   extends Model<hotelsAttributes, hotelsAttributes>
-  implements hotelsAttributes {
+  implements hotelsAttributes
+{
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,
@@ -87,11 +88,14 @@ export class hotels
   users_hotel_reviews?: users[];
 
   @HasMany(() => hotel_reviews)
-  hotel_reviews?: hotel_reviews[]
+  hotel_reviews?: hotel_reviews[];
+
+  @HasMany(() => facilities, { sourceKey: 'hotel_id' })
+  facilitiesHotels?: facilities[];
 
   @BelongsToMany(() => users, () => booking_orders)
   users_booking_orders?: users[];
 
   @HasMany(() => booking_orders)
-  booking_orders?: booking_orders[]
+  booking_orders?: booking_orders[];
 }

@@ -24,7 +24,8 @@ export interface addressAttributes {
 @Table({ tableName: 'address', schema: 'master', timestamps: false })
 export class address
   extends Model<addressAttributes, addressAttributes>
-  implements addressAttributes {
+  implements addressAttributes
+{
   @Column({
     primaryKey: true,
     autoIncrement: true,

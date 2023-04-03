@@ -116,8 +116,13 @@ export class facilities
   @Column({ allowNull: true, type: DataType.INTEGER })
   faci_user_id?: number;
 
+  //buat Yudha
   @BelongsTo(() => hotels)
   hotel?: hotels;
+
+  //buat Kepin
+  @BelongsTo(() => hotels)
+  hotels?: hotels;
 
   @BelongsTo(() => category_group)
   category_group?: category_group;
