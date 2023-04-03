@@ -1,6 +1,6 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { LoginEmployeeDto } from './dto/login-employee.dto';
-import { LoginGuestDto } from './dto/login-guest.dto';
+import { LoginGuestDto } from '../dto/login-guest.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { user_password, user_roles, users } from 'models/usersSchema';
 import * as bcrypt from 'bcrypt';

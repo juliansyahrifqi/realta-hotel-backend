@@ -23,8 +23,7 @@ export interface facility_photosAttributes {
 @Table({ tableName: 'facility_photos', schema: 'hotel', timestamps: false })
 export class facility_photos
   extends Model<facility_photosAttributes, facility_photosAttributes>
-  implements facility_photosAttributes
-{
+  implements facility_photosAttributes {
   @ForeignKey(() => facilities)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pk_fapho_id', using: 'btree', unique: true })
@@ -32,7 +31,6 @@ export class facility_photos
 
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('hotel.facility_photos_fapho_id_seq'::regclass)",
@@ -53,11 +51,7 @@ export class facility_photos
   @Column({ allowNull: true, type: DataType.STRING(255) })
   fapho_url?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.DATE,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-  })
+  @Column({ allowNull: true, type: DataType.DATE })
   fapho_modified_date?: Date;
 
   @BelongsTo(() => facilities)

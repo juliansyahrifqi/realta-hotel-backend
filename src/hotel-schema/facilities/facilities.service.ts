@@ -19,7 +19,7 @@ export class FacilitiesService {
 
     @InjectModel(facility_price_history)
     private faphModel: typeof facility_price_history,
-  ) {}
+  ) { }
   async create(
     @Res() response: Response,
     createFacilityDto: CreateFacilityDto,
@@ -45,8 +45,8 @@ export class FacilitiesService {
           faci_low_price: createFacilityDto.faci_low_price,
           faci_high_price: createFacilityDto.faci_high_price,
           faci_rate_price: ratePrice,
-          faci_discount: discount,
-          faci_tax_rate: tax,
+          faci_discount: String(discount),
+          faci_tax_rate: String(tax),
           faci_cagro_id: createFacilityDto.faci_cagro_id,
           faci_hotel_id: createFacilityDto.faci_hotel_id,
           faci_memb_name: createFacilityDto.faci_memb_name,
@@ -176,8 +176,8 @@ export class FacilitiesService {
           faci_rate_price: ratePrice,
           faci_modified_date: Sequelize.literal('CURRENT_TIMESTAMP'),
           //===============
-          faci_discount: discount,
-          faci_tax_rate: tax,
+          faci_discount: String(discount),
+          faci_tax_rate: String(tax),
           faci_cagro_id: updateFacilityDto.faci_cagro_id,
           faci_hotel_id: updateFacilityDto.faci_hotel_id,
           faci_memb_name: updateFacilityDto.faci_memb_name,
