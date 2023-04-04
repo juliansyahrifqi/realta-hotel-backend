@@ -6,7 +6,6 @@ import {
   Index,
   Sequelize,
   ForeignKey,
-  BelongsTo,
 } from 'sequelize-typescript';
 import { users } from './users';
 import { members } from '../masterSchema/members';
@@ -22,8 +21,7 @@ export interface user_membersAttributes {
 @Table({ tableName: 'user_members', schema: 'users', timestamps: false })
 export class user_members
   extends Model<user_membersAttributes, user_membersAttributes>
-  implements user_membersAttributes
-{
+  implements user_membersAttributes {
   @ForeignKey(() => users)
   @Column({
     primaryKey: true,
@@ -41,7 +39,11 @@ export class user_members
   @Index({ name: 'pkey_user_members', using: 'btree', unique: true })
   usme_memb_name!: string;
 
-  @Column({ allowNull: true, type: DataType.DATE(6) })
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('now()'),
+  })
   usme_promote_date?: Date;
 
   @Column({ allowNull: true, type: DataType.INTEGER })
@@ -50,9 +52,5 @@ export class user_members
   @Column({ allowNull: true, type: DataType.STRING(15) })
   usme_type?: string;
 
-  @BelongsTo(() => users)
-  user?: users;
 
-  @BelongsTo(() => members)
-  member?: members;
 }

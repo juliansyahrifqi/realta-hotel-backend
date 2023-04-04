@@ -5,22 +5,14 @@ import {
   DataType,
   Index,
   Sequelize,
-  ForeignKey,
+  BelongsToMany,
   HasMany,
-  HasOne,
 } from 'sequelize-typescript';
-import { work_orders } from '../humanResourcesSchema/work_orders';
-import { employee } from '../humanResourcesSchema/employee';
-import { user_password } from './user_password';
-import { user_bonus_points } from './user_bonus_points';
+import { members } from '../masterSchema/members';
 import { user_members } from './user_members';
-import { user_roles } from './user_roles';
-import { user_profiles } from './user_profiles';
-import {
-  facilities,
-  facility_price_history,
-  hotel_reviews,
-} from 'models/hotelSchema';
+import { hotels } from '../hotelSchema/hotels';
+import { hotel_reviews } from '../hotelSchema/hotel_reviews';
+import { booking_orders } from '../bookingSchema/booking_orders';
 import { payment_transaction, user_accounts } from 'models/paymentSchema';
 
 export interface usersAttributes {
@@ -35,11 +27,11 @@ export interface usersAttributes {
   user_hotel_id?: number;
 }
 
+
 @Table({ tableName: 'users', schema: 'users', timestamps: false })
 export class users
   extends Model<usersAttributes, usersAttributes>
-  implements usersAttributes
-{
+  implements usersAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -49,7 +41,8 @@ export class users
     ),
   })
   @Index({ name: 'pkey_users_user_id', using: 'btree', unique: true })
-  user_id?: number;
+  user_id!: number;
+
   @Column({
     allowNull: true,
     type: DataType.STRING,
@@ -57,61 +50,48 @@ export class users
       "('guest'::text || nextval('sequence_for_user_full_name'::regclass))",
     ),
   })
-  user_full_name?: string;
+  user_full_name!: string;
 
   @Column({ allowNull: true, type: DataType.STRING(15) })
-  user_type?: string;
+  user_type!: string;
 
   @Column({ allowNull: true, type: DataType.STRING(225) })
-  user_company_name?: string;
+  user_company_name!: string;
 
   @Column({ allowNull: true, type: DataType.STRING(256) })
   @Index({ name: 'users_user_email_key', using: 'btree', unique: true })
-  user_email?: string;
+  user_email!: string;
 
   @Column({ allowNull: true, type: DataType.STRING(25) })
   @Index({ name: 'users_user_phone_number_key', using: 'btree', unique: true })
-  user_phone_number?: string;
+  user_phone_number!: string;
 
   @Column({ allowNull: true, type: DataType.STRING(225) })
-  user_photo_profile?: string;
+  user_photo_profile!: string;
 
-  @Column({ allowNull: true, type: DataType.DATE(6) })
-  user_modified_date?: Date;
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('now()'),
+  })
+  user_modified_date!: Date;
 
   @Column({ allowNull: true, type: DataType.INTEGER })
   user_hotel_id?: number;
 
-  @HasOne(() => user_password, { sourceKey: 'user_id' })
-  user_password?: user_password;
+  @BelongsToMany(() => members, () => user_members)
+  members?: members[];
 
-  @HasMany(() => user_bonus_points, { sourceKey: 'user_id' })
-  user_bonus_points?: user_bonus_points[];
+  @BelongsToMany(() => hotels, () => hotel_reviews)
+  hotels?: hotels[];
 
-  @HasMany(() => user_members, { sourceKey: 'user_id' })
+  @BelongsToMany(() => hotels, () => booking_orders)
+  bookedHotels?: hotels[];
+
+  @HasMany(() => user_members, { as: 'user_members_booking' })
   user_members?: user_members[];
 
-  @HasOne(() => user_roles, { sourceKey: 'user_id' })
-  user_role?: user_roles;
-
-  @HasMany(() => user_profiles, { sourceKey: 'user_id' })
-  user_profiles?: user_profiles[];
-
-  @HasMany(() => hotel_reviews, { sourceKey: 'user_id' })
-  hotels?: hotel_reviews[];
-
-  @HasMany(() => facility_price_history, { sourceKey: 'user_id' })
-  facility_price_history?: facility_price_history[];
-
-  @HasMany(() => facilities, { sourceKey: 'user_id' })
-  facilities?: facilities[];
-
-  @HasMany(() => work_orders, { sourceKey: 'user_id' })
-  work_orders?: work_orders[];
-
-  @HasMany(() => employee, { sourceKey: 'user_id' })
-  employees?: employee[];
-
+  
   @HasMany(() => user_accounts, { sourceKey: 'user_id' })
   user_accounts?: user_accounts[];
 

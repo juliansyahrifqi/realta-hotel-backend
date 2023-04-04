@@ -12,6 +12,7 @@ import {
 import { bank } from './bank';
 import { fintech } from './fintech';
 import { user_accounts } from './user_accounts';
+import { vendor } from 'models/purchasingSchema';
 
 export interface entityAttributes {
   entity_id?: number;
@@ -44,5 +45,9 @@ export class entity
 
   @HasMany(() => user_accounts, { sourceKey: 'entity_id'})
   user_accounts?: user_accounts[];
+
+  
+  @HasMany(() => vendor, { sourceKey: 'entity_id' })
+  vendors?: vendor[];
 
 }

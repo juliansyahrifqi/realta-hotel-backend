@@ -6,7 +6,14 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsToMany,
+  HasMany,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { facilities } from '../hotelSchema/facilities';
+import { booking_order_detail } from './booking_order_detail';
+import { users } from '../usersSchema/users';
+import { hotels } from '../hotelSchema/hotels';
 
 export interface booking_ordersAttributes {
   boor_id?: number;
@@ -32,8 +39,7 @@ export interface booking_ordersAttributes {
 @Table({ tableName: 'booking_orders', schema: 'booking', timestamps: false })
 export class booking_orders
   extends Model<booking_ordersAttributes, booking_ordersAttributes>
-  implements booking_ordersAttributes
-{
+  implements booking_ordersAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -103,9 +109,23 @@ export class booking_orders
   @Column({ allowNull: true, type: DataType.STRING(15) })
   boor_status?: string;
 
+  @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   boor_user_id?: number;
 
+  @ForeignKey(() => hotels)
   @Column({ allowNull: true, type: DataType.INTEGER })
   boor_hotel_id?: number;
+
+  @BelongsToMany(() => facilities, () => booking_order_detail)
+  facilities?: facilities[];
+
+  @HasMany(() => booking_order_detail, { as: 'order_details' })
+  order_details?: booking_order_detail[];
+
+  @BelongsTo(() => users)
+  users?: users
+
+  @BelongsTo(() => hotels)
+  hotels?: hotels
 }

@@ -1,4 +1,3 @@
-import { facilities } from 'models/hotelSchema';
 import {
   Model,
   Table,
@@ -7,8 +6,12 @@ import {
   Index,
   Sequelize,
   ForeignKey,
-  HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
+import { users } from '../usersSchema/users';
+import { user_members } from '../usersSchema/user_members';
+import { hotels } from '../hotelSchema/hotels';
+import { facilities } from '../hotelSchema/facilities';
 
 export interface membersAttributes {
   memb_name: string;
@@ -18,9 +21,9 @@ export interface membersAttributes {
 @Table({ tableName: 'members', schema: 'master', timestamps: false })
 export class members
   extends Model<membersAttributes, membersAttributes>
-  implements membersAttributes
-{
+  implements membersAttributes {
   @Column({ primaryKey: true, type: DataType.STRING(15) })
+  @Index({ name: 'pk_memb_name', using: 'btree', unique: true })
   memb_name!: string;
 
   @Column({
@@ -30,6 +33,10 @@ export class members
   })
   memb_description?: string;
 
-  @HasMany(() => facilities, { sourceKey: 'memb_name' })
-  facilities?: facilities[];
+  @BelongsToMany(() => users, () => user_members)
+  users?: users[];
+
+  @BelongsToMany(() => hotels, () => facilities)
+  hotels?: hotels[];
+  user_members: any;
 }

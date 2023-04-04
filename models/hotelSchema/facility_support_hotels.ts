@@ -8,8 +8,8 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { facilities_support } from './facilities_support';
 import { hotels } from './hotels';
+import { facilities_support } from './facilities_support';
 
 export interface facility_support_hotelsAttributes {
   fsh_id?: number;
@@ -27,8 +27,7 @@ export class facility_support_hotels
     facility_support_hotelsAttributes,
     facility_support_hotelsAttributes
   >
-  implements facility_support_hotelsAttributes
-{
+  implements facility_support_hotelsAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -54,3 +53,4 @@ export class facility_support_hotels
   @BelongsTo(() => facilities_support, 'fsh_fs_id')
   facilities_support?: facilities_support;
 }
+

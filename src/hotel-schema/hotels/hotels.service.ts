@@ -73,6 +73,10 @@ export class HotelsService {
       const limit = pageSize;
 
       const data = await this.hotelsModel.findAll({
+        include: [
+          { model: address },
+          { model: facilities, include: [{ model: category_group }] },
+        ],
         offset,
         limit,
       });
