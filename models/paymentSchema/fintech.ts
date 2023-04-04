@@ -6,7 +6,9 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { entity } from './entity';
 
 export interface fintechAttributes {
   fint_entity_id: number;
@@ -15,11 +17,12 @@ export interface fintechAttributes {
   fint_modified_date?: Date;
 }
 
-@Table({ tableName: 'fintech', schema: 'payment', timestamps: false })
+@Table({ tableName: 'fintech', schema: 'payment', timestamps: true, createdAt:'fint_modified_date', updatedAt: 'fint_modified_date' })
 export class fintech
   extends Model<fintechAttributes, fintechAttributes>
   implements fintechAttributes
 {
+  @ForeignKey(() => entity)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pk_fint_entity_id', using: 'btree', unique: true })
   fint_entity_id!: number;
@@ -34,4 +37,8 @@ export class fintech
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
   fint_modified_date?: Date;
+
+  @BelongsTo(() => entity)
+  entity?: entity;
+
 }

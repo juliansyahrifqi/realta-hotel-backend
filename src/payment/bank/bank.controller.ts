@@ -25,6 +25,6 @@ export class BankController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.bankService.delete(+id);
+    return this.bankService.delete(id);
   }
 }

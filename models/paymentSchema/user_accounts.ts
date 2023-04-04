@@ -7,7 +7,11 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { entity } from './entity';
+import { bank } from './bank';
+import { fintech } from './fintech';
 
 export interface user_accountsAttributes {
   usac_entity_id: number;
@@ -20,7 +24,13 @@ export interface user_accountsAttributes {
   usac_modified_date?: Date;
 }
 
-@Table({ tableName: 'user_accounts', schema: 'payment', timestamps: false })
+@Table({
+  tableName: 'user_accounts',
+  schema: 'payment',
+  timestamps: true,
+  createdAt: 'usac_modified_date',
+  updatedAt: 'usac_modified_date',
+})
 export class user_accounts
   extends Model<user_accountsAttributes, user_accountsAttributes>
   implements user_accountsAttributes
@@ -32,7 +42,11 @@ export class user_accounts
   @Index({ name: 'pk_usac_entity_id', using: 'btree', unique: true })
   usac_entity_id!: number;
 
-  @ForeignKey(() => users )
+  
+  @ForeignKey(() => entity)
+  @ForeignKey(() => bank)
+  @ForeignKey(() => fintech)
+  @ForeignKey(() => users)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pk_usac_entity_id', using: 'btree', unique: true })
   usac_user_id!: number;
@@ -59,6 +73,14 @@ export class user_accounts
 
   @Column({ allowNull: true, type: DataType.DATE(6) })
   usac_modified_date?: Date;
-  senderTransactions: any;
-  recipientTransactions: any;
+
+  @BelongsTo(() => bank)
+  bank?: bank;
+
+  @BelongsTo(() => fintech)
+  fintech?: fintech;
+
+  @BelongsTo(() => users)
+  user?: users;
 }
+

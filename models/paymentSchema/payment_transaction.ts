@@ -31,7 +31,9 @@ export interface payment_transactionAttributes {
 @Table({
   tableName: 'payment_transaction',
   schema: 'payment',
-  timestamps: false,
+  timestamps: true,
+  createdAt:'patr_modified_date',
+  updatedAt:'patr_modified_date',
 })
 export class payment_transaction
   extends Model<payment_transactionAttributes, payment_transactionAttributes>
@@ -113,6 +115,7 @@ export class payment_transaction
   })
   patr_trx_number_ref?: string;
 
+  @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   patr_user_id?: number;
 
@@ -121,4 +124,8 @@ export class payment_transaction
 
   @BelongsTo(() => booking_orders)
   booking_order?: booking_orders;
+
+  @BelongsTo(() => users)
+  user?: users;
+
 }

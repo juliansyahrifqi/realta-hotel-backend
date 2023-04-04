@@ -1,13 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
-import { user_accounts } from 'models/paymentSchema';
+import { bank, entity, fintech, user_accounts, user_accountsAttributes } from 'models/paymentSchema';
 import { InjectModel } from '@nestjs/sequelize';
+import {  Sequelize } from 'sequelize-typescript';
+
 
 @Injectable()
 export class UserAccountsService {
   constructor(
     @InjectModel(user_accounts) private userAccountModel: typeof user_accounts,
+    private sequelize: Sequelize
   ) {}
 
 async create(createUserAccountDto: CreateUserAccountDto) {
@@ -29,13 +32,84 @@ async create(createUserAccountDto: CreateUserAccountDto) {
 }
 
 
-  async findAll(): Promise<user_accounts[]> {
+  async findAll() {
     try {
-      return await this.userAccountModel.findAll();
+      
+      const result = await this.sequelize.query(`SELECT * FROM payment."findUserAccount"`);
+      return result[0]
     } catch (error) {
-      throw new Error(`Gagal mendapatkan data akun pengguna`);
+      throw new Error(`Gagal mendapatkan data akun pengguna ${error}`);
     }
   }
+
+  // async findAll(searchTerm?: string) {
+  //   try {
+  //     let cari = {};
+  //     if (searchTerm) {
+  //       cari = { bank_name: { [Op.iLike]: `%${searchTerm}%` } };
+  //     }
+  //     const userAccounts = await this.userAccountModel.findAll({ where: cari });
+  //     return { data: userAccounts };
+  //   } catch (error) {
+  //     return { error: 'Failed to get banks' };
+  //   }
+  // }
+
+
+
+
+
+  // async findAll(searchTerm: string = '', page: number = 1, limit: number = 10): Promise<any> {
+  //   try {
+  //     const offset = limit * (page - 1);
+  //     const result = await this.userAccountModel.findAndCountAll({
+  //       attributes: ['usac_account_number', 'usac_saldo', 'usac_type'],
+  //       include:[
+  //         {
+  //           model: users,
+  //           attributes: ['user_full_name'],
+  //           required: true,
+  //         }
+  //       ],
+  //       where: {[
+  //         user: {
+  //           [Op.iLike]: `%${searchTerm}%`
+  //         }]
+  //       },
+  //       offset,
+  //       limit,
+  //     });
+  
+  //     const { count: totalData, rows: userAccounts } = result;
+  
+  //     const totalPage = Math.ceil(totalData / limit);
+  //     const pagination = {
+  //       totalData,
+  //       totalPage,
+  //       currentPage: page,
+  //       perPage: limit
+  //     };
+  
+  //     if (userAccounts.length === 0) {
+  //       return {
+  //         message: 'User Account tidak ditemukan!',
+  //         pagination,
+  //         data: []
+  //       };
+  //     }
+  
+  //     return {
+  //       data: userAccounts,
+  //       pagination,
+  //     };
+  //   } catch (error) {
+  //     return { error: 'Failed to get user accounts' };
+  //   }
+  // }
+  
+
+  
+  
 
 
   async findOne(id: string) {

@@ -6,7 +6,12 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasOne,
+  HasMany,
 } from 'sequelize-typescript';
+import { bank } from './bank';
+import { fintech } from './fintech';
+import { user_accounts } from './user_accounts';
 
 export interface entityAttributes {
   entity_id?: number;
@@ -17,6 +22,9 @@ export class entity
   extends Model<entityAttributes, entityAttributes>
   implements entityAttributes
 {
+  @ForeignKey(() => bank)
+  @ForeignKey(() => fintech)
+  @ForeignKey(() => user_accounts)
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -27,4 +35,14 @@ export class entity
   })
   @Index({ name: 'pk_entity_id', using: 'btree', unique: true })
   entity_id?: number;
+
+  @HasOne(() => bank, { sourceKey: 'entity_id' })
+  bank?: bank;
+
+  @HasOne(() => fintech, { sourceKey: 'entity_id' })
+  fintech?: fintech;
+
+  @HasMany(() => user_accounts, { sourceKey: 'entity_id'})
+  user_accounts?: user_accounts[];
+
 }

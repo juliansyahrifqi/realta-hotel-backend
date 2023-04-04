@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
 import { UserAccountsService } from './user_accounts.service';
 import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
@@ -14,7 +14,7 @@ export class UserAccountsController {
   }
 
   @Get()
-  findAll() {
+  async findAll()  {
     return this.userAccountsService.findAll();
   }
 
@@ -24,8 +24,8 @@ export class UserAccountsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: any, @Body() updateUserAccountDto: UpdateUserAccountDto) {
-    return this.userAccountsService.update(String(+id), updateUserAccountDto);
+  update(@Param('id') id: string, @Body() updateUserAccountDto: UpdateUserAccountDto) {
+    return this.userAccountsService.update(id, updateUserAccountDto);
   }
 
   @Delete(':id')

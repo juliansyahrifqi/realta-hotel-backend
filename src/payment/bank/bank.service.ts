@@ -54,7 +54,7 @@ export class BankService {
     return await bank.save();
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     try {
       const entity = await this.entityModel.findByPk(id);
       if (!entity) {

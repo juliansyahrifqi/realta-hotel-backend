@@ -12,6 +12,8 @@ import { booking_orders } from 'models/bookingSchema';
 import { order_menus } from 'models/restoSchema';
 import { Op } from 'sequelize';
 import { FindOptions } from 'sequelize/types';
+import { users } from 'models/usersSchema';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class PaymentTransactionService {
@@ -20,8 +22,7 @@ export class PaymentTransactionService {
   constructor(
     @InjectModel(payment_transaction) private paymentTransactionModel: typeof payment_transaction,
     @InjectModel(user_accounts) private userAccountModal: typeof user_accounts,
-    @InjectModel(booking_orders) private bookingOrderModel: typeof booking_orders,
-    @InjectModel(order_menus) private orderMenusModel: typeof order_menus,
+    @InjectModel(users) private userModel: typeof users,
   ) {}
 
   // async topupUserAccount(amount: number, recipientAccountId: number): Promise<void> {
@@ -741,93 +742,92 @@ export class PaymentTransactionService {
 
     
 // ======FINAL TOPUP==============
- async topUp(createPaymentTransaction: CreatePaymentTransactionDto): Promise<any> {
-    try {
-      let currentUserAccount = await this.userAccountModal.findOne({
-        where: { usac_account_number: createPaymentTransaction.sourceId },
-      });
-      let recipientUserAccount = await this.userAccountModal.findOne({
-        where: { usac_account_number: createPaymentTransaction.targetId },
-      });
-    
-        if (!currentUserAccount || !recipientUserAccount) {
-          throw new Error('Akun pengguna tidak ditemukan');
-        }
-    
-        const currentUserAccountBalance = Number(currentUserAccount.usac_saldo);
-        const recipientUserAccountBalance = Number(recipientUserAccount.usac_saldo);
-        
-    
-        if (currentUserAccountBalance < Number(createPaymentTransaction.credit)) {
-          throw new Error('Saldo tidak mencukupi');
-        }
-        // Update saldo pengirim dan penerima
-        currentUserAccount.usac_saldo = (
-          currentUserAccountBalance - Number(createPaymentTransaction.credit)
-        ).toString();
-        recipientUserAccount.usac_saldo = (
-          recipientUserAccountBalance + Number(createPaymentTransaction.credit)
-        ).toString();
-   
-        // Simpan perubahan ke database
-       await currentUserAccount.save();
-       await recipientUserAccount.save();
-       
-
-        // const pengirim = await user_accounts.update({
-        //   usac_saldo:currentUserAccount.usac_saldo
-        // },{ where: { usac_account_number: createPaymentTransaction.sourceId } })
-
-        // const penerima = await user_accounts.update({
-        //   usac_saldo:recipientUserAccount.usac_saldo
-        // },{ where: { usac_account_number: createPaymentTransaction.targetId } })
-     
-
-        const createdTransactionPengirim = await this.paymentTransactionModel.create({
-          patr_debet : null,
-          patr_credit : createPaymentTransaction.credit,
-          patr_type : createPaymentTransaction.payType,
-          patr_note : createPaymentTransaction.payNote,
-          patr_modified_date : new Date(),
-          patr_orme_order_number: null,
-          patr_boor_order_number:null,
-          patr_source_id : createPaymentTransaction.sourceId,
-          patr_target_id: createPaymentTransaction.targetId,
-          patr_trx_number_ref: null,
-          patr_user_id : createPaymentTransaction.userId
-        },
-        );
-        // return createdTransactionPengirim
-  
-        const createdTransactionPenerima = await this.paymentTransactionModel.create({
-          patr_debet : createPaymentTransaction.credit,
-          patr_credit : null,
-          patr_type : createPaymentTransaction.payType,
-          patr_note : createPaymentTransaction.payNote,
-          patr_modified_date : new Date(),
-          patr_orme_order_number: null,
-          patr_boor_order_number:null,
-          patr_source_id : createPaymentTransaction.sourceId,
-          patr_target_id: createPaymentTransaction.targetId,
-          patr_trx_number_ref: createdTransactionPengirim.patr_trx_number,
-          patr_user_id : recipientUserAccount.usac_user_id
-        },
-        );
-        const dataResponse = await this.paymentTransactionModel.findAll(({
-          where: {
-            patr_trx_number: {
-              [Op.in]: [createdTransactionPenerima.patr_trx_number, createdTransactionPengirim.patr_trx_number]
-            }
-          }
-        }))
-        return dataResponse 
-      }
+  async topUp(createPaymentTransaction: CreatePaymentTransactionDto): Promise<any> {
+      try {
+        let currentUserAccount = await this.userAccountModal.findOne({
+          where: { usac_account_number: createPaymentTransaction.sourceId },
+        });
+        let recipientUserAccount = await this.userAccountModal.findOne({
+          where: { usac_account_number: createPaymentTransaction.targetId },
+        });
       
-       catch (error) {
+          if (!currentUserAccount || !recipientUserAccount) {
+            throw new Error('Akun pengguna tidak ditemukan');
+          }
+      
+          const currentUserAccountBalance = Number(currentUserAccount.usac_saldo);
+          const recipientUserAccountBalance = Number(recipientUserAccount.usac_saldo);
+          
+      
+          if (currentUserAccountBalance < Number(createPaymentTransaction.credit)) {
+            throw new Error('Saldo tidak mencukupi');
+          }
+          // Update saldo pengirim dan penerima
+          currentUserAccount.usac_saldo = (
+            currentUserAccountBalance - Number(createPaymentTransaction.credit)
+          ).toString();
+          recipientUserAccount.usac_saldo = (
+            recipientUserAccountBalance + Number(createPaymentTransaction.credit)
+          ).toString();
+    
+          // Simpan perubahan ke database
+        await currentUserAccount.save();
+        await recipientUserAccount.save();
+        
 
-        throw error;
+          // const pengirim = await user_accounts.update({
+          //   usac_saldo:currentUserAccount.usac_saldo
+          // },{ where: { usac_account_number: createPaymentTransaction.sourceId } })
+
+          // const penerima = await user_accounts.update({
+          //   usac_saldo:recipientUserAccount.usac_saldo
+          // },{ where: { usac_account_number: createPaymentTransaction.targetId } })
+      
+
+          const createdTransactionPengirim = await this.paymentTransactionModel.create({
+            patr_debet : null,
+            patr_credit : createPaymentTransaction.credit,
+            patr_type : createPaymentTransaction.payType,
+            patr_note : createPaymentTransaction.payNote,
+            patr_modified_date : new Date(),
+            patr_orme_order_number: null,
+            patr_boor_order_number:null,
+            patr_source_id : createPaymentTransaction.sourceId,
+            patr_target_id: createPaymentTransaction.targetId,
+            patr_trx_number_ref: null,
+            patr_user_id : createPaymentTransaction.userId,
+          });
+          // return createdTransactionPengirim
+    
+          const createdTransactionPenerima = await this.paymentTransactionModel.create({
+            patr_debet : createPaymentTransaction.credit,
+            patr_credit : null,
+            patr_type : createPaymentTransaction.payType,
+            patr_note : createPaymentTransaction.payNote,
+            patr_modified_date : new Date(),
+            patr_orme_order_number: null,
+            patr_boor_order_number:null,
+            patr_source_id : createPaymentTransaction.sourceId,
+            patr_target_id: createPaymentTransaction.targetId,
+            patr_trx_number_ref: createdTransactionPengirim.patr_trx_number,
+            patr_user_id : recipientUserAccount.usac_user_id, 
+          });
+          // const dataUser=await this.paymentTransactionModel.findOne(users.user_id)
+          const dataResponse = await this.paymentTransactionModel.findAll(({
+            where: {
+              patr_trx_number: {
+                [Op.in]: [createdTransactionPenerima.patr_trx_number, createdTransactionPengirim.patr_trx_number]
+              }
+            }
+          }))
+          return dataResponse 
+        }
+        
+        catch (error) {
+
+          throw error;
+        }
       }
-    }
 
 
     async validateAccountPayment(id: string) {
@@ -897,29 +897,87 @@ export class PaymentTransactionService {
 
   // }
 
-  async findAll(): Promise<payment_transaction[]> {
-    return this.paymentTransactionModel.findAll({
-      attributes: [
-        'patr_trx_number', 
-        'patr_modified_date',
-        'patr_debet',
-        'patr_credit',
-        'patr_note',
-        [
-          Sequelize.literal(`COALESCE("patr_boor_order_number", '') || COALESCE(' ' || "patr_orme_order_number", '')`),
-          'orderNumber'
-        ],
-        'patr_source_id',
-        'patr_target_id',
-        'patr_trx_number_ref',
-        'patr_type',
-        'patr_user_id',
-      ],
-    });
-  }
+  // ==========GETALL WITHOUT PAGINATION====================
+  // async findAll(): Promise<payment_transaction[]> {
+  //   return this.paymentTransactionModel.findAll({
+  //     attributes: [
+  //       'patr_trx_number', 
+  //       'patr_modified_date',
+  //       'patr_debet',
+  //       'patr_credit',
+  //       'patr_note',
+  //       [
+  //         Sequelize.literal(`COALESCE("patr_boor_order_number", '') || COALESCE(' ' || "patr_orme_order_number", '')`),
+  //         'orderNumber'
+  //       ],
+  //       'patr_source_id',
+  //       'patr_target_id',
+  //       'patr_trx_number_ref',
+  //       'patr_type',
+  //       'patr_user_id',
+  //     ],
+  //   });
+  // }
   
 
-    
+  async findAll(page: number = 1, limit: number = 10): Promise<any> {
+    try {
+      const offset = (page - 1) * limit;
+      const result = await this.paymentTransactionModel.findAndCountAll({
+       
+        attributes: [
+          'patr_trx_number', 
+          'patr_modified_date',
+          'patr_debet',
+          'patr_credit',
+          'patr_note',
+          [
+            Sequelize.literal(`COALESCE("patr_boor_order_number", '') || COALESCE(' ' || "patr_orme_order_number", '')`),
+            'orderNumber'
+          ],
+          'patr_source_id',
+          'patr_target_id',
+          'patr_trx_number_ref',
+          'patr_type',
+          'patr_user_id'
+          // [Sequelize.col('users.user_name'), 'user_name']
+        ], 
+        //  
+        // include: [{
+        //   model: this.userModel,
+        //   as: 'user',
+        //   attributes: ['user_name'],
+        //   required: true,
+        // }],
+        offset,
+        limit,
+      });
+      if (result.count === 0) {
+        return {
+          message: 'Payment History Not Found!',
+        };
+      }
+      const totalItems = result.count;
+      const totalPages = Math.ceil(totalItems / limit);
+      const currentPage = page;
+      const nextPage = currentPage < totalPages ? currentPage + 1 : null;
+      const prevPage = currentPage > 1 ? currentPage - 1 : null;
+      return {
+        message: 'Payment Transaction History has been found!',
+        data: result.rows,
+        pagination: {
+          currentPage,
+          nextPage,
+          prevPage,
+          totalPages,
+          totalItems,
+        },
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+  
     
     // {
          
