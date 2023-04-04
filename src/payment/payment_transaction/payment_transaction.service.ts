@@ -232,7 +232,6 @@ export class PaymentTransactionService {
         }
         
         catch (error) {
-
           throw error;
         }
       }
