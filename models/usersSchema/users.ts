@@ -13,6 +13,7 @@ import { user_members } from './user_members';
 import { hotels } from '../hotelSchema/hotels';
 import { hotel_reviews } from '../hotelSchema/hotel_reviews';
 import { booking_orders } from '../bookingSchema/booking_orders';
+import { payment_transaction, user_accounts } from 'models/paymentSchema';
 
 export interface usersAttributes {
   user_id?: number;
@@ -90,4 +91,10 @@ export class users
   @HasMany(() => user_members, { as: 'user_members_booking' })
   user_members?: user_members[];
 
+  
+  @HasMany(() => user_accounts, { sourceKey: 'user_id' })
+  user_accounts?: user_accounts[];
+
+  @HasMany(() => payment_transaction, { sourceKey: 'user_id' })
+  payment_transactions?: payment_transaction[];
 }

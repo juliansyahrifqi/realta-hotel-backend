@@ -55,12 +55,17 @@ import { StocksModule } from './purchasing-schema/stocks/stocks.module';
 import { VendorProductModule } from './purchasing-schema/vendor-product/vendor-product.module';
 import { VendorModule } from './purchasing-schema/vendor/vendor.module';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { BankModule } from '../src/payment/bank/bank.module';
+import { UserAccountsModule } from '../src/payment/user_accounts/user_accounts.module';
+import { PaymentTransactionModule } from '../src/payment/payment_transaction/payment_transaction.module';
+import { EntityModule } from '../src/payment/entity/entity.module';
+import { FintechModule } from '../src/payment/fintech/fintech.module';
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: process.env.DB_HOST,
+      host: 'localhost',
       port: +process.env.DB_PORT,
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
@@ -121,6 +126,13 @@ import { SequelizeModule } from '@nestjs/sequelize';
     StockDetailModule,
     PurchaseOrderHeaderModule,
     PurchaseOrderDetailModule,
+    BankModule,
+    UsersModule,
+    FintechModule,
+    PaymentTransactionModule,
+    UserAccountsModule,
+    EntityModule,
+    OrderMenusModule,
   ],
   controllers: [AppController],
   providers: [AppService],
