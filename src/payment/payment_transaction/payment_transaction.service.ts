@@ -6,14 +6,10 @@ import {
   payment_transaction,
   user_accounts,
 } from 'models/paymentSchema';
-import { CreateUserAccountDto } from '../user_accounts/dto/create-user_account.dto';
-import {Sequelize, Transaction} from 'sequelize';
-import { booking_orders } from 'models/bookingSchema';
-import { order_menus } from 'models/restoSchema';
+import {Sequelize} from 'sequelize';
 import { Op } from 'sequelize';
-import { FindOptions } from 'sequelize/types';
 import { users } from 'models/usersSchema';
-import { User } from 'src/users/entities/user.entity';
+
 
 @Injectable()
 export class PaymentTransactionService {

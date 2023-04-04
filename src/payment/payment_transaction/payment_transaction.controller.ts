@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Res } from '@nestjs/common';
 import { PaymentTransactionService } from './payment_transaction.service';
 import { CreatePaymentTransactionDto } from './dto/create-payment_transaction.dto';
-import { UpdatePaymentTransactionDto } from './dto/update-payment_transaction.dto';
 import { payment_transaction } from 'models/paymentSchema';
 
 @Controller('payment-transaction')
@@ -86,36 +85,7 @@ export class PaymentTransactionController {
 
 
 
-//   @Get()
-//   findAll() {
-//     return this.paymentTransactionService.findAll();
-//   }
 
-//   @Get(':id')
-//   findOne(@Param('id') id: string) {
-//     return this.paymentTransactionService.findOne(+id);
-//   }
 
-//   @Patch(':id')
-//   update(@Param('id') id: string, @Body() updatePaymentTransactionDto: UpdatePaymentTransactionDto) {
-//     return this.paymentTransactionService.update(+id, updatePaymentTransactionDto);
-//   }
-
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return this.paymentTransactionService.remove(+id);
-//   }
 }
 
-
-// transactionNumber: String(getData.patr_trx_number),
-// //       txtDate: getData.patr_modified_date,
-// //       debit: getData.patr_debet,
-// //       credit: getData.patr_credit,
-// //       note: getData.patr_note,
-// //       orderNumber: `${getData.patr_boor_order_number || ''} ${getData.patr_orme_order_number || ''}`,
-// //       sender: getData.patr_source_id,
-// //       receiver: getData.patr_target_id,
-// //       transactionRef: createdTransactionPengirim.patr_trx_number,
-// //       type: getData.patr_type,
-// //       user: recipientUserAccount.usac_user_id,
