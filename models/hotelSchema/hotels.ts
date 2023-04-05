@@ -65,7 +65,11 @@ export class hotels
   @Column({ allowNull: true, type: DataType.STRING(100) })
   hotel_reason?: string;
 
-  @Column({ allowNull: true, type: DataType.DATE })
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  })
   hotel_modified_date?: Date;
 
   @ForeignKey(() => address)

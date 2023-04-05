@@ -120,9 +120,9 @@ export class facilities
   @BelongsTo(() => hotels)
   hotel?: hotels;
 
-  //buat Kepin
-  @BelongsTo(() => hotels)
-  hotels?: hotels;
+  // //buat Kepin
+  // @BelongsTo(() => hotels)
+  // hotels?: hotels;
 
   @BelongsTo(() => category_group)
   category_group?: category_group;

@@ -24,18 +24,22 @@ export class HotelsService {
     private cityModel: typeof city,
   ) {}
 
-  async create(@Res() response: Response, createHotelDto: CreateHotelDto) {
+  async create(
+    @Res() response: Response,
+    createHotelDto: CreateHotelDto,
+    city_name: string,
+  ) {
     try {
       const dataCity = await this.cityModel
-        .create({
-          city_name: createHotelDto.city_name,
+        .findOne({
+          where: { city_name: city_name },
         })
         .then((data) => {
           return this.addressModel.create({
+            addr_city_id: data.city_id,
             addr_line1: createHotelDto.addr_line1,
             addr_line2: createHotelDto.addr_line2,
             addr_postal_code: createHotelDto.addr_postal_code,
-            addr_city_id: data.city_id,
           });
         })
         .then((data) => {
@@ -48,6 +52,45 @@ export class HotelsService {
           });
         });
 
+      //==========================
+      // const dataAddress = await this.addressModel
+      //   .create({
+      //     addr_line1: createHotelDto.addr_line1,
+      //     addr_line2: createHotelDto.addr_line2,
+      //     addr_postal_code: createHotelDto.addr_postal_code,
+      //   })
+      //   .then((data) => {
+      //     return this.hotelsModel.create({
+      //       hotel_name: createHotelDto.hotel_name,
+      //       hotel_phonenumber: createHotelDto.hotel_phonenumber,
+      //       hotel_status: createHotelDto.hotel_status,
+      //       hotel_addr_id: data.addr_id,
+      //       hotel_description: createHotelDto.hotel_description,
+      //     });
+      //   });
+      //=======================================
+      // const dataCity = await this.cityModel
+      //   .create({
+      //     city_name: createHotelDto.city_name,
+      //   })
+      //   .then((data) => {
+      //     return this.addressModel.create({
+      //       addr_line1: createHotelDto.addr_line1,
+      //       addr_line2: createHotelDto.addr_line2,
+      //       addr_postal_code: createHotelDto.addr_postal_code,
+      //       addr_city_id: data.city_id,
+      //     });
+      //   })
+      //   .then((data) => {
+      //     return this.hotelsModel.create({
+      // hotel_name: createHotelDto.hotel_name,
+      // hotel_phonenumber: createHotelDto.hotel_phonenumber,
+      // hotel_status: createHotelDto.hotel_status,
+      // hotel_addr_id: data.addr_id,
+      // hotel_description: createHotelDto.hotel_description,
+      //     });
+      //   });
+      // return dataAddress;
       const dataResponse = {
         statusCode: HttpStatus.OK,
         message: 'Berhasil Di Tambahkan',
@@ -57,7 +100,7 @@ export class HotelsService {
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: `Error, ${error}`,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
@@ -67,30 +110,54 @@ export class HotelsService {
     @Res() response: Response,
     pageNumber: number,
     pageSize: number,
+    hotel_name: string,
   ) {
     try {
-      const offset = (pageNumber - 1) * pageSize;
-      const limit = pageSize;
+      const pages = pageNumber || 0;
+      const limits = pageSize || 5;
+      const search = hotel_name || '';
+      const offset = limits * (pages - 1);
+
+      const totalRows = await this.hotelsModel.count({
+        where: {
+          [Op.or]: [
+            {
+              hotel_name: {
+                [Op.iLike]: '%' + search + '%',
+              },
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / limits);
 
       const data = await this.hotelsModel.findAll({
+        where: {
+          hotel_name: {
+            [Op.iLike]: '%' + search + '%',
+          },
+        },
         include: [
           { model: address },
           { model: facilities, include: [{ model: category_group }] },
         ],
-        offset,
-        limit,
+        offset: offset,
+        limit: limits,
+        order: [['hotel_id', 'ASC']],
       });
 
       const dataResponse = {
         statusCode: HttpStatus.OK,
-        page: offset + 1,
+        totalPage: totalPage,
+        totalRows: totalRows,
+        page: pages,
         data: data,
       };
       return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
@@ -99,8 +166,12 @@ export class HotelsService {
   async findAllSearch(@Res() response: Response, searchQuery: string) {
     try {
       const data = await this.hotelsModel.findAll({
+        include: [
+          { model: address },
+          { model: facilities, include: [{ model: category_group }] },
+        ],
         where: {
-          hotel_name: { [Op.like]: `%${searchQuery}%` },
+          hotel_name: { [Op.iLike]: `%${searchQuery}%` },
         },
       });
       const dataResponse = {
@@ -246,6 +317,7 @@ export class HotelsService {
   async update(
     @Res() response: Response,
     hotel_id: number,
+    city_name: string,
     updateHotelDto: UpdateHotelDto,
   ) {
     try {
@@ -263,7 +335,7 @@ export class HotelsService {
           },
         )
         .then((data) => {
-          return address.update(
+          return this.addressModel.update(
             {
               addr_line1: updateHotelDto.addr_line1,
               addr_line2: updateHotelDto.addr_line2,
@@ -275,13 +347,22 @@ export class HotelsService {
           );
         })
         .then((data) => {
-          return city.update(
+          console.log(data);
+          // return this.cityModel.findOne({
+          //   where : {city_id : data.}
+          // })
+        });
+
+      const dataCity = await this.cityModel
+        .findOne({
+          where: { city_name: city_name },
+        })
+        .then((data) => {
+          return this.addressModel.update(
             {
-              city_name: updateHotelDto.city_name,
+              addr_city_id: data.city_id,
             },
-            {
-              where: { city_id: hotel_id },
-            },
+            { where: { addr_id: hotel_id } },
           );
         });
 

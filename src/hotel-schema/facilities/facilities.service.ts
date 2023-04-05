@@ -19,7 +19,7 @@ export class FacilitiesService {
 
     @InjectModel(facility_price_history)
     private faphModel: typeof facility_price_history,
-  ) { }
+  ) {}
   async create(
     @Res() response: Response,
     createFacilityDto: CreateFacilityDto,
@@ -107,6 +107,9 @@ export class FacilitiesService {
         include: [
           { model: facility_price_history, include: [{ model: users }] },
         ],
+        // include: [
+        //   { model: facility_price_history, include: [{ model: users }] },
+        // ],
       });
       const dataResponse = {
         statusCode: HttpStatus.OK,
@@ -116,7 +119,7 @@ export class FacilitiesService {
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }

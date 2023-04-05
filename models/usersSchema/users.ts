@@ -13,6 +13,7 @@ import { user_members } from './user_members';
 import { hotels } from '../hotelSchema/hotels';
 import { hotel_reviews } from '../hotelSchema/hotel_reviews';
 import { booking_orders } from '../bookingSchema/booking_orders';
+import { facility_price_history } from 'models/hotelSchema';
 
 export interface usersAttributes {
   user_id?: number;
@@ -26,11 +27,11 @@ export interface usersAttributes {
   user_hotel_id?: number;
 }
 
-
 @Table({ tableName: 'users', schema: 'users', timestamps: false })
 export class users
   extends Model<usersAttributes, usersAttributes>
-  implements usersAttributes {
+  implements usersAttributes
+{
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -89,5 +90,6 @@ export class users
 
   @HasMany(() => user_members, { as: 'user_members_booking' })
   user_members?: user_members[];
-
+  @HasMany(() => facility_price_history, { sourceKey: 'user_id' })
+  facility_price_history?: facility_price_history[];
 }
