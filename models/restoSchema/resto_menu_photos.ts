@@ -26,7 +26,6 @@ export class resto_menu_photos
 {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('resto.resto_menu_photos_remp_id_seq'::regclass)",
@@ -38,7 +37,7 @@ export class resto_menu_photos
   @Column({ allowNull: true, type: DataType.STRING(50) })
   remp_thumbnail_filename?: string;
 
-  @Column({ allowNull: true, type: DataType.STRING(500) })
+  @Column({ allowNull: true, type: DataType.STRING(50) })
   remp_photo_filename?: string;
 
   @Column({ allowNull: true, type: DataType.STRING })

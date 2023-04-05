@@ -95,13 +95,13 @@ import { ServiceTaskModule } from './master/service_task/service_task.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(JwtMiddleware)
-      .exclude(
-        { path: 'users/signUpGuest', method: RequestMethod.POST },
-        { path: 'users/signUpEmployee', method: RequestMethod.POST },
-        'auth/(.*)',
-      )
-      .forRoutes('*');
+    consumer;
+    // .apply(JwtMiddleware)
+    // .exclude(
+    //   { path: 'users/signUpGuest', method: RequestMethod.POST },
+    //   { path: 'users/signUpEmployee', method: RequestMethod.POST },
+    //   'auth/(.*)',
+    // )
+    // .forRoutes('*');
   }
 }
