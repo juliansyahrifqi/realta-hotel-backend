@@ -138,7 +138,7 @@ export class HotelsService {
           },
         },
         include: [
-          { model: address },
+          { model: address, include: [{ model: city }] },
           { model: facilities, include: [{ model: category_group }] },
         ],
         offset: offset,
@@ -345,12 +345,6 @@ export class HotelsService {
               where: { addr_id: hotel_id },
             },
           );
-        })
-        .then((data) => {
-          console.log(data);
-          // return this.cityModel.findOne({
-          //   where : {city_id : data.}
-          // })
         });
 
       const dataCity = await this.cityModel

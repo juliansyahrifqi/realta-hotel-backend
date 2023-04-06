@@ -23,7 +23,8 @@ export interface hotel_reviewsAttributes {
 @Table({ tableName: 'hotel_reviews', schema: 'hotel', timestamps: false })
 export class hotel_reviews
   extends Model<hotel_reviewsAttributes, hotel_reviewsAttributes>
-  implements hotel_reviewsAttributes {
+  implements hotel_reviewsAttributes
+{
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -41,7 +42,11 @@ export class hotel_reviews
   @Column({ allowNull: true, type: DataType.INTEGER })
   hore_rating?: number;
 
-  @Column({ allowNull: true, type: DataType.DATE })
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  })
   hore_created_on?: Date;
 
   @ForeignKey(() => users)
@@ -53,8 +58,8 @@ export class hotel_reviews
   hore_hotel_id?: number;
 
   @BelongsTo(() => hotels)
-  hotels?: hotels
+  hotels?: hotels;
 
   @BelongsTo(() => users)
-  users?: users
+  users?: users;
 }
