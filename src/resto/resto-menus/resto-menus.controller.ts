@@ -13,6 +13,8 @@ import { CreateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { UpdateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { RestoMenusService } from './resto-menus.service';
 import { resto_menus } from 'models/restoSchema';
+// import { extname, join, basename } from 'path';
+// import { Response } from 'express';
 
 @Controller('resto-menus')
 export class RestoMenusController {
@@ -29,14 +31,14 @@ export class RestoMenusController {
 
   // * MENAMPILKAN SEMUA DATA DENGAN HALAMAN YANG SUDAH DIBERI PAGINATION
   @Get()
-  async findAll(
+  async findAllSearch(
     @Query('page') page = 1,
     @Query('limit') limit = 5,
     @Query('searchTerm') searchTerm?: string,
     @Query('sort') sort?: 'low-to-high' | 'high-to-low',
   ) {
     const options = { page, limit, searchTerm, sort };
-    const { rows, count } = await this.restoMenusService.findAll(options);
+    const { rows, count } = await this.restoMenusService.findAllSearch(options);
     return { data: rows, total: count };
   }
   // ! MENAMPILKAN SEMUA DATA DENGAN HALAMAN YANG SUDAH DIBERI PAGINATION
@@ -47,6 +49,13 @@ export class RestoMenusController {
     return this.restoMenusService.findOne(+id);
   }
   // ! MENAMPILKAN DATA BY ID
+
+  // // * MENAMPILKAN GAMBAR DARI DATA PHOTO BY NAMA FILE GAMBARNYA
+  // @Get('photo')
+  // findAll(): Promise<any[]> {
+  //   return this.restoMenusService.findAllInclude();
+  // }
+  // // ! MENAMPILKAN GAMBAR DARI DATA PHOTO BY NAMA FILE GAMBARNYA
 
   // * EDIT DAN UPDATE RESTO_MENUS
   @Put(':id')

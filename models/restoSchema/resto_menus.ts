@@ -6,6 +6,7 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
   BelongsTo,
 } from 'sequelize-typescript';
 import { resto_menu_photos } from './resto_menu_photos';
@@ -49,7 +50,7 @@ export class resto_menus
   @Column({ allowNull: true, type: DataType.STRING(255) })
   reme_description?: string;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
+  @Column({ allowNull: true, type: DataType.DECIMAL })
   reme_price?: string;
 
   @Column({ allowNull: true, type: DataType.STRING(15) })
@@ -58,8 +59,8 @@ export class resto_menus
   @Column({ allowNull: true, type: DataType.DATE(6) })
   reme_modified_date?: Date;
 
-  @BelongsTo(() => resto_menu_photos)
-  resto_menu_photo?: resto_menu_photos;
+  @HasMany(() => resto_menu_photos, { sourceKey: 'reme_id' })
+  resto_menu_photos?: resto_menu_photos[];
 
   @BelongsTo(() => order_menu_detail)
   order_menu_detail?: order_menu_detail;

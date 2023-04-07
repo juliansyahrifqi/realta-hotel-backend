@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { resto_menus } from 'models/restoSchema';
+import { resto_menu_photos, resto_menus } from 'models/restoSchema';
 import { CreateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { UpdateRestoMenuDto } from './dto/create-update-resto-menu.dto';
 import { Op } from 'sequelize';
@@ -24,8 +24,30 @@ export class RestoMenusService {
     return this.restoMenuModel.create(newData);
   }
 
+  // INI GET ALL COBA
+  // async findAllInclude(): Promise<any> {
+  //   try {
+  //     const result = await resto_menus.findAll({
+  //       include: [
+  //         {
+  //           model: resto_menu_photos,
+  //         },
+  //       ],
+  //     });
+  //     return {
+  //       status: 200,
+  //       message: `Data berhasil ditemukan`,
+  //       data: result,
+  //     };
+  //   } catch (error) {
+  //     return { status: 400, message: error };
+  //   }
+  // }
+
+  // INI GET ALL COBA
+
   // * HUBUNGAN DENGAN TABLE FACILITIES DARI SCHEMA HOTEL
-  async findAll(options: {
+  async findAllSearch(options: {
     page?: number;
     limit?: number;
     searchTerm?: string;
@@ -49,7 +71,7 @@ export class RestoMenusService {
     const result = await this.restoMenuModel.findAndCountAll({
       limit,
       offset,
-      include: 'facility',
+      include: ['facility', 'resto_menu_photos'],
       where: whereClause,
       order: orderClause,
     });

@@ -26,9 +26,7 @@ export class RestoMenuPhotosService {
 
   // * HUBUNGAN ASSOCIATION DENGAN TABLE RESTO_MENUS
   async findAll(): Promise<resto_menu_photos[]> {
-    return this.restoMenuPhotosModel.findAll({
-      include: 'resto_menu',
-    });
+    return this.restoMenuPhotosModel.findAll();
   }
   // ! HUBUNGAN ASSOCIATION DENGAN TABLE RESTO_MENUS
 
