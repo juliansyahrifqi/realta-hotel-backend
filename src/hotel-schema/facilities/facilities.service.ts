@@ -77,7 +77,7 @@ export class FacilitiesService {
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }

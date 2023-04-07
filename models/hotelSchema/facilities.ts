@@ -97,7 +97,11 @@ export class facilities
   @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
   faci_tax_rate?: string;
 
-  @Column({ allowNull: true, type: DataType.DATE })
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  })
   faci_modified_date?: Date;
 
   @ForeignKey(() => category_group)
