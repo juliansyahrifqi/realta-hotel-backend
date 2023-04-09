@@ -9,8 +9,8 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { city } from './city';
 import { country } from './country';
+import { city } from './city';
 
 export interface provincesAttributes {
   prov_id?: number;
@@ -25,23 +25,30 @@ export class provinces
 {
   @Column({
     primaryKey: true,
+    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('master.provinces_prov_id_seq'::regclass)",
+      "nextval('master.provinces_prov_id_seq1'::regclass)",
     ),
   })
+  @Index({ name: 'pk_prov_id', using: 'btree', unique: true })
   prov_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(85) })
+  @Index({ name: 'provinces_prov_name_key', using: 'btree', unique: true })
   prov_name?: string;
 
   @ForeignKey(() => country)
   @Column({ allowNull: true, type: DataType.INTEGER })
   prov_country_id?: number;
 
+  // @BelongsTo(() => country)
+  // country?: country;
+
+  @HasMany(() => city, { sourceKey: 'prov_id' })
+  city?: city[];
+
+  // Ikrar
   @BelongsTo(() => country)
   countries?: country;
-
-  @HasMany(() => city)
-  city?: city;
 }

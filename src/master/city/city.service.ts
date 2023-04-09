@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
-import { address, city, provinces } from '../../../models/masterSchema';
+import {
+  city,
+  country,
+  provinces,
+  regions,
+  address,
+} from '../../../models/masterSchema';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 
@@ -25,7 +31,7 @@ export class CityService {
 
   async findAll(): Promise<any> {
     try {
-      const result = await this.cityModel.findAll();
+      const result = await this.cityModel.findAll({});
       return { message: 'Data found', data: result };
     } catch (error) {
       return { message: 'Data not found', error: error.message };
@@ -35,6 +41,12 @@ export class CityService {
   async findAllSearch(searchQuery: string): Promise<any> {
     try {
       const data = await this.cityModel.findAll({
+        include: [
+          {
+            model: provinces,
+            include: [{ model: country, include: [{ model: regions }] }],
+          },
+        ],
         where: {
           city_name: { [Op.like]: `%${searchQuery}%` },
         },

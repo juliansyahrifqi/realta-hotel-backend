@@ -25,11 +25,13 @@ export class city
 {
   @Column({
     primaryKey: true,
+    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('master.city_city_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'pk_city_id', using: 'btree', unique: true })
   city_id?: number;
 
   @Column({
@@ -46,6 +48,6 @@ export class city
   @BelongsTo(() => provinces)
   provinces?: provinces;
 
-  @HasMany(() => address)
-  address?: address;
+  @HasMany(() => address, { sourceKey: 'city_id' })
+  addresses?: address[];
 }

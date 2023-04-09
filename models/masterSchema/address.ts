@@ -6,9 +6,11 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
   BelongsTo,
 } from 'sequelize-typescript';
 import { country } from './country';
+import { hotels } from '../hotelSchema/hotels';
 import { city } from './city';
 
 export interface addressAttributes {
@@ -30,9 +32,10 @@ export class address
     autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('master.address_addr_id_seq'::regclass)",
+      "nextval('master.address_addr_id_seq1'::regclass)",
     ),
   })
+  @Index({ name: 'pk_addr_id', using: 'btree', unique: true })
   addr_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(225) })
@@ -50,6 +53,9 @@ export class address
   @ForeignKey(() => city)
   @Column({ allowNull: true, type: DataType.INTEGER })
   addr_city_id?: number;
+
+  @HasMany(() => hotels, { sourceKey: 'addr_id' })
+  hotels?: hotels[];
 
   @BelongsTo(() => city)
   city?: city;

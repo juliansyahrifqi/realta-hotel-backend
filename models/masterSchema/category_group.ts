@@ -6,7 +6,12 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsToMany,
 } from 'sequelize-typescript';
+import { hotels } from '../hotelSchema/hotels';
+import { facilities } from '../hotelSchema/facilities';
+import { policy } from './policy';
+import { policy_category_group } from './policy_category_group';
 
 export interface category_groupAttributes {
   cagro_id?: number;
@@ -20,8 +25,7 @@ export interface category_groupAttributes {
 @Table({ tableName: 'category_group', schema: 'master', timestamps: false })
 export class category_group
   extends Model<category_groupAttributes, category_groupAttributes>
-  implements category_groupAttributes
-{
+  implements category_groupAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -30,9 +34,15 @@ export class category_group
       "nextval('master.category_group_cagro_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'pk_cagro_id', using: 'btree', unique: true })
   cagro_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(25) })
+  @Index({
+    name: 'category_group_cagro_name_key',
+    using: 'btree',
+    unique: true,
+  })
   cagro_name?: string;
 
   @Column({
@@ -62,4 +72,10 @@ export class category_group
     defaultValue: Sequelize.literal('NULL::character varying'),
   })
   cagro_icon_url?: string;
+
+  @BelongsToMany(() => hotels, () => facilities)
+  hotels?: hotels[];
+
+  @BelongsToMany(() => policy, () => policy_category_group)
+  policies?: policy[];
 }

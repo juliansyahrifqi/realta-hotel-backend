@@ -6,7 +6,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsToMany,
 } from 'sequelize-typescript';
+import { booking_order_detail } from '../bookingSchema/booking_order_detail';
+import { booking_order_detail_extra } from '../bookingSchema/booking_order_detail_extra';
 
 export interface price_itemsAttributes {
   prit_id?: number;
@@ -26,19 +29,19 @@ export interface price_itemsAttributes {
 })
 export class price_items
   extends Model<price_itemsAttributes, price_itemsAttributes>
-  implements price_itemsAttributes
-{
+  implements price_itemsAttributes {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('master.price_items_prit_id_seq'::regclass)",
     ),
   })
+  @Index({ name: 'pk_prit_id', using: 'btree', unique: true })
   prit_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(55) })
+  @Index({ name: 'price_items_prit_name_key', using: 'btree', unique: true })
   prit_name?: string;
 
   @Column({ allowNull: true, type: DataType.NUMBER })
@@ -52,4 +55,7 @@ export class price_items
 
   @Column({ allowNull: true, type: DataType.DATE })
   prit_modified_date?: Date;
+
+  @BelongsToMany(() => booking_order_detail, () => booking_order_detail_extra)
+  booking_order_details?: booking_order_detail[];
 }
