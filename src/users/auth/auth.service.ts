@@ -61,6 +61,7 @@ export class AuthService {
         user_role_id: userRole.usro_role_id,
         user_hotel_id: user.user_hotel_id,
         user_modified_date: user.user_modified_date,
+        user_photo_profile: user.user_photo_profile,
       };
 
       const token = sign(
@@ -72,6 +73,7 @@ export class AuthService {
           user_role_id: userRole.usro_role_id,
           user_hotel_id: user.user_hotel_id,
           user_modified_date: user.user_modified_date,
+          user_photo_profile: user.user_photo_profile,
         },
         process.env.SECRET_KEY,
       );
