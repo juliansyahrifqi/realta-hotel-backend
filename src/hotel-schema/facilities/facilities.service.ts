@@ -85,7 +85,11 @@ export class FacilitiesService {
 
   async findAll(@Res() response: Response) {
     try {
-      const data = await this.faciModel.findAll();
+      const data = await this.faciModel.findAll({
+        include: [
+          { model: facility_price_history, include: [{ model: users }] },
+        ],
+      });
 
       const dataResponse = {
         statusCode: HttpStatus.OK,
@@ -107,9 +111,6 @@ export class FacilitiesService {
         include: [
           { model: facility_price_history, include: [{ model: users }] },
         ],
-        // include: [
-        //   { model: facility_price_history, include: [{ model: users }] },
-        // ],
       });
       const dataResponse = {
         statusCode: HttpStatus.OK,

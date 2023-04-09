@@ -52,45 +52,6 @@ export class HotelsService {
           });
         });
 
-      //==========================
-      // const dataAddress = await this.addressModel
-      //   .create({
-      //     addr_line1: createHotelDto.addr_line1,
-      //     addr_line2: createHotelDto.addr_line2,
-      //     addr_postal_code: createHotelDto.addr_postal_code,
-      //   })
-      //   .then((data) => {
-      //     return this.hotelsModel.create({
-      //       hotel_name: createHotelDto.hotel_name,
-      //       hotel_phonenumber: createHotelDto.hotel_phonenumber,
-      //       hotel_status: createHotelDto.hotel_status,
-      //       hotel_addr_id: data.addr_id,
-      //       hotel_description: createHotelDto.hotel_description,
-      //     });
-      //   });
-      //=======================================
-      // const dataCity = await this.cityModel
-      //   .create({
-      //     city_name: createHotelDto.city_name,
-      //   })
-      //   .then((data) => {
-      //     return this.addressModel.create({
-      //       addr_line1: createHotelDto.addr_line1,
-      //       addr_line2: createHotelDto.addr_line2,
-      //       addr_postal_code: createHotelDto.addr_postal_code,
-      //       addr_city_id: data.city_id,
-      //     });
-      //   })
-      //   .then((data) => {
-      //     return this.hotelsModel.create({
-      // hotel_name: createHotelDto.hotel_name,
-      // hotel_phonenumber: createHotelDto.hotel_phonenumber,
-      // hotel_status: createHotelDto.hotel_status,
-      // hotel_addr_id: data.addr_id,
-      // hotel_description: createHotelDto.hotel_description,
-      //     });
-      //   });
-      // return dataAddress;
       const dataResponse = {
         statusCode: HttpStatus.OK,
         message: 'Berhasil Di Tambahkan',
@@ -140,6 +101,7 @@ export class HotelsService {
         include: [
           { model: address, include: [{ model: city }] },
           { model: facilities, include: [{ model: category_group }] },
+          { model: facilities_support },
         ],
         offset: offset,
         limit: limits,
