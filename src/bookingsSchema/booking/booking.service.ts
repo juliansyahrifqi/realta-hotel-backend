@@ -28,7 +28,7 @@ export class BookingService {
     try {
 
       const dataBookingHotels = await this.facilityModel.findAll({
-        attributes: ['faci_id', 'faci_name', 'faci_room_number', 'faci_startdate', 'faci_enddate', 'faci_discount', 'faci_tax_rate', 'faci_rate_price'],
+        attributes: ['faci_id', 'faci_name', 'faci_room_number', 'faci_startdate', 'faci_enddate', 'faci_discount', 'faci_tax_rate', 'faci_rate_price', 'faci_memb_name'],
         include: [
           {
             model: hotels,
@@ -60,7 +60,8 @@ export class BookingService {
                   },
                 ],
               },
-              { model: hotel_reviews, attributes: ['hore_rating'] }
+              { model: hotel_reviews, attributes: ['hore_rating'] },
+              { model: facilities_support }
             ],
           },
         ],
@@ -68,6 +69,7 @@ export class BookingService {
       }).catch((err) => {
         throw err
       })
+      console.log(countryName)
 
       const dataFaciPhoto = await this.facilityModel.findAll({
         include: {
@@ -125,12 +127,14 @@ export class BookingService {
       }
 
       const totalData = filteredData.length;
-      const startIndex = (page - 1) * limit;
-      const endIndex = page * limit;
+      // const startIndex = (page - 1) * limit;
+      // const endIndex = page * limit;
+      // console.log(`Halaman start Index ${startIndex} dan Halaman End Index ${endIndex}`)
 
-      let data = filteredData.slice(startIndex, endIndex);
+      // let data = filteredData.slice(startIndex, endIndex);
+      let dataNew = [...filteredData]
 
-      data = data.map((e) => {
+      dataNew = dataNew.map((e) => {
         let sumRating = 0
         let sumRatingLength = 0
         let jumlahReviewsHotel = e.hotel.hotel_reviews.length
@@ -158,6 +162,7 @@ export class BookingService {
           ratingDescription = 'Poor';
         }
 
+
         return {
           ...e,
           faci_keterangan_book: 'per room per night',
@@ -167,7 +172,10 @@ export class BookingService {
           }
         }
       })
-      return { data, totalData };
+
+
+
+      return { dataNew, totalData };
     } catch (error) {
       console.log(error)
       return error;
@@ -177,7 +185,7 @@ export class BookingService {
   async findFaciById(id_hotel: string, dataIdFilter: number[], startDate: string, endDate: string) {
     try {
       const dataFaciBook = await this.facilityModel.findAll({
-        attributes: ['faci_id', 'faci_name', 'faci_room_number', 'faci_startdate', 'faci_enddate', 'faci_discount', 'faci_tax_rate', 'faci_rate_price', 'faci_max_number'], where: {
+        attributes: ['faci_id', 'faci_name', 'faci_room_number', 'faci_startdate', 'faci_enddate', 'faci_discount', 'faci_tax_rate', 'faci_rate_price', 'faci_max_number', 'faci_memb_name'], where: {
           faci_id: {
             [Op.in]: dataIdFilter
           },
@@ -217,6 +225,8 @@ export class BookingService {
                 model: hotel_reviews, include: [{
                   model: users
                 }]
+              }, {
+                model: facilities_support
               }
             ],
           }, { model: facility_photos }, { model: category_group, where: { cagro_name: 'Room' }, include: [{ model: policy, attributes: ['poli_id', 'poli_name', 'poli_description'] }] }
@@ -225,6 +235,7 @@ export class BookingService {
         console.log(err)
         throw err
       })
+
 
 
       let dataFaciBookUp = dataFaciBook.map((data: any) => {
@@ -268,6 +279,35 @@ export class BookingService {
             '2': `${Math.round(ratings_count['2'] / total_reviews * 100) ? Math.round(ratings_count['2'] / total_reviews * 100) : 0}%`,
             '1': `${Math.round(ratings_count['1'] / total_reviews * 100) ? Math.round(ratings_count['1'] / total_reviews * 100) : 0}%`,
           };
+
+          let sumRating = 0
+          let sumRatingLength = 0
+          let jumlahReviewsHotel = data.hotel.hotel_reviews.length
+          let hotelReviewsAtr = { ...data.hotel, hotel_reviews_count: jumlahReviewsHotel }
+
+          hotelReviewsAtr.hotel_reviews.forEach((hr: any) => {
+            sumRating += hr.hore_rating
+            sumRatingLength++
+          })
+
+          let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
+
+          let ratingDescription = '';
+          let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
+
+          if (ratingStar >= 4.5) {
+            ratingDescription = 'Excellent';
+          } else if (ratingStar >= 4) {
+            ratingDescription = 'Very Good';
+          } else if (ratingStar >= 3.5) {
+            ratingDescription = 'Good';
+          } else if (ratingStar >= 3) {
+            ratingDescription = 'Fair';
+          } else {
+            ratingDescription = 'Poor';
+          }
+
+
           let dataObj = {
             ...data.toJSON(),
             faci_rate_price: rpFaciRatePrice,
@@ -279,6 +319,9 @@ export class BookingService {
             hotel: {
               ...data.hotel.toJSON(),
               hotel_review_percentage: percentages,
+              hotel_rating_final_star: ratingStar,
+              hotel_review_count: jumlahReviewsHotel,
+              hotel_rating_status: ratingDescription
             },
           };
           delete dataObj.parent;
@@ -319,6 +362,8 @@ export class BookingService {
       }).catch((err) => {
         console.log(err)
       })
+
+
       return dataAllRooms
     } catch (error) {
       return error

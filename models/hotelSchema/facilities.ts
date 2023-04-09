@@ -44,8 +44,7 @@ export interface facilitiesAttributes {
 @Table({ tableName: 'facilities', schema: 'hotel', timestamps: false })
 export class facilities
   extends Model<facilitiesAttributes, facilitiesAttributes>
-  implements facilitiesAttributes
-{
+  implements facilitiesAttributes {
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,
@@ -121,8 +120,8 @@ export class facilities
   hotel?: hotels;
 
   //buat Kepin
-  @BelongsTo(() => hotels)
-  hotels?: hotels;
+  // @BelongsTo(() => hotels)
+  // hotels?: hotels;
 
   @BelongsTo(() => category_group)
   category_group?: category_group;
