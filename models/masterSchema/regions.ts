@@ -35,9 +35,9 @@ export class regions
   region_name?: string;
 
   // Ikrar
-  @HasMany(() => country)
-  countries?: country;
+  // @HasMany(() => country)
+  // countries?: country;
 
-  // @HasMany(() => country, { sourceKey: 'region_code' })
-  // country?: country[];
+  @HasMany(() => country, { sourceKey: 'region_code' })
+  country?: country[];
 }

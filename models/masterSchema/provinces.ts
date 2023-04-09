@@ -42,13 +42,13 @@ export class provinces
   @Column({ allowNull: true, type: DataType.INTEGER })
   prov_country_id?: number;
 
-  // @BelongsTo(() => country)
-  // country?: country;
+  @BelongsTo(() => country)
+  country?: country;
 
   @HasMany(() => city, { sourceKey: 'prov_id' })
   city?: city[];
 
   // Ikrar
-  @BelongsTo(() => country)
-  countries?: country;
+  // @BelongsTo(() => country)
+  // countries?: country;
 }
