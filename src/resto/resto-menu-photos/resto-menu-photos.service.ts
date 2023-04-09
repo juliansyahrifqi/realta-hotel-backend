@@ -48,7 +48,7 @@ export class RestoMenuPhotosService {
 
   async delete(id: number): Promise<number> {
     const rowsDeleted = await this.restoMenuPhotosModel.destroy({
-      where: { remp_id: id },
+      where: { remp_reme_id: id },
     });
     if (rowsDeleted < 1) {
       throw new Error('Product not found');
