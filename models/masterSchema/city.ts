@@ -7,8 +7,10 @@ import {
   Sequelize,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { provinces } from './provinces';
+import { address } from './address';
 
 export interface cityAttributes {
   city_id?: number;
@@ -43,4 +45,7 @@ export class city
 
   @BelongsTo(() => provinces)
   provinces?: provinces;
+
+  @HasMany(() => address)
+  address?: address;
 }

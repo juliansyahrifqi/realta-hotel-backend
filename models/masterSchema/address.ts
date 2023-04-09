@@ -6,7 +6,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { country } from './country';
+import { city } from './city';
 
 export interface addressAttributes {
   addr_id?: number;
@@ -44,6 +47,10 @@ export class address
   @Column({ allowNull: true, type: DataType.STRING(55) })
   addr_spatial_code?: string;
 
+  @ForeignKey(() => city)
   @Column({ allowNull: true, type: DataType.INTEGER })
   addr_city_id?: number;
+
+  @BelongsTo(() => city)
+  city?: city;
 }

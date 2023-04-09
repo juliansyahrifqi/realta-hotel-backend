@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { country, provinces } from '../../../models/masterSchema';
+import { country, provinces, regions } from '../../../models/masterSchema';
 // import { CountryDto } from './dto/country.dto';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
@@ -52,6 +52,9 @@ export class CountryService {
       include: [
         {
           model: this.provinceModel,
+        },
+        {
+          model: regions,
         },
       ],
       where: { country_id: id },

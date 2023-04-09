@@ -17,7 +17,13 @@ export interface price_itemsAttributes {
   prit_modified_date?: Date;
 }
 
-@Table({ tableName: 'price_items', schema: 'master', timestamps: false })
+@Table({
+  tableName: 'price_items',
+  schema: 'master',
+  timestamps: true,
+  createdAt: 'prit_modified_date',
+  updatedAt: 'prit_modified_date',
+})
 export class price_items
   extends Model<price_itemsAttributes, price_itemsAttributes>
   implements price_itemsAttributes

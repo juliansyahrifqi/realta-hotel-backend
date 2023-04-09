@@ -28,8 +28,8 @@ export class ProvincesController {
 
   @Get('/province/:id')
   async getCityByRegion(@Param('id') id: number) {
-    const city = await this.provincesService.getCityById(id);
-    return { data: city };
+    const province = await this.provincesService.getCityById(id);
+    return { data: province };
   }
 
   @Post()

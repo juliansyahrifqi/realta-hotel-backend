@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { city, provinces } from '../../../models/masterSchema';
+import { city, country, provinces } from '../../../models/masterSchema';
 import { CreateProvincesDto } from './dto/create-province.dto';
 import { UpdateProvinceDto } from './dto/update-province.dto';
 
@@ -45,15 +45,18 @@ export class ProvincesService {
   }
 
   async getCityById(id: number): Promise<any> {
-    const provinces = await this.provincesModel.findOne({
+    const city = await this.provincesModel.findOne({
       include: [
         {
           model: this.cityModel,
         },
+        {
+          model: country,
+        },
       ],
       where: { prov_id: id },
     });
-    return provinces;
+    return city;
   }
 
   async update(id: number, updateProvinceDto: UpdateProvinceDto): Promise<any> {

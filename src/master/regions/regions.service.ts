@@ -16,7 +16,9 @@ export class RegionsService {
 
   async findAll(): Promise<any> {
     try {
-      const region = await this.regionsModel.findAll();
+      const region = await this.regionsModel.findAll({
+        order: ['region_code'],
+      });
       return { message: 'Data found', data: region };
     } catch (error) {
       return { message: 'Error fetching data', error: error.message };
@@ -53,7 +55,7 @@ export class RegionsService {
       const newRegion = await this.regionsModel.create(dto);
       return { message: 'Data created', data: newRegion };
     } catch (error) {
-      return { message: 'Error creating data', error: error.message };
+      return { message: 'Error creating data', error: error };
     }
   }
 

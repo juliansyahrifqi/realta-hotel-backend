@@ -4,7 +4,7 @@ export class CreatePriceItemDto {
   @IsString()
   prit_name: string;
 
-  @IsNumber()
+  @IsOptional()
   prit_price: string;
 
   @IsOptional()
