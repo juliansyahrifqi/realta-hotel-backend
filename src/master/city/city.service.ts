@@ -6,6 +6,7 @@ import {
   country,
   provinces,
   regions,
+  address,
 } from '../../../models/masterSchema';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
@@ -15,6 +16,8 @@ export class CityService {
   constructor(
     @InjectModel(city)
     private readonly cityModel: typeof city,
+    @InjectModel(address)
+    private addressModel: typeof address,
   ) {}
 
   async create(createCityDto: CreateCityDto): Promise<any> {
@@ -81,19 +84,21 @@ export class CityService {
     }
   }
 
-  // async update(
-  //   id: number,
-  //   updateCityDto: UpdateCityDto,
-  // ): Promise<[number, city[]]> {
-  //   const [numRowsUpdated, updatedCity] = await this.cityModel.update(
-  //     updateCityDto,
-  //     {
-  //       where: { city_id: id },
-  //       returning: true,
-  //     },
-  //   );
-  //   return [numRowsUpdated, updatedCity];
-  // }
+  async getAddressById(id: number): Promise<any> {
+    const address = await this.cityModel.findOne({
+      include: [
+        {
+          model: this.addressModel,
+        },
+        {
+          model: provinces,
+        },
+      ],
+      where: { city_id: id },
+    });
+    return address;
+  }
+
   async update(id: number, updateCityDto: UpdateCityDto): Promise<any> {
     try {
       const data = await this.cityModel.update(updateCityDto, {

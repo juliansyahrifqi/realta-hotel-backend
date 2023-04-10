@@ -21,13 +21,14 @@ export interface countryAttributes {
 @Table({ tableName: 'country', schema: 'master', timestamps: false })
 export class country
   extends Model<countryAttributes, countryAttributes>
-  implements countryAttributes {
+  implements countryAttributes
+{
   @Column({
     primaryKey: true,
     autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('master.country_country_id_seq1'::regclass)",
+      "nextval('master.country_country_id_seq'::regclass)",
     ),
   })
   @Index({ name: 'pk_country_id', using: 'btree', unique: true })

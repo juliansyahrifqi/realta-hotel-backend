@@ -29,16 +29,14 @@ export class ServiceTaskController {
   }
 
   @Post()
-  async create(
-    @Body() createServiceTaskDto: CreateServiceTaskDto,
-  ): Promise<any> {
+  async create(@Body() createServiceTaskDto: any): Promise<any> {
     return this.serviceTaskService.create(createServiceTaskDto);
   }
 
   @Put(':id')
   async update(
     @Param('id') id: number,
-    @Body() updateServiceTaskDto: UpdateServiceTaskDto,
+    @Body() updateServiceTaskDto: any,
   ): Promise<any> {
     return this.serviceTaskService.update(id, updateServiceTaskDto);
   }

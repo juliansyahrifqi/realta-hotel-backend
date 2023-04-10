@@ -10,6 +10,7 @@ import {
   UploadedFile,
   UseInterceptors,
   ParseIntPipe,
+  Res,
 } from '@nestjs/common';
 import { CategoryGroupService } from './category_group.service';
 import { category_group } from '../../../models/masterSchema';
@@ -17,6 +18,8 @@ import { CreateCategoryGroupDto } from './dto/create-category_group.dto';
 import { UpdateCategoryGroupDto } from './dto/update-category_group.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { join } from 'path';
+import { Response } from "express";
 
 @Controller('category-group')
 export class CategoryGroupController {
@@ -33,6 +36,20 @@ export class CategoryGroupController {
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<any> {
     return this.categoryGroupService.findOne(id);
+  }
+
+  @Get('uploads/image/master/:cagro_icon')
+  async getProductImage(
+    @Param('cagro_icon') cagro_icon: string,
+    @Res() res: Response,
+  ) {
+    const showImage = join(
+      __dirname,
+      '../../../../uploads/image/master/',
+      cagro_icon,
+    );
+
+    res.sendFile(showImage);
   }
 
   // @Post()

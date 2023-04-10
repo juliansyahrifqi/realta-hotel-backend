@@ -28,12 +28,12 @@ export class CategoryGroupService {
         cagro_description: createCategoryGroupDto.cagro_description,
         cagro_type: createCategoryGroupDto.cagro_type,
         cagro_icon: image.filename,
-        cagro_icon_url: `http://localhost:${process.env.PORT}/files/${image.filename}`,
+        cagro_icon_url: image.filename,
       });
       await produk.save();
       return { message: 'Data created', data: produk };
     } catch (error) {
-      return { message: 'Failed to create data', error: error.message };
+      return { message: 'Failed to create data', error: error };
     }
   }
 
@@ -85,7 +85,7 @@ export class CategoryGroupService {
           cagro_description: updateCategoryGroupDto.cagro_description,
           cagro_type: updateCategoryGroupDto.cagro_type,
           cagro_icon: image.filename,
-          cagro_icon_url: `http://localhost:${process.env.PORT}/files/${image.filename}`,
+          cagro_icon_url: image.filename,
         },
         { where: { cagro_id } },
       );

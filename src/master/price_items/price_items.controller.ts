@@ -17,27 +17,19 @@ import { price_items } from '../../../models/masterSchema';
 export class PriceItemsController {
   constructor(private readonly priceItemsService: PriceItemsService) {}
 
-  @Post()
-  async create(
-    @Body() createPriceItemDto: CreatePriceItemDto,
-  ): Promise<price_items> {
-    return await this.priceItemsService.create(createPriceItemDto);
-  }
-
-  // @Get()
-  // async findAll(): Promise<price_items[]> {
-  //   return await this.priceItemsService.findAll();
-  // }
-  @Get()
-  findAll(@Query('page') page: number, @Query('limit') limit: number) {
-    return this.priceItemsService.findAll(page, limit);
-  }
-
   @Get('search')
-  async findAllSearch(@Query('searchQuery') searchQuery: string) {
+  async findAllSearch(
+    @Query('searchQuery') searchQuery?: string,
+    @Query('searchType') searchType?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
     try {
       const price_items = await this.priceItemsService.findAllSearch(
         searchQuery,
+        searchType,
+        page,
+        limit,
       );
       return {
         data: price_items,
@@ -54,6 +46,22 @@ export class PriceItemsController {
   async findOne(@Param('id') id: string): Promise<price_items> {
     return await this.priceItemsService.findOne(Number(id));
   }
+
+  @Post()
+  async create(
+    @Body() createPriceItemDto: CreatePriceItemDto,
+  ): Promise<price_items> {
+    return await this.priceItemsService.create(createPriceItemDto);
+  }
+
+  // @Get()
+  // async findAll(): Promise<price_items[]> {
+  //   return await this.priceItemsService.findAll();
+  // }
+  // @Get()
+  // findAll(@Query('page') page: number, @Query('limit') limit: number) {
+  //   return this.priceItemsService.findAll(page, limit);
+  // }
 
   @Put(':id')
   async update(
