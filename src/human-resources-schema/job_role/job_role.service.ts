@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { CreateJobRoleDto } from './dto/create-job_role.dto';
 import { UpdateJobRoleDto } from './dto/update-job_role.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -11,9 +11,13 @@ export class JobRoleService {
     private jobRoleModel: typeof job_role,
   ) {}
 
-  async create(createJobRoleDto: CreateJobRoleDto): Promise<any> {
+  async create(@Body() createJobRoleDto: CreateJobRoleDto): Promise<any> {
     try {
-      const result = await this.jobRoleModel.create(createJobRoleDto);
+      const jobRoletoCreate = {
+        ...createJobRoleDto,
+        joro_modified_date: new Date(),
+      };
+      const result = await this.jobRoleModel.create(jobRoletoCreate);
       return {
         message: 'Job Role Baru ditambahkan!',
         data: result,
@@ -60,12 +64,15 @@ export class JobRoleService {
     updateJobRoleDto: UpdateJobRoleDto,
   ): Promise<any> {
     try {
-      const result = await this.jobRoleModel.update(updateJobRoleDto, {
+      await this.jobRoleModel.update(updateJobRoleDto, {
         where: { joro_id },
       });
+      const updatedJobRole = await this.jobRoleModel.findByPk(joro_id);
+      updatedJobRole.joro_modified_date = new Date();
+      await updatedJobRole.save();
       return {
         message: `Job Role dengan id ${joro_id} berhasil diupdate!`,
-        data: result,
+        data: updatedJobRole,
       };
     } catch (error) {
       return error;
