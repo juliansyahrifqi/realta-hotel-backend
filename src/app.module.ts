@@ -127,15 +127,27 @@ import { SequelizeModule } from '@nestjs/sequelize';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    // consumer
-    //   .apply(JwtMiddleware)
-    //   .exclude(
-    //     { path: 'users/signUpGuest', method: RequestMethod.POST },
-    //     { path: 'users/signUpEmployee', method: RequestMethod.POST },
-    //     'auth/(.*)',
-    //   )
-    //   .forRoutes('*');
-  }
+export class AppModule {
+  // configure(consumer: MiddlewareConsumer) {
+  // consumer
+  //   .apply(JwtMiddleware)
+  //   .exclude(
+  //     { path: 'users/signUpGuest', method: RequestMethod.POST },
+  //     { path: 'users/signUpEmployee', method: RequestMethod.POST },
+  //     'auth/(.*)',
+  //   )
+  //   .forRoutes('*');
+  // }
 }
+// export class AppModule implements NestModule {
+//   // configure(consumer: MiddlewareConsumer) {
+//     // consumer
+//     //   .apply(JwtMiddleware)
+//     //   .exclude(
+//     //     { path: 'users/signUpGuest', method: RequestMethod.POST },
+//     //     { path: 'users/signUpEmployee', method: RequestMethod.POST },
+//     //     'auth/(.*)',
+//     //   )
+//     //   .forRoutes('*');
+//   // }
+// }

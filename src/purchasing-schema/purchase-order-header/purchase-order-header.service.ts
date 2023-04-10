@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   purchase_order_detail,
   purchase_order_header,
+  vendor,
 } from 'models/purchasingSchema';
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
 import { CreatePurchaseOrderHeaderDto } from './dto/create-purchase-order-header.dto';
 import { UpdatePurchaseOrderHeaderDto } from './dto/update-purchase-order-header.dto';
+import { Response } from 'express';
 
 @Injectable()
 export class PurchaseOrderHeaderService {
@@ -66,96 +68,96 @@ export class PurchaseOrderHeaderService {
   //   }
   // }
 
-  async searchOrder(
-    pageNumber: number,
-    limit: number,
-    poNumber: string,
-    status: string,
-  ): Promise<any> {
-    try {
-      const offset = (pageNumber - 1) * limit;
+  // async searchOrder(
+  //   pageNumber: number,
+  //   limit: number,
+  //   poNumber: string,
+  //   status: string,
+  // ): Promise<any> {
+  //   try {
+  //     const offset = (pageNumber - 1) * limit;
 
-      const result = await purchase_order_header.findAndCountAll({
-        where: {
-          [Op.or]: [
-            {
-              pohe_number: {
-                [Op.iLike]: `%${poNumber}%`,
-              },
-            },
-            {
-              pohe_status: {
-                [Op.eq]: status,
-              },
-            },
-          ],
-        },
-        offset,
-        limit,
-      });
+  //     const result = await purchase_order_header.findAndCountAll({
+  //       where: {
+  //         [Op.or]: [
+  //           {
+  //             pohe_number: {
+  //               [Op.iLike]: `%${poNumber}%`,
+  //             },
+  //           },
+  //           {
+  //             pohe_status: {
+  //               [Op.eq]: status,
+  //             },
+  //           },
+  //         ],
+  //       },
+  //       offset,
+  //       limit,
+  //     });
 
-      const count = result.count;
-      const totalPages = Math.ceil(count / limit);
-      const currentPage = pageNumber;
-      const data = result.rows;
+  //     const count = result.count;
+  //     const totalPages = Math.ceil(count / limit);
+  //     const currentPage = pageNumber;
+  //     const data = result.rows;
 
-      if (count === 0) {
-        return {
-          message: `Data order tidak ditemukan`,
-          data: [],
-          meta: {
-            count: 0,
-            totalPages: 0,
-            currentPage,
-            hasNextPage: false,
-            hasPrevPage: false,
-          },
-        };
-      }
+  //     if (count === 0) {
+  //       return {
+  //         message: `Data order tidak ditemukan`,
+  //         data: [],
+  //         meta: {
+  //           count: 0,
+  //           totalPages: 0,
+  //           currentPage,
+  //           hasNextPage: false,
+  //           hasPrevPage: false,
+  //         },
+  //       };
+  //     }
 
-      return {
-        message: `Data order ditemukan`,
-        data,
-        meta: {
-          count,
-          totalPages,
-          currentPage,
-          hasNextPage: currentPage < totalPages,
-          hasPrevPage: currentPage > 1,
-        },
-      };
-    } catch (error) {
-      return error;
-    }
-  }
+  //     return {
+  //       message: `Data order ditemukan`,
+  //       data,
+  //       meta: {
+  //         count,
+  //         totalPages,
+  //         currentPage,
+  //         hasNextPage: currentPage < totalPages,
+  //         hasPrevPage: currentPage > 1,
+  //       },
+  //     };
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
 
-  async findAll(pageNumber: number, limit: number): Promise<any> {
-    try {
-      const offset = (pageNumber - 1) * limit;
+  // async findAll(pageNumber: number, limit: number): Promise<any> {
+  //   try {
+  //     const offset = (pageNumber - 1) * limit;
 
-      const result = await purchase_order_header.findAndCountAll({
-        offset,
-        limit,
-      });
-      const count = result.count;
-      const totalPages = Math.ceil(count / limit);
-      const currentPage = pageNumber;
-      const data = result.rows;
-      return {
-        message: `Data order ditemukan`,
-        data,
-        meta: {
-          count,
-          totalPages,
-          currentPage,
-          hasNextPage: currentPage < totalPages,
-          hasPrevPage: currentPage > 1,
-        },
-      };
-    } catch (error) {
-      return error;
-    }
-  }
+  //     const result = await purchase_order_header.findAndCountAll({
+  //       offset,
+  //       limit,
+  //     });
+  //     const count = result.count;
+  //     const totalPages = Math.ceil(count / limit);
+  //     const currentPage = pageNumber;
+  //     const data = result.rows;
+  //     return {
+  //       message: `Data order ditemukan`,
+  //       data,
+  //       meta: {
+  //         count,
+  //         totalPages,
+  //         currentPage,
+  //         hasNextPage: currentPage < totalPages,
+  //         hasPrevPage: currentPage > 1,
+  //       },
+  //     };
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
 
   // async findAll(pageNumber: number, limit: number): Promise<any> {
   //   try {
