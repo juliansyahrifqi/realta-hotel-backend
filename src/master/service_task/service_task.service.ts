@@ -40,6 +40,7 @@ export class ServiceTaskService {
       const newServiceTask = await this.serviceTaskModel.create(
         createServiceTaskDto,
       );
+      // console.log(newServiceTask);
       return { message: 'Data created', data: newServiceTask };
     } catch (error) {
       return { message: 'Error creating data', error: error.message };
