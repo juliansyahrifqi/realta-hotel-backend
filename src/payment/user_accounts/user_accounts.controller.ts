@@ -18,6 +18,11 @@ export class UserAccountsController {
     return this.userAccountsService.findAll();
   }
 
+  @Get('data')
+  async findBFAll()  {
+    return this.userAccountsService.findBFAll();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userAccountsService.findOne(id);
