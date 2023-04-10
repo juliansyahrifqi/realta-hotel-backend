@@ -9,6 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { facilities } from './facilities';
+import { users } from 'models/usersSchema';
 
 export interface facility_price_historyAttributes {
   faph_faci_id: number;
@@ -34,7 +35,8 @@ export class facility_price_history
     facility_price_historyAttributes,
     facility_price_historyAttributes
   >
-  implements facility_price_historyAttributes {
+  implements facility_price_historyAttributes
+{
   @ForeignKey(() => facilities)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pk_faph_id', using: 'btree', unique: true })
@@ -72,12 +74,19 @@ export class facility_price_history
   @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
   faph_tax_rate?: string;
 
-  @Column({ allowNull: true, type: DataType.DATE })
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  })
   faph_modified_date?: Date;
 
+  @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   faph_user_id?: number;
 
   @BelongsTo(() => facilities)
   facilities?: facilities;
+  @BelongsTo(() => users)
+  users?: users;
 }

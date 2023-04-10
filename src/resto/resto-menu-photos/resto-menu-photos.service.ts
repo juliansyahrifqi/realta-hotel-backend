@@ -24,11 +24,11 @@ export class RestoMenuPhotosService {
     return createdRestoMenuPhotos;
   }
 
+  // * HUBUNGAN ASSOCIATION DENGAN TABLE RESTO_MENUS
   async findAll(): Promise<resto_menu_photos[]> {
-    return this.restoMenuPhotosModel.findAll({
-      include: 'resto_menu',
-    });
+    return this.restoMenuPhotosModel.findAll();
   }
+  // ! HUBUNGAN ASSOCIATION DENGAN TABLE RESTO_MENUS
 
   async findOne(id: number): Promise<resto_menu_photos> {
     return this.restoMenuPhotosModel.findByPk(id);
@@ -48,7 +48,7 @@ export class RestoMenuPhotosService {
 
   async delete(id: number): Promise<number> {
     const rowsDeleted = await this.restoMenuPhotosModel.destroy({
-      where: { remp_id: id },
+      where: { remp_reme_id: id },
     });
     if (rowsDeleted < 1) {
       throw new Error('Product not found');

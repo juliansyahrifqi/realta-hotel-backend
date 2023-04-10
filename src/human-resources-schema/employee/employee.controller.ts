@@ -43,19 +43,19 @@ export class EmployeeController {
     return result;
   }
 
-  @Get('employeePage')
-  employeePage(@Query('page') page: number, @Query('limit') limit: number) {
-    return this.employeeService.employeePage(page, limit);
-  }
-
-  // @Get()
-  // findAll(@Query('page') page: number, @Query('limit') limit: number) {
-  //   return this.employeeService.findAll(page, limit);
-  // }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.employeeService.findOne(+id);
+  @Get()
+  async findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('search') user_full_name: string,
+    @Query('status') emp_current_flag: string,
+  ) {
+    return this.employeeService.findAll(
+      page,
+      limit,
+      user_full_name,
+      emp_current_flag,
+    );
   }
 
   @Put(':id')

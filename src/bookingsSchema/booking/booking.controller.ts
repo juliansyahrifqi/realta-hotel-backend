@@ -15,24 +15,25 @@ export class BookingController {
   @Get()
   async findAllHotel(
     @Query('page') page = 1,
-    @Query('limit') limit = 2,
+    @Query('limit') limit = 3,
     @Query('minSubTotal') minSubTotal = 0,
     @Query('maxSubTotal') maxSubTotal = Number.MAX_VALUE,
-    @Query('cityName') cityName: string,
+    @Query('cityName') cityName: string = 'Indonesia',
     @Query('provName') provName: string,
     @Query('countryName') countryName: string,
-    @Query('regionName') regionName: string,
+    @Query('regionName') regionName = 'Asia',
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
     @Query('facilities_support_filter') facilities_support_filter: string,
     @Res() response: Response,
   ) {
     try {
+      console.log(typeof startDate, '', typeof endDate)
       let facilitiesSupportFilter: any;
       if (facilities_support_filter !== undefined) {
         facilitiesSupportFilter = facilities_support_filter.split(", ").map(str => str.replace(/[\[\]']+/g, ''))
       }
-      const { data, totalData } = await this.bookingService.findBookingAllHotel(
+      const { dataNew, totalData } = await this.bookingService.findBookingAllHotel(
         page,
         limit,
         cityName,
@@ -42,48 +43,80 @@ export class BookingController {
         facilitiesSupportFilter
       );
 
-      let dataResFinal = data.map((data: any) => {
+      let dataResFinal = dataNew.map((data: any) => {
         let priceRate = 0;
         if (data.faci_rate_price.length > 0) {
           priceRate = parseInt(data.faci_rate_price.replace(/[^0-9.-]+/g, ''));
 
         }
-        let priceDiscount = priceRate - (data.faci_discount * priceRate)
-        let priceTax = priceDiscount + (data.faci_tax_rate * priceDiscount)
-        let subTotal = priceTax
+        // Hitung selisih hari antara startDate dan endDate
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
 
+        let priceDiscount = priceRate - data.faci_discount * priceRate;
+        let subTotal = priceDiscount + data.faci_tax_rate * priceDiscount;
 
+        subTotal *= diff;
+        let faci_rate_price_converse = parseInt(data.faci_rate_price.replace(/[^0-9.-]+/g, '')) * diff
         const rpSubTotal = new Intl.NumberFormat('id-ID', {
           style: 'currency',
           currency: 'IDR',
         }).format(subTotal);
 
+        const rpFaciRatePrice = new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+        }).format(faci_rate_price_converse);
+
+        // let priceDiscount = priceRate - (data.faci_discount * priceRate)
+        // let priceTax = priceDiscount + (data.faci_tax_rate * priceDiscount)
+        // let subTotal = priceTax
+
+
+
+        // const rpSubTotal = new Intl.NumberFormat('id-ID', {
+        //   style: 'currency',
+        //   currency: 'IDR',
+        // }).format(subTotal);
+
         let dataObj = {
           ...data,
-          faci_subtotal: rpSubTotal,
+          faci_rate_price: faci_rate_price_converse,
+          faci_subtotal: subTotal,
 
         };
         delete dataObj.parent;
-
         return dataObj;
       }).filter((data: any) => {
-        const faciSubtotalNumber = Number(data.faci_subtotal.replace(/[^0-9.-]+/g, ''));
+        const faciSubtotalNumber = data.faci_subtotal;
+        console.log(faciSubtotalNumber >= Number(minSubTotal) && faciSubtotalNumber <= Number(maxSubTotal))
         return faciSubtotalNumber >= Number(minSubTotal) && faciSubtotalNumber <= Number(maxSubTotal);
-      });
+      });;
 
-      let formattedDateStart: string;
-      let formattedDateEnd: string;
-      if (startDate && endDate) {
-        dataResFinal = dataResFinal.filter((e: any) => {
-          const faciStartDate = new Date(e.faci_startdate);
-          const faciLastDate = new Date(e.faci_enddate);
 
-          formattedDateStart = faciStartDate.toISOString().substring(0, 10);
-          formattedDateEnd = faciLastDate.toISOString().substring(0, 10);
+      // let formattedDateStart: string;
+      // let formattedDateEnd: string;
+      // if (startDate && endDate) {
+      //   dataResFinal = dataResFinal.filter((e: any) => {
+      //     const faciStartDate = new Date(e.faci_startdate);
+      //     const faciEndDate = new Date(e.faci_enddate);
 
-          return formattedDateStart >= startDate && formattedDateEnd <= endDate;
-        });
-      }
+      //     formattedDateStart = faciStartDate.toISOString().substring(0, 10);
+      //     formattedDateEnd = faciEndDate.toISOString().substring(0, 10);
+
+      //     const startFilterDate = new Date(startDate);
+      //     const endFilterDate = new Date(endDate);
+
+      //     return faciStartDate >= startFilterDate && faciEndDate <= endFilterDate;
+      //   });
+      // }
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      console.log(`Halaman start Index ${startIndex} dan Halaman End Index ${endIndex}`)
+
+      dataResFinal = dataResFinal.slice(startIndex, endIndex);
+
 
       if (!dataResFinal) {
         const dataResponse = {
@@ -97,11 +130,11 @@ export class BookingController {
           statusCode: HttpStatus.OK,
           message: 'success',
           data: dataResFinal,
-          checkin: formattedDateStart,
-          checkout: formattedDateEnd,
+          checkIn: startDate,
+          checkOut: endDate,
           page,
           limit,
-          total: totalData,
+          total: dataResFinal.length,
         };
         return response.status(HttpStatus.OK).send(dataResponse);
       }
@@ -131,17 +164,26 @@ export class BookingController {
     try {
       const { data, jumlahData } = await this.bookingService.findFaciById(IdHotel, dataIdFilter, startDate, endDate)
       let jumlahTotalPrice = 0;
+      let priceRateReal = 0
       data.forEach((item: any) => {
         let priceRate = 0
         priceRate = parseFloat(item.faci_subtotal.replace(/[^\d\,]+/g, '').replace(',', '.'));
+        let priceRateRealConverse = parseFloat(item.faci_rate_price.replace(/[^\d\,]+/g, '').replace(',', '.'));
         jumlahTotalPrice = jumlahTotalPrice + priceRate;
+        priceRateReal = priceRateReal + priceRateRealConverse
       });
       const RpJumlahTotalPrice = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
       }).format(jumlahTotalPrice);
+
+      const RpJumlahTotalPriceRateReal = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+      }).format(priceRateReal);
+
       let dataGuestAll = 0
-      data.forEach((itemHotel: any, index) => {
+      data.forEach((itemHotel: any, index: any) => {
         if (dataGuestRooms[index] > itemHotel.faci_max_number) {
           throw `Ruangan bernomor ${itemHotel.faci_room_number} bertipe ${itemHotel.faci_name} tidak digunakan lebih dari ${itemHotel.faci_max_number} orang`
         } else {
@@ -154,6 +196,7 @@ export class BookingController {
         data: {
           data_rooms: data,
           total_price: RpJumlahTotalPrice,
+          total_price_real: RpJumlahTotalPriceRateReal,
           totalGuest: dataGuestAll,
           totalRoomsBook: dataIdFilter.length
         },

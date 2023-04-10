@@ -16,8 +16,12 @@ export class EmployeeDepatmentHistoryService {
     createEmployeeDepatmentHistoryDto: CreateEmployeeDepatmentHistoryDto,
   ): Promise<any> {
     try {
+      const empDeptHistoryToCreate = {
+        ...createEmployeeDepatmentHistoryDto,
+        edhi_modified_date: new Date(),
+      };
       const result = await this.employeeDepartmentHistoryModel.create(
-        createEmployeeDepatmentHistoryDto,
+        empDeptHistoryToCreate,
       );
       return {
         message: 'Employee Departement History Baru ditambahkan!',
@@ -37,7 +41,7 @@ export class EmployeeDepatmentHistoryService {
         };
       }
       return {
-        message: 'Data Employee Departement History ditemukan!',
+        message: 'Data Employee Department History ditemukan!',
         data: result,
       };
     } catch (error) {
@@ -69,15 +73,19 @@ export class EmployeeDepatmentHistoryService {
     updateEmployeeDepatmentHistoryDto: UpdateEmployeeDepatmentHistoryDto,
   ): Promise<any> {
     try {
-      const result = await this.employeeDepartmentHistoryModel.update(
+      await this.employeeDepartmentHistoryModel.update(
         updateEmployeeDepatmentHistoryDto,
         {
           where: { edhi_id },
         },
       );
+      const updatedEmpDeptHistory =
+        await this.employeeDepartmentHistoryModel.findByPk(edhi_id);
+      updatedEmpDeptHistory.edhi_modified_date = new Date();
+      await updatedEmpDeptHistory.save();
       return {
         message: `Employee Department History dengan id ${edhi_id} berhasil diupdate!`,
-        data: result,
+        data: updatedEmpDeptHistory,
       };
     } catch (error) {
       return error;
