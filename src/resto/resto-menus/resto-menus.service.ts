@@ -65,7 +65,7 @@ export class RestoMenusService {
     } else if (sort === 'high-to-low') {
       orderClause = [['reme_price', 'DESC']];
     } else {
-      orderClause = undefined;
+      orderClause = [['reme_id', 'ASC']]; // default sorting by reme_id in ascending order
     }
 
     const result = await this.restoMenuModel.findAndCountAll({

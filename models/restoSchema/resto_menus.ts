@@ -33,7 +33,6 @@ export class resto_menus
   reme_faci_id?: number;
 
   @ForeignKey(() => order_menu_detail)
-  @ForeignKey(() => resto_menu_photos)
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,

@@ -10,6 +10,7 @@ import {
 } from 'sequelize-typescript';
 import { order_menu_detail } from './order_menu_detail';
 import { users } from '../usersSchema/users';
+import { resto_menu_photos } from './resto_menu_photos';
 
 export interface order_menusAttributes {
   orme_id?: number;
@@ -31,6 +32,7 @@ export class order_menus
   implements order_menusAttributes
 {
   @ForeignKey(() => order_menu_detail)
+  @ForeignKey(() => resto_menu_photos)
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,
