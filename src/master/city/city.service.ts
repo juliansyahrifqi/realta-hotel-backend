@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
-import { city } from '../../../models/masterSchema';
+import {
+  city,
+  country,
+  provinces,
+  regions,
+  address,
+} from '../../../models/masterSchema';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 
@@ -10,6 +16,8 @@ export class CityService {
   constructor(
     @InjectModel(city)
     private readonly cityModel: typeof city,
+    @InjectModel(address)
+    private addressModel: typeof address,
   ) {}
 
   async create(createCityDto: CreateCityDto): Promise<any> {
@@ -23,7 +31,15 @@ export class CityService {
 
   async findAll(): Promise<any> {
     try {
-      const result = await this.cityModel.findAll();
+      const result = await this.cityModel.findAll({
+        include: [
+          {
+            model: provinces,
+            include: [{ model: country, include: [{ model: regions }] }],
+          },
+        ],
+        order: [['city_name', 'ASC']],
+      });
       return { message: 'Data found', data: result };
     } catch (error) {
       return { message: 'Data not found', error: error.message };
@@ -33,6 +49,12 @@ export class CityService {
   async findAllSearch(searchQuery: string): Promise<any> {
     try {
       const data = await this.cityModel.findAll({
+        include: [
+          {
+            model: provinces,
+            include: [{ model: country, include: [{ model: regions }] }],
+          },
+        ],
         where: {
           city_name: { [Op.like]: `%${searchQuery}%` },
         },
@@ -62,19 +84,21 @@ export class CityService {
     }
   }
 
-  // async update(
-  //   id: number,
-  //   updateCityDto: UpdateCityDto,
-  // ): Promise<[number, city[]]> {
-  //   const [numRowsUpdated, updatedCity] = await this.cityModel.update(
-  //     updateCityDto,
-  //     {
-  //       where: { city_id: id },
-  //       returning: true,
-  //     },
-  //   );
-  //   return [numRowsUpdated, updatedCity];
-  // }
+  async getAddressById(id: number): Promise<any> {
+    const address = await this.cityModel.findOne({
+      include: [
+        {
+          model: this.addressModel,
+        },
+        {
+          model: provinces,
+        },
+      ],
+      where: { city_id: id },
+    });
+    return address;
+  }
+
   async update(id: number, updateCityDto: UpdateCityDto): Promise<any> {
     try {
       const data = await this.cityModel.update(updateCityDto, {

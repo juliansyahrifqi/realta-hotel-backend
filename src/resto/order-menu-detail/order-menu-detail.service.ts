@@ -17,11 +17,13 @@ export class OrderMenuDetailService {
     return this.orderMenuDetailModel.create(createOrderMenuDetailDto);
   }
 
+  // * HUBUNGAN DENGAN TABLE ORDER_MENUS DAN RESO_MENUS
   async findAll(): Promise<order_menu_detail[]> {
     return this.orderMenuDetailModel.findAll({
       include: ['order_menus', 'resto_menus'],
     });
   }
+  // ! HUBUNGAN DENGAN TABLE ORDER_MENUS DAN RESO_MENUS
 
   async findOne(id: number): Promise<order_menu_detail> {
     return this.orderMenuDetailModel.findByPk(id);

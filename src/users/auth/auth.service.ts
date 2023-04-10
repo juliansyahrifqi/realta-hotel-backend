@@ -12,7 +12,7 @@ export class AuthService {
     @InjectModel(users) private userModel: typeof users,
     @InjectModel(user_password) private userPasswordModel: typeof user_password,
     @InjectModel(user_roles) private userRoleModel: typeof user_roles,
-  ) { }
+  ) {}
 
   async loginEmployee(loginEmployeeDto: LoginEmployeeDto) {
     try {
@@ -53,6 +53,17 @@ export class AuthService {
         };
       }
 
+      const loginData = {
+        user_id: user.user_id,
+        user_full_name: user.user_full_name,
+        user_email: user.user_email,
+        user_phone_number: user.user_phone_number,
+        user_role_id: userRole.usro_role_id,
+        user_hotel_id: user.user_hotel_id,
+        user_modified_date: user.user_modified_date,
+        user_photo_profile: user.user_photo_profile,
+      };
+
       const token = sign(
         {
           user_id: user.user_id,
@@ -62,11 +73,12 @@ export class AuthService {
           user_role_id: userRole.usro_role_id,
           user_hotel_id: user.user_hotel_id,
           user_modified_date: user.user_modified_date,
+          user_photo_profile: user.user_photo_profile,
         },
         process.env.SECRET_KEY,
       );
 
-      return { statusCode: HttpStatus.OK, token: token };
+      return { statusCode: HttpStatus.OK, token: token, loginData: loginData };
     } catch (e) {
       return { statusCode: HttpStatus.BAD_REQUEST, message: e };
     }
@@ -89,6 +101,16 @@ export class AuthService {
         where: { usro_user_id: user.user_id },
       });
 
+      const loginData = {
+        user_id: user.user_id,
+        user_full_name: user.user_full_name,
+        user_email: user.user_email,
+        user_phone_number: user.user_phone_number,
+        user_role_id: userRole.usro_role_id,
+        user_hotel_id: user.user_hotel_id,
+        user_modified_date: user.user_modified_date,
+      };
+
       const token = sign(
         {
           user_id: user.user_id,
@@ -102,7 +124,7 @@ export class AuthService {
         process.env.SECRET_KEY,
       );
 
-      return { statusCode: HttpStatus.OK, token: token };
+      return { statusCode: HttpStatus.OK, token: token, loginData: loginData };
     } catch (e) {
       return { statusCode: HttpStatus.BAD_REQUEST, message: e };
     }

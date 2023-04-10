@@ -6,7 +6,7 @@ import {
   Index,
   Sequelize,
   ForeignKey,
-  HasOne,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { resto_menus } from './resto_menus';
 
@@ -26,7 +26,6 @@ export class resto_menu_photos
 {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('resto.resto_menu_photos_remp_id_seq'::regclass)",
@@ -38,7 +37,7 @@ export class resto_menu_photos
   @Column({ allowNull: true, type: DataType.STRING(50) })
   remp_thumbnail_filename?: string;
 
-  @Column({ allowNull: true, type: DataType.STRING(500) })
+  @Column({ allowNull: true, type: DataType.STRING(50) })
   remp_photo_filename?: string;
 
   @Column({ allowNull: true, type: DataType.STRING })
@@ -47,9 +46,10 @@ export class resto_menu_photos
   @Column({ allowNull: true, type: DataType.STRING(255) })
   remp_url?: string;
 
+  @ForeignKey(() => resto_menus)
   @Column({ allowNull: true, type: DataType.INTEGER })
   remp_reme_id?: number;
 
-  @HasOne(() => resto_menus, { sourceKey: 'remp_reme_id' })
+  @BelongsTo(() => resto_menus)
   resto_menu?: resto_menus;
 }

@@ -21,7 +21,8 @@ export interface cityAttributes {
 @Table({ tableName: 'city', schema: 'master', timestamps: false })
 export class city
   extends Model<cityAttributes, cityAttributes>
-  implements cityAttributes {
+  implements cityAttributes
+{
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -45,7 +46,7 @@ export class city
   city_prov_id?: number;
 
   @BelongsTo(() => provinces)
-  province?: provinces;
+  provinces?: provinces;
 
   @HasMany(() => address, { sourceKey: 'city_id' })
   addresses?: address[];

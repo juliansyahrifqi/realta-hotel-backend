@@ -20,22 +20,28 @@ import { Response } from 'express';
 export class HotelsController {
   constructor(private readonly hotelsService: HotelsService) {}
 
-  @Post()
-  create(@Res() response: Response, @Body() createHotelDto: CreateHotelDto) {
-    return this.hotelsService.create(response, createHotelDto);
+  @Post(':city_name')
+  create(
+    @Res() response: Response,
+    @Body() createHotelDto: CreateHotelDto,
+    @Param('city_name') city_name: string,
+  ) {
+    return this.hotelsService.create(response, createHotelDto, city_name);
   }
 
   @Get()
   async findAll(
     @Res() response: Response,
-    @Query('pageNumber') pageNumber: number = 1,
-    @Query('pageSize') pageSize: number = 10,
+    @Query('pageNumber') pageNumber: number,
+    @Query('pageSize') pageSize: number,
+    @Query('search') search: string,
   ) {
     try {
       const hotels = await this.hotelsService.findAll(
         response,
         pageNumber,
         pageSize,
+        search,
       );
       return hotels;
     } catch (error) {
@@ -101,17 +107,15 @@ export class HotelsController {
       };
     }
   }
-  @Get('hotel-support')
+  @Get('hotel-support/:id')
   async findAllIncludeSupport(
     @Res() response: Response,
-    @Query('pageNumber') pageNumber: number = 1,
-    @Query('pageSize') pageSize: number = 10,
+    @Param('id') hotel_id: number,
   ) {
     try {
       const hotels = await this.hotelsService.findAllIncludeSupport(
         response,
-        pageNumber,
-        pageSize,
+        hotel_id,
       );
       return hotels;
     } catch (error) {
@@ -145,14 +149,21 @@ export class HotelsController {
     return this.hotelsService.findOne(+id);
   }
 
-  @Put(':id')
+  @Put('update/:hotel_id')
   update(
     @Res() response: Response,
-    @Param('id') id: number,
+    @Param('hotel_id') hotel_id: number,
+    @Query('city_name') city_name: string = '',
     @Body() updateHotelDto: UpdateHotelDto,
   ) {
-    return this.hotelsService.update(response, id, updateHotelDto);
+    return this.hotelsService.update(
+      response,
+      hotel_id,
+      city_name,
+      updateHotelDto,
+    );
   }
+
   @Put('switch-status/:id')
   updateStatus(
     @Res() response: Response,

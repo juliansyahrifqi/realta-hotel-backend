@@ -22,11 +22,6 @@ export class WorkOrderDetailController {
     return this.workOrderDetailService.create(createWorkOrderDetailDto);
   }
 
-  @Get('wodeDetail')
-  employeePage() {
-    return this.workOrderDetailService.wodeDetail();
-  }
-
   @Get()
   findAll() {
     return this.workOrderDetailService.findAll();

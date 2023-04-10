@@ -6,6 +6,7 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasMany,
   BelongsTo,
 } from 'sequelize-typescript';
 import { resto_menu_photos } from './resto_menu_photos';
@@ -13,7 +14,7 @@ import { order_menu_detail } from './order_menu_detail';
 import { facilities } from '../hotelSchema/facilities';
 
 export interface resto_menusAttributes {
-  reme_faci_id: number;
+  reme_faci_id?: number;
   reme_id?: number;
   reme_name?: string;
   reme_description?: string;
@@ -28,12 +29,10 @@ export class resto_menus
   implements resto_menusAttributes
 {
   @ForeignKey(() => facilities)
-  @Column({ primaryKey: true, type: DataType.INTEGER })
-  @Index({ name: 'pk_resto_menus', using: 'btree', unique: true })
-  reme_faci_id!: number;
+  @Column({ allowNull: true, type: DataType.INTEGER })
+  reme_faci_id?: number;
 
   @ForeignKey(() => order_menu_detail)
-  @ForeignKey(() => resto_menu_photos)
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,
@@ -42,8 +41,6 @@ export class resto_menus
     ),
   })
   @Index({ name: 'pk_resto_menus', using: 'btree', unique: true })
-  @Index({ name: 'resto_menus_reme_id_key', using: 'btree', unique: true })
-  @Index({ name: 'pk_reme_id', using: 'btree', unique: true })
   reme_id?: number;
 
   @Column({ allowNull: true, type: DataType.STRING(55) })
@@ -52,7 +49,7 @@ export class resto_menus
   @Column({ allowNull: true, type: DataType.STRING(255) })
   reme_description?: string;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
+  @Column({ allowNull: true, type: DataType.DECIMAL })
   reme_price?: string;
 
   @Column({ allowNull: true, type: DataType.STRING(15) })
@@ -61,8 +58,8 @@ export class resto_menus
   @Column({ allowNull: true, type: DataType.DATE(6) })
   reme_modified_date?: Date;
 
-  @BelongsTo(() => resto_menu_photos)
-  resto_menu_photo?: resto_menu_photos;
+  @HasMany(() => resto_menu_photos, { sourceKey: 'reme_id' })
+  resto_menu_photos?: resto_menu_photos[];
 
   @BelongsTo(() => order_menu_detail)
   order_menu_detail?: order_menu_detail;
