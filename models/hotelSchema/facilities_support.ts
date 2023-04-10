@@ -8,8 +8,8 @@ import {
   ForeignKey,
   BelongsToMany,
 } from 'sequelize-typescript';
-import { facility_support_hotels } from './facility_support_hotels';
 import { hotels } from './hotels';
+import { facility_support_hotels } from './facility_support_hotels';
 
 export interface facilities_supportAttributes {
   fs_id?: number;
@@ -22,11 +22,9 @@ export interface facilities_supportAttributes {
 @Table({ tableName: 'facilities_support', schema: 'hotel', timestamps: false })
 export class facilities_support
   extends Model<facilities_supportAttributes, facilities_supportAttributes>
-  implements facilities_supportAttributes
-{
+  implements facilities_supportAttributes {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('hotel.facilities_support_fs_id_seq'::regclass)",
@@ -35,7 +33,7 @@ export class facilities_support
   @Index({ name: 'pk_fs_id', using: 'btree', unique: true })
   fs_id?: number;
 
-  @Column({ allowNull: true, type: DataType.STRING(15) })
+  @Column({ allowNull: true, type: DataType.STRING(100) })
   fs_name?: string;
 
   @Column({ allowNull: true, type: DataType.STRING(100) })

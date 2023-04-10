@@ -11,5 +11,6 @@ export class CreateOrUpdateUserPasswordDto {
   @Length(8, 100)
   new_password: string;
 
+  @IsNotEmpty()
   retype_password: string;
 }

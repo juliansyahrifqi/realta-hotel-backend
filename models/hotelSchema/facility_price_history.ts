@@ -1,4 +1,3 @@
-import { users } from 'models/usersSchema';
 import {
   Model,
   Table,
@@ -19,8 +18,8 @@ export interface facility_price_historyAttributes {
   faph_low_price?: string;
   faph_high_price?: string;
   faph_rate_price?: string;
-  faph_discount?: number;
-  faph_tax_rate?: number;
+  faph_discount?: string;
+  faph_tax_rate?: string;
   faph_modified_date?: Date;
   faph_user_id?: number;
 }
@@ -35,8 +34,7 @@ export class facility_price_history
     facility_price_historyAttributes,
     facility_price_historyAttributes
   >
-  implements facility_price_historyAttributes
-{
+  implements facility_price_historyAttributes {
   @ForeignKey(() => facilities)
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'pk_faph_id', using: 'btree', unique: true })
@@ -68,22 +66,18 @@ export class facility_price_history
   @Column({ allowNull: true, type: DataType.NUMBER })
   faph_rate_price?: string;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
-  faph_discount?: number;
+  @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
+  faph_discount?: string;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
-  faph_tax_rate?: number;
+  @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
+  faph_tax_rate?: string;
 
   @Column({ allowNull: true, type: DataType.DATE })
   faph_modified_date?: Date;
 
-  @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   faph_user_id?: number;
 
   @BelongsTo(() => facilities)
   facilities?: facilities;
-
-  @BelongsTo(() => users)
-  users?: users;
 }

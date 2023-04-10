@@ -1,5 +1,3 @@
-import { category_group, members } from 'models/masterSchema';
-import { users } from 'models/usersSchema';
 import {
   Model,
   Table,
@@ -8,11 +6,19 @@ import {
   Index,
   Sequelize,
   ForeignKey,
-  BelongsTo,
   HasMany,
+  BelongsToMany,
+  BelongsTo,
 } from 'sequelize-typescript';
-import { facility_photos, facility_price_history, hotels } from '.';
-import { resto_menus } from 'models/restoSchema';
+import { facility_photos } from './facility_photos';
+import { facility_price_history } from './facility_price_history';
+import { booking_orders } from '../bookingSchema/booking_orders';
+import { booking_order_detail } from '../bookingSchema/booking_order_detail';
+import { category_group } from '../masterSchema/category_group';
+import { hotels } from './hotels';
+import { members } from '../masterSchema/members';
+import { special_offer_coupons } from 'models/bookingSchema';
+import { users } from 'models/usersSchema';
 
 export interface facilitiesAttributes {
   faci_id?: number;
@@ -26,8 +32,8 @@ export interface facilitiesAttributes {
   faci_low_price?: string;
   faci_high_price?: string;
   faci_rate_price?: string;
-  faci_discount?: number;
-  faci_tax_rate?: number;
+  faci_discount?: string;
+  faci_tax_rate?: string;
   faci_modified_date?: Date;
   faci_cagro_id?: number;
   faci_hotel_id?: number;
@@ -38,11 +44,9 @@ export interface facilitiesAttributes {
 @Table({ tableName: 'facilities', schema: 'hotel', timestamps: false })
 export class facilities
   extends Model<facilitiesAttributes, facilitiesAttributes>
-  implements facilitiesAttributes
-{
+  implements facilitiesAttributes {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
       "nextval('hotel.facilities_faci_id_seq'::regclass)",
@@ -86,17 +90,13 @@ export class facilities
   @Column({ allowNull: true, type: DataType.NUMBER })
   faci_rate_price?: string;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
-  faci_discount?: number;
+  @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
+  faci_discount?: string;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
-  faci_tax_rate?: number;
+  @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
+  faci_tax_rate?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.DATE,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-  })
+  @Column({ allowNull: true, type: DataType.DATE })
   faci_modified_date?: Date;
 
   @ForeignKey(() => category_group)
@@ -108,24 +108,23 @@ export class facilities
   faci_hotel_id?: number;
 
   @ForeignKey(() => members)
-  @Column({ allowNull: true, type: DataType.STRING(125) })
+  @Column({ allowNull: true, type: DataType.STRING(15) })
   faci_memb_name?: string;
 
   @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   faci_user_id?: number;
 
+  //buat Yudha
+  @BelongsTo(() => hotels)
+  hotel?: hotels;
+
+  //buat Kepin
+  // @BelongsTo(() => hotels)
+  // hotels?: hotels;
+
   @BelongsTo(() => category_group)
   category_group?: category_group;
-
-  @BelongsTo(() => hotels)
-  hotels?: hotels;
-
-  @BelongsTo(() => members)
-  members?: members;
-
-  @BelongsTo(() => users)
-  users?: users;
 
   @HasMany(() => facility_photos, { sourceKey: 'faci_id' })
   facility_photos?: facility_photos[];
@@ -133,6 +132,12 @@ export class facilities
   @HasMany(() => facility_price_history, { sourceKey: 'faci_id' })
   facility_price_history?: facility_price_history[];
 
-  @HasMany(() => resto_menus, { sourceKey: 'faci_id' })
-  resto_menus?: resto_menus[];
+  @BelongsToMany(() => booking_orders, () => booking_order_detail)
+  booking_orders?: booking_orders[];
+
+  @HasMany(() => booking_order_detail)
+  booking_order_details?: booking_order_detail[];
+
+  @BelongsTo(() => users)
+  users?: users;
 }

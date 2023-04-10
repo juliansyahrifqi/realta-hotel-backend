@@ -1,11 +1,23 @@
-import { Controller, Body, Param, Put, HttpStatus } from '@nestjs/common';
+import { Controller, Body, Param, Put, HttpStatus, Post } from '@nestjs/common';
 import { UserPasswordService } from './user-password.service';
 import { CreateOrUpdateUserPasswordDto } from './dto/create-update-user-password.dto';
 import * as bcrypt from 'bcrypt';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('users/password')
 export class UserPasswordController {
   constructor(private readonly userPasswordService: UserPasswordService) {}
+
+  @Post('forgotPassword')
+  forgotPassword(@Body() body: any) {
+    const { email } = body;
+    return this.userPasswordService.forgotPassword(email);
+  }
+
+  @Post('resetPassword')
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.userPasswordService.resetPassword(resetPasswordDto);
+  }
 
   @Put(':id')
   async createOrUpdate(
