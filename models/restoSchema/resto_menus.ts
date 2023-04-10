@@ -37,7 +37,7 @@ export class resto_menus
     primaryKey: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('resto.resto_menus_reme_id_seq1'::regclass)",
+      "nextval('resto.resto_menus_reme_id_seq'::regclass)",
     ),
   })
   @Index({ name: 'pk_resto_menus', using: 'btree', unique: true })

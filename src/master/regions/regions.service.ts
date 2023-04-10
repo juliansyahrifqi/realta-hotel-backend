@@ -38,7 +38,7 @@ export class RegionsService {
       const newRegion = await this.regionsModel.create(dto);
       return { message: 'Data created', data: newRegion };
     } catch (error) {
-      return { message: 'Error creating data', error: error.message };
+      return { message: 'Error creating data', error: error };
     }
   }
 
