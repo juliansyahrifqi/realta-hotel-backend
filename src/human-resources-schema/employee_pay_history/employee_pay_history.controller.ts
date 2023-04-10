@@ -11,7 +11,7 @@ import { EmployeePayHistoryService } from './employee_pay_history.service';
 import { CreateEmployeePayHistoryDto } from './dto/create-employee_pay_history.dto';
 import { UpdateEmployeePayHistoryDto } from './dto/update-employee_pay_history.dto';
 
-@Controller('employee-pay-history')
+@Controller('hr/employee-pay-history')
 export class EmployeePayHistoryController {
   constructor(
     private readonly employeePayHistoryService: EmployeePayHistoryService,

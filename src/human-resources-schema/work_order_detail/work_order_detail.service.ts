@@ -8,6 +8,7 @@ import {
 } from '../../../models/humanResourcesSchema';
 import { Op } from 'sequelize';
 import { users } from '../../../models/usersSchema';
+import { service_task } from 'models/masterSchema';
 
 @Injectable()
 export class WorkOrderDetailService {
@@ -32,11 +33,15 @@ export class WorkOrderDetailService {
     }
   }
 
-  async wodeDetail(): Promise<any> {
+  async findAll(): Promise<any> {
     try {
       const result = await this.workOrderDetailModel.findAll({
-        attributes: ['wode_id', 'wode_task_name', 'wode_notes', 'wode_status'],
+        attributes: ['wode_id', 'wode_notes', 'wode_status'],
         include: [
+          {
+            model: service_task,
+            attributes: ['seta_name'],
+          },
           {
             model: work_orders,
             attributes: ['woro_id'],
@@ -56,23 +61,6 @@ export class WorkOrderDetailService {
       }
       return {
         message: 'Work order detail ditemukan!',
-        data: result,
-      };
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async findAll(): Promise<any> {
-    try {
-      const result = await this.workOrderDetailModel.findAll();
-      if (result.length === 0) {
-        return {
-          message: 'Data work order detail tidak ditemukan!',
-        };
-      }
-      return {
-        message: 'Data work order detail ditemukan!',
         data: result,
       };
     } catch (error) {

@@ -110,15 +110,16 @@ import { WorkOrderDetailModule } from './human-resources-schema/work_order_detai
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(JwtMiddleware)
-      .exclude(
-        { path: 'users/signUpGuest', method: RequestMethod.POST },
-        { path: 'users/signUpEmployee', method: RequestMethod.POST },
-        'auth/(.*)',
-      )
-      .forRoutes('*');
-  }
-}
+export class AppModule {}
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(JwtMiddleware)
+//       .exclude(
+//         { path: 'users/signUpGuest', method: RequestMethod.POST },
+//         { path: 'users/signUpEmployee', method: RequestMethod.POST },
+//         'auth/(.*)',
+//       )
+//       .forRoutes('*');
+//   }
+// }

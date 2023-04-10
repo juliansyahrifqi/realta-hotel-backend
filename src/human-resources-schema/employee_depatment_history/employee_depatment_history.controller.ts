@@ -11,7 +11,7 @@ import { EmployeeDepatmentHistoryService } from './employee_depatment_history.se
 import { CreateEmployeeDepatmentHistoryDto } from './dto/create-employee_depatment_history.dto';
 import { UpdateEmployeeDepatmentHistoryDto } from './dto/update-employee_depatment_history.dto';
 
-@Controller('employee-depatment-history')
+@Controller('hr/employee-depatment-history')
 export class EmployeeDepatmentHistoryController {
   constructor(
     private readonly employeeDepatmentHistoryService: EmployeeDepatmentHistoryService,
