@@ -29,7 +29,8 @@ export interface price_itemsAttributes {
 })
 export class price_items
   extends Model<price_itemsAttributes, price_itemsAttributes>
-  implements price_itemsAttributes {
+  implements price_itemsAttributes
+{
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,

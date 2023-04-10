@@ -24,7 +24,7 @@ export class regions
     autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('master.regions_region_code_seq1'::regclass)",
+      "nextval('master.regions_region_code_seq'::regclass)",
     ),
   })
   @Index({ name: 'pk_region_code', using: 'btree', unique: true })
