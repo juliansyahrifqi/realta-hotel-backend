@@ -9,6 +9,7 @@ import {
   HasMany,
   BelongsTo,
 } from 'sequelize-typescript';
+import { country } from './country';
 import { hotels } from '../hotelSchema/hotels';
 import { city } from './city';
 
