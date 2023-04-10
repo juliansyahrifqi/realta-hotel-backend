@@ -12,7 +12,7 @@ export class CreatePaymentTransactionDto  {
   // @IsNotEmpty()
   debit: string;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   // @IsNumber()
   credit: string;
 
