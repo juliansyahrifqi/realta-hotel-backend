@@ -8,12 +8,13 @@ import {
   BelongsToMany,
   HasMany,
 } from 'sequelize-typescript';
-import { members } from '../masterSchema/members';
-import { user_members } from './user_members';
-import { hotels } from '../hotelSchema/hotels';
-import { hotel_reviews } from '../hotelSchema/hotel_reviews';
-import { booking_orders } from '../bookingSchema/booking_orders';
+import { members } from '../../models/masterSchema/members';
+import { user_members } from '../../models/usersSchema/user_members';
+import { hotels } from '../../models/hotelSchema/hotels';
+import { hotel_reviews } from '../../models/hotelSchema/hotel_reviews';
+import { booking_orders } from '../../models/bookingSchema/booking_orders';
 import { facility_price_history } from 'models/hotelSchema';
+// import { facility_price_history } from '../../models/hotelSchema/facility_price_history';
 import { payment_transaction, user_accounts } from 'models/paymentSchema';
 
 export interface usersAttributes {
@@ -91,6 +92,7 @@ export class users
 
   @HasMany(() => user_members, { as: 'user_members_booking' })
   user_members?: user_members[];
+
   @HasMany(() => facility_price_history, { sourceKey: 'user_id' })
   facility_price_history?: facility_price_history[];
 
@@ -100,3 +102,4 @@ export class users
   @HasMany(() => payment_transaction, { sourceKey: 'user_id' })
   payment_transactions?: payment_transaction[];
 }
+// >>>>>>> master

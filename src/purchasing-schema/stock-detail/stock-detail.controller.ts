@@ -7,18 +7,43 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { CreateStockDetailDto } from './dto/create-stock-detail.dto';
 import { UpdateStockDetailDto } from './dto/update-stock-detail.dto';
 import { StockDetailService } from './stock-detail.service';
+import { Response } from 'express';
 
-@Controller('purchasing/stock/detail')
+@Controller('stock-detail')
 export class StockDetailController {
   constructor(private readonly stockDetailService: StockDetailService) {}
 
   @Post()
   create(@Body() createStockDetailDto: CreateStockDetailDto) {
     return this.stockDetailService.create(createStockDetailDto);
+  }
+
+  // Stock Detail ~ GAK DIPAKE JADI DI STOCK ALL ADANYA
+
+  @Get('detailprod/:id')
+  async findDetail(
+    @Res() response: Response,
+    // @Param('search') search: string,
+    @Query('pageNumber') pageNumber: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    try {
+      const stock = await this.stockDetailService.findStockDetail(
+        response,
+        pageNumber,
+        pageSize,
+      );
+      return stock;
+    } catch (error) {
+      return {
+        message: 'Internal server error',
+      };
+    }
   }
 
   //  dengan pagination

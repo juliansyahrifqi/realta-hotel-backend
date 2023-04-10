@@ -19,6 +19,7 @@ import { hotels } from './hotels';
 import { members } from '../masterSchema/members';
 import { special_offer_coupons } from 'models/bookingSchema';
 import { users } from 'models/usersSchema';
+import { stock_detail } from 'models/purchasingSchema';
 
 export interface facilitiesAttributes {
   faci_id?: number;
@@ -145,4 +146,8 @@ export class facilities
 
   @BelongsTo(() => users)
   users?: users;
+
+  // STOCK DETAIL
+  @HasMany(() => stock_detail, { sourceKey: 'faci_id' })
+  stock_detail?: stock_detail[];
 }
