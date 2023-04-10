@@ -32,6 +32,9 @@ export interface usersAttributes {
 export class users
   extends Model<usersAttributes, usersAttributes>
   implements usersAttributes {
+  static user_full_name(arg0: string, user_full_name: any) {
+    throw new Error('Method not implemented.');
+  }
   @Column({
     primaryKey: true,
     autoIncrement: true,

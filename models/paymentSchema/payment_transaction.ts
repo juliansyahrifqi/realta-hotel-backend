@@ -43,6 +43,8 @@ export class payment_transaction
     throw new Error('Method not implemented.');
   }
   @ForeignKey(() => users)
+  @ForeignKey(() => booking_orders)
+  @ForeignKey(() => order_menus)
   @Column({
     primaryKey: true,
     autoIncrement: true,
