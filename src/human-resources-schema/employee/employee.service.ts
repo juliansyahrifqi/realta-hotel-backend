@@ -2,10 +2,18 @@ import { Body, Injectable, UploadedFile } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { employee } from '../../../models/humanResourcesSchema';
+import {
+  department,
+  employee,
+  employee_department_history,
+  employee_pay_history,
+  job_role,
+  shift,
+} from '../../../models/humanResourcesSchema';
 import { join } from 'path';
 import * as fs from 'fs';
 import { users } from '../../../models/usersSchema/users';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class EmployeeService {
@@ -13,6 +21,24 @@ export class EmployeeService {
   constructor(
     @InjectModel(employee)
     private employeeModel: typeof employee,
+
+    @InjectModel(employee)
+    private employeePayHistoryModel: typeof employee_pay_history,
+
+    @InjectModel(employee)
+    private employeeDepartmentHistoryModel: typeof employee_department_history,
+
+    @InjectModel(employee)
+    private usersModel: typeof users,
+
+    @InjectModel(employee)
+    private departmentModel: typeof department,
+
+    @InjectModel(employee)
+    private shiftModel: typeof shift,
+
+    @InjectModel(employee)
+    private jobRoleModel: typeof job_role,
   ) {}
 
   async create(
@@ -31,10 +57,31 @@ export class EmployeeService {
         emp_sickleave_hours: createEmployeeDto.emp_sickleave_hours,
         emp_current_flag: createEmployeeDto.emp_current_flag,
         emp_photo: image.filename,
-        emp_modified_date: createEmployeeDto.emp_modified_date,
+        emp_modified_date: new Date(),
         emp_user_id: createEmployeeDto.emp_user_id,
         emp_emp_id: createEmployeeDto.emp_emp_id,
         emp_joro_id: createEmployeeDto.emp_joro_id,
+      });
+
+      const employeePayHistory = await this.employeePayHistoryModel.create({
+        ephi_emp_id: result.emp_id,
+      });
+
+      const employeeDepartmentHistory =
+        await this.employeeDepartmentHistoryModel.create({
+          edhi_emp_id: result.emp_id,
+        });
+
+      const users = await this.usersModel.create({
+        user_id: result.emp_id,
+      });
+
+      const department = await this.departmentModel.create({
+        dept_id: result.emp_id,
+      });
+
+      const jobRole = await this.jobRoleModel.create({
+        joro_id: result.emp_id,
       });
 
       result.emp_photo = `http://localhost:${process.env.PORT}/uploads/image/hr/${result.emp_photo}`;
@@ -46,11 +93,25 @@ export class EmployeeService {
       return error;
     }
   }
-
-  async employeePage(page: number, limit: number): Promise<any> {
+  async findAll(
+    page: number,
+    limit: number,
+    user_full_name?: string,
+    emp_current_flag?: string,
+  ): Promise<any> {
     try {
       const offset = (page - 1) * limit;
-      const result = await this.employeeModel.findAndCountAll({
+      const whereClause: any = {};
+
+      if (user_full_name) {
+        whereClause.user_full_name = { [Op.iLike]: `%${user_full_name}%` };
+      }
+
+      if (emp_current_flag) {
+        whereClause.emp_current_flag = emp_current_flag;
+      }
+
+      const result = await this.employeeModel.findAll({
         attributes: [
           'emp_id',
           'emp_national_id',
@@ -62,16 +123,35 @@ export class EmployeeService {
           {
             model: users,
             attributes: ['user_full_name'],
+            where: whereClause,
+            required: user_full_name ? true : false,
+          },
+          {
+            model: employee_department_history,
+            attributes: ['edhi_start_date', 'edhi_end_date'],
+          },
+          {
+            model: employee_pay_history,
+            attributes: ['ephi_rate_salary', 'ephi_pay_frequence'],
           },
         ],
         limit: limit,
         offset: offset,
       });
-      const totalData = result.count;
+      const totalData = await this.employeeModel.count({
+        include: [
+          {
+            model: users,
+            attributes: ['user_full_name'],
+            where: whereClause,
+            required: user_full_name ? true : false,
+          },
+        ],
+      });
       const totalPages = Math.ceil(totalData / limit);
       const currentPage = page;
 
-      if (totalData === 0) {
+      if (!result) {
         return {
           message: 'Data karyawan tidak ditemukan!',
         };
@@ -79,7 +159,7 @@ export class EmployeeService {
 
       return {
         message: 'Karyawan ditemukan!',
-        data: result.rows,
+        data: result,
         meta: {
           total_data: totalData,
           total_pages: totalPages,
@@ -91,55 +171,67 @@ export class EmployeeService {
     }
   }
 
-  async findAll(page: number, limit: number): Promise<any> {
-    try {
-      const offset = (page - 1) * limit;
-      const result = await this.employeeModel.findAndCountAll({
-        offset,
-        limit,
-      });
-      if (!result) {
-        return {
-          message: 'Data karyawan tidak ditemukan!',
-        };
-      }
-      const totalItems = result.count;
-      const totalPages = Math.ceil(totalItems / limit);
-      const currentPage = page;
-      const nextPage = currentPage < totalPages ? currentPage + 1 : null;
-      const prevPage = currentPage > 1 ? currentPage - 1 : null;
-      return {
-        message: 'Data karyawan telah ditemukan!',
-        data: result.rows,
-        pagination: {
-          currentPage,
-          nextPage,
-          prevPage,
-          totalPages,
-          totalItems,
-        },
-      };
-    } catch (error) {
-      return error;
-    }
-  }
+  // async findAll(
+  //   page: number,
+  //   limit: number,
+  //   user_full_name?: string,
+  // ): Promise<any> {
+  //   try {
+  //     const offset = (page - 1) * limit;
+  //     const whereClause = user_full_name
+  //       ? { user_full_name: { [Op.like]: `%${user_full_name}%` } }
+  //       : {};
+  //     const result = await this.employeeModel.findAll({
+  //       attributes: [
+  //         'emp_id',
+  //         'emp_national_id',
+  //         'emp_birth_date',
+  //         'emp_hire_date',
+  //         'emp_current_flag',
+  //       ],
+  //       include: [
+  //         {
+  //           model: users,
+  //           attributes: ['user_full_name'],
+  //           where: whereClause,
+  //           required: user_full_name ? true : false,
+  //         },
+  //       ],
+  //       limit: limit,
+  //       offset: offset,
+  //     });
+  //     const totalData = await this.employeeModel.count({
+  //       include: [
+  //         {
+  //           model: users,
+  //           attributes: ['user_full_name'],
+  //           where: whereClause,
+  //           required: user_full_name ? true : false,
+  //         },
+  //       ],
+  //     });
+  //     const totalPages = Math.ceil(totalData / limit);
+  //     const currentPage = page;
 
-  async findOne(emp_id: number): Promise<any> {
-    try {
-      const result = await this.employeeModel.findByPk(emp_id);
-      if (!result) {
-        return {
-          message: `Karyawan dengan id ${emp_id} tidak ditemukan`,
-        };
-      }
-      return {
-        message: `Karyawan dengan id ${emp_id} ditemukan`,
-        data: result,
-      };
-    } catch (error) {
-      return error;
-    }
-  }
+  //     if (!result) {
+  //       return {
+  //         message: 'Data karyawan tidak ditemukan!',
+  //       };
+  //     }
+
+  //     return {
+  //       message: 'Karyawan ditemukan!',
+  //       data: result,
+  //       meta: {
+  //         total_data: totalData,
+  //         total_pages: totalPages,
+  //         current_page: currentPage,
+  //       },
+  //     };
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
 
   async update(
     emp_id: number,
@@ -172,7 +264,7 @@ export class EmployeeService {
           emp_sickleave_hours: updateEmployeeDto.emp_sickleave_hours,
           emp_current_flag: updateEmployeeDto.emp_current_flag,
           emp_photo: `http://localhost:${process.env.PORT}/uploads/image/hr/${image.filename}`,
-          emp_modified_date: updateEmployeeDto.emp_modified_date,
+          emp_modified_date: new Date(),
         },
         {
           where: { emp_id },
