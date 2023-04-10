@@ -4,7 +4,7 @@ import { WorkOrderDetailController } from './work_order_detail.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { work_order_detail } from '../../../models/humanResourcesSchema';
 import { facilities } from 'models/hotelSchema';
-import { service_task } from 'models/masterSchema';
+import { service_task } from '../../../models/masterSchema/service_task';
 
 @Module({
   imports: [
@@ -13,4 +13,4 @@ import { service_task } from 'models/masterSchema';
   controllers: [WorkOrderDetailController],
   providers: [WorkOrderDetailService],
 })
-export class WorkOrderDetailModule {}
+export class WorkOrderDetailModule { }

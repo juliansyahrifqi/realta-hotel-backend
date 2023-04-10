@@ -1,4 +1,3 @@
-import { users } from 'models/usersSchema';
 import {
   Model,
   Table,
@@ -10,6 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { hotels } from './hotels';
+import { users } from '../usersSchema';
 
 export interface hotel_reviewsAttributes {
   hore_id?: number;
@@ -23,8 +23,7 @@ export interface hotel_reviewsAttributes {
 @Table({ tableName: 'hotel_reviews', schema: 'hotel', timestamps: false })
 export class hotel_reviews
   extends Model<hotel_reviewsAttributes, hotel_reviewsAttributes>
-  implements hotel_reviewsAttributes
-{
+  implements hotel_reviewsAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -42,11 +41,7 @@ export class hotel_reviews
   @Column({ allowNull: true, type: DataType.INTEGER })
   hore_rating?: number;
 
-  @Column({
-    allowNull: true,
-    type: DataType.DATE,
-    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-  })
+  @Column({ allowNull: true, type: DataType.DATE })
   hore_created_on?: Date;
 
   @ForeignKey(() => users)
@@ -57,9 +52,9 @@ export class hotel_reviews
   @Column({ allowNull: true, type: DataType.INTEGER })
   hore_hotel_id?: number;
 
-  @BelongsTo(() => users)
-  users?: users;
-
   @BelongsTo(() => hotels)
-  hotels?: hotels;
+  hotels?: hotels
+
+  @BelongsTo(() => users)
+  users?: users
 }
