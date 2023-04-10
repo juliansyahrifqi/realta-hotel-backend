@@ -19,7 +19,7 @@ export class FacilitiesService {
 
     @InjectModel(facility_price_history)
     private faphModel: typeof facility_price_history,
-  ) { }
+  ) {}
   async create(
     @Res() response: Response,
     createFacilityDto: CreateFacilityDto,
@@ -77,7 +77,7 @@ export class FacilitiesService {
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
@@ -85,7 +85,11 @@ export class FacilitiesService {
 
   async findAll(@Res() response: Response) {
     try {
-      const data = await this.faciModel.findAll();
+      const data = await this.faciModel.findAll({
+        include: [
+          { model: facility_price_history, include: [{ model: users }] },
+        ],
+      });
 
       const dataResponse = {
         statusCode: HttpStatus.OK,
@@ -116,7 +120,7 @@ export class FacilitiesService {
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
@@ -142,7 +146,7 @@ export class FacilitiesService {
     }
   }
 
-  findOne(@Res() response: Response, id: number) {
+  async findOne(@Res() response: Response, id: number) {
     return `This action returns a #${id} facility`;
   }
 
