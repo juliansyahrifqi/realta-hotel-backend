@@ -11,20 +11,51 @@ export class OrderMenusService {
     private readonly orderMenusModel: typeof order_menus,
   ) {}
 
-  async create(createOrderMenuDto: CreateOrderMenuDto): Promise<order_menus> {
-    const now = new Date();
-    const newData = {
-      ...createOrderMenuDto,
-      orme_modified_date: now,
-    };
-    return this.orderMenusModel.create(newData);
-  }
+  // *  MEMBUAT ORME_ORDER_MENUS OTOMATIS DENGAN FORMAT YANG SUDAH DITENTUKAN
 
+  async createOrderMenu(
+    orderMenuDto: CreateOrderMenuDto,
+  ): Promise<order_menus> {
+    const now = new Date();
+    const dateString = now.toISOString().slice(0, 10).replace(/-/g, '');
+    const orderNumber = `MENUS#${dateString}-`;
+
+    const lastOrder = await this.orderMenusModel.findOne({
+      order: [['orme_order_number', 'DESC']],
+    });
+
+    let serialNumber = 1;
+    if (lastOrder) {
+      const lastOrderSerialNumber = lastOrder.orme_order_number.split('-')[1];
+      serialNumber = parseInt(lastOrderSerialNumber) + 1;
+    }
+
+    const newOrderNumber = `${orderNumber}${serialNumber
+      .toString()
+      .padStart(4, '0')}`;
+
+    const orderMenu = new order_menus();
+    orderMenu.orme_order_number = newOrderNumber;
+    orderMenu.orme_order_date = orderMenuDto.orme_order_date;
+    orderMenu.orme_total_item = orderMenuDto.orme_total_item;
+    orderMenu.orme_total_discount = orderMenuDto.orme_total_discount;
+    orderMenu.orme_total_amount = orderMenuDto.orme_total_amount;
+    orderMenu.orme_pay_type = orderMenuDto.orme_pay_type;
+    orderMenu.orme_cardnumber = orderMenuDto.orme_cardnumber;
+    orderMenu.orme_is_paid = orderMenuDto.orme_is_paid;
+    orderMenu.orme_modified_date = now;
+
+    return orderMenu.save();
+  }
+  // !  MEMBUAT ORME_ORDER_MENUS OTOMATIS DENGAN FORMAT YANG SUDAH DITENTUKAN
+
+  // * MEMBAWA DATA USER ATAU HUBUNGAN DENGAN USER
   async findAll(): Promise<order_menus[]> {
     return this.orderMenusModel.findAll({
       include: 'user',
     });
   }
+  // ! MEMBAWA DATA USER ATAU HUBUNGAN DENGAN USER
 
   async findOne(id: number): Promise<order_menus> {
     return this.orderMenusModel.findByPk(id);
@@ -48,7 +79,12 @@ export class OrderMenusService {
         returning: true,
       },
     );
-    return [affectedCount, affectedRows];
+
+    const updatedOrderMenu = await this.orderMenusModel.findByPk(id, {
+      order: [['orme_id', 'ASC']], // tambahkan kondisi pengurutan berdasarkan orme_id ascending
+    });
+
+    return [affectedCount, [updatedOrderMenu]];
   }
 
   async remove(id: number): Promise<number> {
