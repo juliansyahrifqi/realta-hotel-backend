@@ -8,11 +8,13 @@ import {
   Delete,
   NotFoundException,
   Query,
+  Res,
 } from '@nestjs/common';
 import { VendorService } from './vendor.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { vendor } from 'models/purchasingSchema';
+import { Response } from 'express';
 
 @Controller('purchasing/vendor')
 export class VendorController {
@@ -21,6 +23,32 @@ export class VendorController {
   @Post()
   create(@Body() createVendorDto: CreateVendorDto) {
     return this.vendorService.create(createVendorDto);
+  }
+  // GET LISTORDER
+  @Get('listorder')
+  async findAllOrder(
+    @Res() response: Response,
+    @Query('search') search: string,
+    @Query('pageNumber') pageNumber: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    try {
+      const vendor = await this.vendorService.findAllOrder(
+        response,
+        search,
+        pageNumber,
+        pageSize,
+      );
+      return vendor;
+    } catch (error) {
+      return {
+        message: 'Internal server error',
+      };
+    }
+  }
+  @Get(':id')
+  findOneId(@Param('id') id: string) {
+    return this.vendorService.findOne(+id);
   }
 
   //  dengan pagination
@@ -51,34 +79,55 @@ export class VendorController {
 
   // Search Vendor
   @Get()
-  async searchVendor(
-    @Query('page') pageNumber: number,
-    @Query('limit') limit: number,
-    @Query('name') vendor_name: string,
-    @Query('priority') vendor_priority?: string,
+  async findAll(
+    @Res() response: Response,
+    @Query('search') search: string,
+    @Query('pageNumber') pageNumber: number,
+    @Query('pageSize') pageSize: number,
   ) {
-    if (vendor_name) {
-      return this.vendorService.searchVendor(
+    try {
+      const vendor = await this.vendorService.findAll(
+        response,
+        search,
         pageNumber,
-        limit,
-        vendor_name,
-        vendor_priority,
+        pageSize,
       );
-    } else if (vendor_priority) {
-      return this.vendorService.searchVendor(
-        pageNumber,
-        limit,
-        vendor_name,
-        vendor_priority,
-      );
-    } else {
-      return this.vendorService.findAll(pageNumber, limit);
+      return vendor;
+    } catch (error) {
+      return {
+        message: 'Internal server error',
+      };
     }
   }
 
+  // async searchVendor(
+  //   @Query('page') pageNumber: number,
+  //   @Query('limit') limit: number,
+  //   @Query('name') vendor_name: string,
+  //   @Query('priority') vendor_priority?: string,
+  // ) {
+  //   if (vendor_name) {
+  //     return this.vendorService.searchAllVendor(
+  //       pageNumber,
+  //       limit,
+  //       vendor_name,
+  //       vendor_priority,
+  //     );
+  //   } else if (vendor_priority) {
+  //     return this.vendorService.searchAllVendor(
+  //       pageNumber,
+  //       limit,
+  //       vendor_name,
+  //       vendor_priority,
+  //     );
+  //   } else {
+  //     return this.vendorService.findAll(pageNumber, limit);
+  //   }
+  // }
+
   // ADD ITEM PRODUCT VENDOR
 
-  @Get(':id/addProduct')
+  @Get('addProduct/:id')
   async findOne(
     @Param('id') id: string,
     @Query('page') page: number,

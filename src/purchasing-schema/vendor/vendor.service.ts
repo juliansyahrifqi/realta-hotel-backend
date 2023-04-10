@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { vendor, vendor_product } from 'models/purchasingSchema';
+import { Response } from 'express';
+import {
+  purchase_order_header,
+  stocks,
+  vendor,
+  vendor_product,
+} from 'models/purchasingSchema';
 import { Op } from 'sequelize';
 
 @Injectable()
@@ -12,6 +18,25 @@ export class VendorService {
   async create(createVendorDto: CreateVendorDto) {
     await vendor.create(createVendorDto);
     return { message: 'Vendor berhasil di tambahkan', createVendorDto };
+  }
+
+  async findOne(vendor_entity_id: number): Promise<any> {
+    try {
+      const result = await vendor.findOne({ where: { vendor_entity_id } });
+      if (result) {
+        return {
+          message: `Data dengan id ${vendor_entity_id} berhasil ditemukan`,
+          data: result,
+        };
+      } else {
+        return {
+          message: `Data dengan id ${vendor_entity_id} tidak ditemukan`,
+          data: result,
+        };
+      }
+    } catch (error) {
+      return error;
+    }
   }
 
   // async findAll() {
@@ -50,94 +75,178 @@ export class VendorService {
   // }
 
   // search vendor
-  async searchVendor(
-    pageNumber: number,
-    limit: number,
+  // async searchAllVendor(
+  //   pageNumber: number,
+  //   limit: number,
+  //   vendor_name: string,
+  //   vendor_priority: string,
+  // ): Promise<any> {
+  //   try {
+  //     const offset = (pageNumber - 1) * limit;
+
+  //     const result = await vendor.findAndCountAll({
+  //       where: {
+  //         [Op.or]: [
+  //           {
+  //             vendor_name: {
+  //               [Op.iLike]: `%${vendor_name}%`,
+  //             },
+  //           },
+  //           {
+  //             vendor_priority: {
+  //               [Op.eq]: vendor_priority,
+  //             },
+  //           },
+  //         ],
+  //       },
+  //       offset,
+  //       limit,
+  //       order: [['vendor_entity_id', 'ASC']],
+  //     });
+
+  //     const count = result.count;
+  //     const totalPages = Math.ceil(vendor.length / limit);
+  //     const currentPage = pageNumber;
+  //     const data = result.rows;
+
+  //     if (count === 0) {
+  //       return {
+  //         message: `Data vendor tidak ditemukan`,
+  //         data: [],
+  //         meta: {
+  //           count: 0,
+  //           totalPages: 0,
+  //           currentPage,
+  //           hasNextPage: false,
+  //           hasPrevPage: false,
+  //         },
+  //       };
+  //     }
+
+  //     return {
+  //       message: `Data vendor ditemukan`,
+  //       data: result,
+  //       meta: {
+  //         count,
+  //         totalPages,
+  //         currentPage,
+  //         hasNextPage: currentPage < totalPages,
+  //         hasPrevPage: currentPage > 1,
+  //       },
+  //     };
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
+
+  // async findAll(pageNumber: number, limit: number): Promise<any> {
+  //   try {
+  //     const offset = (pageNumber - 1) * limit;
+
+  //     const result = await this.vendorModel.findAndCountAll({
+  //       offset,
+  //       limit,
+  //       order: [['vendor_entity_id', 'ASC']],
+  //       include: [
+  //         {
+  //           model: vendor_product,
+  //         },
+  //       ],
+  //     });
+  //     const count = result.count;
+  //     const totalPages = Math.ceil(vendor.length / limit);
+  //     const currentPage = pageNumber;
+  //     const data = result.rows;
+
+  //     if (count === 0) {
+  //       return {
+  //         message: `Data vendor kosong`,
+  //         data: result,
+  //         meta: {
+  //           count: 0,
+  //           totalPages: 0,
+  //           currentPage,
+  //           hasNextPage: false,
+  //           hasPrevPage: false,
+  //         },
+  //       };
+  //     }
+
+  //     return {
+  //       message: `Data vendor ditemukan`,
+  //       data,
+  //       meta: {
+  //         count,
+  //         totalPages,
+  //         currentPage,
+  //         hasNextPage: currentPage < totalPages,
+  //         hasPrevPage: currentPage > 1,
+  //       },
+  //     };
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
+
+  async findAll(
+    @Res() response: Response,
     vendor_name: string,
-    vendor_priority: string,
+    pageNumber: number,
+    pageSize: number,
   ): Promise<any> {
     try {
-      const offset = (pageNumber - 1) * limit;
+      const pages = pageNumber || 0;
+      const limits = pageSize || 5;
+      const search = vendor_name || '';
+      const offset = limits * (pages - 1);
 
-      const result = await vendor.findAndCountAll({
+      const totalRows = await this.vendorModel.count({
         where: {
           [Op.or]: [
             {
               vendor_name: {
-                [Op.iLike]: `%${vendor_name}%`,
-              },
-            },
-            {
-              vendor_priority: {
-                [Op.eq]: vendor_priority,
+                [Op.iLike]: '%' + search + '%',
               },
             },
           ],
         },
-        offset,
-        limit,
       });
+      const totalPage = Math.ceil(vendor.length / limits);
 
-      const count = result.count;
-      const totalPages = Math.ceil(count / limit);
-      const currentPage = pageNumber;
-      const data = result.rows;
-
-      if (count === 0) {
-        return {
-          message: `Data vendor tidak ditemukan`,
-          data: [],
-          meta: {
-            count: 0,
-            totalPages: 0,
-            currentPage,
-            hasNextPage: false,
-            hasPrevPage: false,
+      const data = await this.vendorModel.findAll({
+        where: {
+          vendor_name: {
+            [Op.iLike]: '%' + search + '%',
           },
-        };
-      }
-
-      return {
-        message: `Data vendor ditemukan`,
-        data,
-        meta: {
-          count,
-          totalPages,
-          currentPage,
-          hasNextPage: currentPage < totalPages,
-          hasPrevPage: currentPage > 1,
         },
-      };
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async findAll(pageNumber: number, limit: number): Promise<any> {
-    try {
-      const offset = (pageNumber - 1) * limit;
-
-      const result = await this.vendorModel.findAndCountAll({
-        offset,
-        limit,
+        include: [
+          {
+            model: vendor_product,
+            include: [
+              {
+                model: stocks,
+              },
+            ],
+          },
+        ],
+        offset: offset,
+        limit: limits,
+        order: [['vendor_entity_id', 'ASC']],
       });
-      const count = result.count;
-      const totalPages = Math.ceil(count / limit);
-      const currentPage = pageNumber;
-      const data = result.rows;
-      return {
-        message: `Data vendor ditemukan`,
-        data,
-        meta: {
-          count,
-          totalPages,
-          currentPage,
-          hasNextPage: currentPage < totalPages,
-          hasPrevPage: currentPage > 1,
-        },
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        totalPage: totalPage,
+        totalRows: totalRows,
+        page: pages,
+        data: data,
       };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error,
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
@@ -189,6 +298,69 @@ export class VendorService {
       };
     } catch (error) {
       return error;
+    }
+  }
+
+  // LISTORDER
+  async findAllOrder(
+    @Res() response: Response,
+    po_number: string,
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<any> {
+    try {
+      const pages = pageNumber || 0;
+      const limits = pageSize || 5;
+      const search = po_number || '';
+      const offset = limits * (pages - 1);
+
+      const totalRows = await purchase_order_header.count({
+        include: [
+          {
+            model: vendor,
+          },
+        ],
+        where: {
+          [Op.or]: [
+            {
+              pohe_number: {
+                [Op.iLike]: '%' + search + '%',
+              },
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / limits);
+
+      const data = await purchase_order_header.findAll({
+        include: [
+          {
+            model: vendor,
+          },
+        ],
+        where: {
+          pohe_number: {
+            [Op.iLike]: '%' + search + '%',
+          },
+        },
+        offset: offset,
+        limit: limits,
+        order: [['pohe_id', 'ASC']],
+      });
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        totalPage: totalPage,
+        totalRows: totalRows,
+        page: pages,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
+    } catch (error) {
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error,
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
