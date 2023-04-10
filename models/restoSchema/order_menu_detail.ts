@@ -31,22 +31,22 @@ export class order_menu_detail
     autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('resto.order_menu_detail_omde_id_seq'::regclass)",
+      "nextval('resto.order_menu_detail_omde_id_seq1'::regclass)",
     ),
   })
   @Index({ name: 'pk_omde_id', using: 'btree', unique: true })
   omde_id?: number;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
+  @Column({ allowNull: true, type: DataType.DECIMAL })
   orme_price?: string;
 
   @Column({ allowNull: true, type: DataType.INTEGER })
   orme_qty?: number;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
+  @Column({ allowNull: true, type: DataType.DECIMAL })
   orme_subtotal?: string;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
+  @Column({ allowNull: true, type: DataType.DECIMAL })
   orme_discount?: string;
 
   @Column({ allowNull: true, type: DataType.INTEGER })

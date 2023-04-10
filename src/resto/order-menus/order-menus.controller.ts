@@ -17,23 +17,37 @@ import { UpdateOrderMenuDto } from './dto/update-order-menu.dto';
 export class OrderMenusController {
   constructor(private readonly orderMenusService: OrderMenusService) {}
 
+  // * MENAMPILKAN DATA ORDER_MENUS BY ID
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<order_menus> {
     return this.orderMenusService.findOne(id);
   }
+  // ! MENAMPILKAN DATA ORDER_MENUS BY ID
 
+  // * MENAMPILKAN SEMUA DATA ORDER_MENUS
   @Get()
   async findAll(): Promise<order_menus[]> {
     return this.orderMenusService.findAll();
   }
+  // ! MENAMPILKAN SEMUA DATA ORDER_MENUS
+
+  // * CREATE ORDER_MENUS
+  // @Post()
+  // async create(
+  //   @Body() createOrderMenuDto: CreateOrderMenuDto,
+  // ): Promise<order_menus> {
+  //   return this.orderMenusService.create(createOrderMenuDto);
+  // }
+  // ! CREATE ORDER_MENUS
 
   @Post()
   async create(
     @Body() createOrderMenuDto: CreateOrderMenuDto,
   ): Promise<order_menus> {
-    return this.orderMenusService.create(createOrderMenuDto);
+    return this.orderMenusService.createOrderMenu(createOrderMenuDto);
   }
 
+  // * EDIT DAN UPDATE DATA ORDER MENUS BY ID
   @Put(':id')
   async update(
     @Param('id') id: number,
@@ -41,9 +55,12 @@ export class OrderMenusController {
   ): Promise<[number, order_menus[]]> {
     return this.orderMenusService.update(id, updateOrderMenuDto);
   }
+  // ! EDIT DAN UPDATE DATA ORDER MENUS BY ID
 
+  // * DELETE ORDER_MENUS BY ID
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<number> {
     return this.orderMenusService.remove(id);
   }
+  // ! DELETE ORDER_MENUS BY ID
 }

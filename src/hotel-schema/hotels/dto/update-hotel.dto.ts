@@ -26,8 +26,8 @@ export class UpdateHotelDto extends PartialType(CreateHotelDto) {
   hotel_reason: string;
 
   //===========MASTER============
-  @IsNotEmpty()
-  city_name: string;
+  // @IsNotEmpty()
+  // city_name: string;
 
   @IsNotEmpty()
   addr_line1: string;

@@ -2,9 +2,13 @@ import { Body, Injectable } from '@nestjs/common';
 import { CreateWorkOrderDto } from './dto/create-work_order.dto';
 import { UpdateWorkOrderDto } from './dto/update-work_order.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { work_orders } from '../../../models/humanResourcesSchema';
+import {
+  work_order_detail,
+  work_orders,
+} from '../../../models/humanResourcesSchema';
 import { users } from '../../../models/usersSchema/users';
 import { Op } from 'sequelize';
+import { service_task } from 'models/masterSchema';
 
 @Injectable()
 export class WorkOrdersService {
@@ -25,27 +29,66 @@ export class WorkOrdersService {
     }
   }
 
-  async findAll(page: number, limit: number): Promise<any> {
+  async findAll(
+    page: number,
+    limit: number,
+    from?: Date,
+    to?: Date,
+    woro_status?: string,
+  ): Promise<any> {
     try {
       const offset = limit * (page - 1);
+      const whereClause: any = {};
+
+      if (woro_status) {
+        whereClause.woro_status = woro_status;
+      }
+
+      if (from && to) {
+        whereClause.woro_start_date = { [Op.between]: [from, to] };
+      } else if (from) {
+        whereClause.woro_start_date = { [Op.gte]: from };
+      } else if (to) {
+        whereClause.woro_start_date = { [Op.lte]: to };
+      }
+
       const result = await this.workOrdersModel.findAll({
-        attributes: ['woro_start_date', 'woro_status'],
+        attributes: ['woro_id', 'woro_start_date', 'woro_status'],
         include: [
           {
             model: users,
             attributes: ['user_full_name'],
+            // required: true,
+          },
+          {
+            model: work_order_detail,
+            attributes: ['wode_id', 'wode_status', 'wode_notes'],
+            // required: true,
+            include: [
+              {
+                model: service_task,
+                attributes: ['seta_name'],
+                // required: true,
+              },
+            ],
           },
         ],
+        where: whereClause,
         offset,
         limit,
       });
-      const totalData = await this.workOrdersModel.count();
+
+      const totalData = await this.workOrdersModel.count({
+        where: whereClause,
+      });
       const totalPages = Math.ceil(totalData / limit);
-      if (result.length === 0) {
+
+      if (!result) {
         return {
           message: 'Work Order tidak ditemukan!',
         };
       }
+
       return {
         message: 'Work Order ditemukan!',
         data: result,
@@ -55,35 +98,6 @@ export class WorkOrdersService {
           currentPage: page,
           perPage: limit,
         },
-      };
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async findOne(woro_start_date: Date, from: Date, to: Date, status: string) {
-    try {
-      // eslint-disable-next-line prefer-const
-      let where: any = {};
-      if (status) {
-        where.woro_status = status;
-      }
-      if (from && to) {
-        where.woro_start_date = { [Op.between]: [from, to] };
-      } else if (from) {
-        where.woro_start_date = { [Op.gte]: from };
-      } else if (to) {
-        where.woro_start_date = { [Op.lte]: to };
-      }
-      const result = await this.workOrdersModel.findAll({ where });
-      if (!result) {
-        return {
-          message: `Tidak ada work order yang ditemukan pada tanggal ${woro_start_date} dan dalam rentang waktu dari ${from} hingga ${to} dengan status ${status}!`,
-        };
-      }
-      return {
-        message: `Ditemukan ${result.length} work order pada tanggal ${woro_start_date} dan dalam rentang waktu dari ${from} hingga ${to} dengan status ${status}.`,
-        data: result,
       };
     } catch (error) {
       return error;

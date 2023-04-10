@@ -6,6 +6,8 @@ import {
   Param,
   Delete,
   Put,
+  InternalServerErrorException,
+  Query,
 } from '@nestjs/common';
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
@@ -21,13 +23,13 @@ export class DepartmentController {
   }
 
   @Get()
-  findAll() {
-    return this.departmentService.findAll();
-  }
-
-  @Get(':dept_name')
-  findOne(@Param('dept_name') dept_name: string) {
-    return this.departmentService.findOne(dept_name);
+  async findAll(@Query('search') dept_name?: string) {
+    const result = await this.departmentService.findAll(dept_name);
+    if ('error' in result) {
+      throw new InternalServerErrorException('Terjadi kesalahan pada server');
+    } else {
+      return result;
+    }
   }
 
   @Put(':id')

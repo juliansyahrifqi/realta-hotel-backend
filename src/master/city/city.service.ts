@@ -31,7 +31,15 @@ export class CityService {
 
   async findAll(): Promise<any> {
     try {
-      const result = await this.cityModel.findAll({});
+      const result = await this.cityModel.findAll({
+        include: [
+          {
+            model: provinces,
+            include: [{ model: country, include: [{ model: regions }] }],
+          },
+        ],
+        order: [['city_name', 'ASC']],
+      });
       return { message: 'Data found', data: result };
     } catch (error) {
       return { message: 'Data not found', error: error.message };

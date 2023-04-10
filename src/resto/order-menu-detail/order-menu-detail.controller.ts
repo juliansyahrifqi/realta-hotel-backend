@@ -21,18 +21,23 @@ export class OrderMenuDetailController {
     private readonly orderMenuDetailService: OrderMenuDetailService,
   ) {}
 
+  // *MENAMPILKAN SEMUA DATA ORDER_MENU_DETAIL
   @Get()
   async findAll(): Promise<order_menu_detail[]> {
     return this.orderMenuDetailService.findAll();
   }
+  // !MENAMPILKAN SEMUA DATA ORDER_MENU_DETAIL
 
+  // *CREATE DATA ORDER_MENU_DETAIL
   @Post()
   async create(
     @Body() createOrderMenuDetailDto: CreateOrderMenuDetailDto,
   ): Promise<order_menu_detail> {
     return this.orderMenuDetailService.create(createOrderMenuDetailDto);
   }
+  // !CREATE DATA ORDER_MENU_DETAIL
 
+  // * MENAMPILKAN DATA BY ID
   @Get(':id')
   async findOne(
     @Param('id', ParseIntPipe) id: number,
@@ -43,7 +48,9 @@ export class OrderMenuDetailController {
     }
     return orderMenuDetail;
   }
+  // ! MENAMPILKAN DATA BY ID
 
+  // * EDIT DAN UPDATE DATA BY ID
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -58,7 +65,9 @@ export class OrderMenuDetailController {
     }
     return updatedOrderMenuDetail;
   }
+  // ! EDIT DAN UPDATE DATA BY ID
 
+  // * HAPUS DATA BY ID
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     const deleted = await this.orderMenuDetailService.delete(id);
@@ -66,4 +75,5 @@ export class OrderMenuDetailController {
       throw new NotFoundException(`Order menu detail with ID ${id} not found`);
     }
   }
+  // ! HAPUS DATA BY ID
 }
