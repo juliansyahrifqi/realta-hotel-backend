@@ -14,7 +14,7 @@ import { hotels } from '../../models/hotelSchema/hotels';
 import { hotel_reviews } from '../../models/hotelSchema/hotel_reviews';
 import { booking_orders } from '../../models/bookingSchema/booking_orders';
 import { facility_price_history } from '../../models/hotelSchema/facility_price_history';
-import { user_accounts } from 'models/paymentSchema';
+import { payment_transaction, user_accounts } from 'models/paymentSchema';
 
 
 export interface usersAttributes {
@@ -97,11 +97,7 @@ export class users
 
   @HasMany(() => user_accounts, { sourceKey: 'user_id' })
   user_accounts?: user_accounts[];
-
   
-  @HasMany(() => user_accounts, { sourceKey: 'user_id' })
-  user_accounts?: user_accounts[];
-
-  @HasMany(() => payment_transaction, { sourceKey: 'user_id' })
-  payment_transactions?: payment_transaction[];
+    @HasMany(() => payment_transaction, { sourceKey: 'user_id' })
+    payment_transactions?: payment_transaction[];
 }
