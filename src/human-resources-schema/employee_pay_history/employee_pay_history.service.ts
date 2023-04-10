@@ -15,8 +15,12 @@ export class EmployeePayHistoryService {
     @Body() createEmployeePayHistoryDto: CreateEmployeePayHistoryDto,
   ): Promise<any> {
     try {
+      const payHistoryToCreate = {
+        ...createEmployeePayHistoryDto,
+        ephi_modified_date: new Date(),
+      };
       const result = await this.employeePayHistoryModel.create(
-        createEmployeePayHistoryDto,
+        payHistoryToCreate,
       );
       return {
         message: 'Employee Pay History Baru ditambahkan!',
@@ -66,15 +70,17 @@ export class EmployeePayHistoryService {
     updateEmployeePayHistoryDto: UpdateEmployeePayHistoryDto,
   ): Promise<any> {
     try {
-      const result = await this.employeePayHistoryModel.update(
-        updateEmployeePayHistoryDto,
-        {
-          where: { ephi_emp_id },
-        },
+      await this.employeePayHistoryModel.update(updateEmployeePayHistoryDto, {
+        where: { ephi_emp_id },
+      });
+      const updatedPayHistory = await this.employeePayHistoryModel.findByPk(
+        ephi_emp_id,
       );
+      updatedPayHistory.ephi_modified_date = new Date();
+      await updatedPayHistory.save();
       return {
         message: `Employee Department History dengan id ${ephi_emp_id} berhasil diupdate!`,
-        data: result,
+        data: updatedPayHistory,
       };
     } catch (error) {
       return error;

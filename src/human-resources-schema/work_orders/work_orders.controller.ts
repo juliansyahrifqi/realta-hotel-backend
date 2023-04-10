@@ -11,6 +11,7 @@ import {
 import { WorkOrdersService } from './work_orders.service';
 import { CreateWorkOrderDto } from './dto/create-work_order.dto';
 import { UpdateWorkOrderDto } from './dto/update-work_order.dto';
+import { from } from 'rxjs';
 
 @Controller('hr/work-orders')
 export class WorkOrdersController {
@@ -21,18 +22,15 @@ export class WorkOrdersController {
     return this.workOrdersService.create(createWorkOrderDto);
   }
 
-  @Get() // pagination
-  findAll(@Query('page') page: number, @Query('limit') limit: number) {
-    return this.workOrdersService.findAll(page, limit);
-  }
-
-  @Get('search')
-  search(
+  @Get()
+  async findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
     @Query('from') from: Date,
     @Query('to') to: Date,
     @Query('status') status: string,
   ) {
-    return this.workOrdersService.findOne(new Date(), from, to, status);
+    return this.workOrdersService.findAll(page, limit, from, to, status);
   }
 
   @Put(':id')

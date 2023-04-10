@@ -31,7 +31,7 @@ export class address
     autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('master.address_addr_id_seq1'::regclass)",
+      "nextval('master.address_addr_id_seq'::regclass)",
     ),
   })
   @Index({ name: 'pk_addr_id', using: 'btree', unique: true })

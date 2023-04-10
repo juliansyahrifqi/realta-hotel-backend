@@ -8,7 +8,7 @@ export class UpdateEmployeeDepatmentHistoryDto extends PartialType(
   edhi_emp_id?: number;
   edhi_start_date?: Date;
   edhi_end_date?: Date;
-  edhi_modified_date?: Date;
+  edhi_modified_date?: Date = new Date();
   edhi_dept_id?: number;
   edhi_shift_id?: number;
 }
