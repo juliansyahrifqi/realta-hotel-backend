@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { address } from '../../../models/masterSchema';
+import { address, city } from '../../../models/masterSchema';
 // import { addressAttributes } from '../../models/address';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
@@ -10,6 +10,8 @@ export class AddressService {
   constructor(
     @InjectModel(address)
     private readonly addressModel: typeof address,
+    @InjectModel(city)
+    private cityModel: typeof city,
   ) {}
 
   async findAll(): Promise<any> {
@@ -44,6 +46,18 @@ export class AddressService {
     } catch (error) {
       return { message: 'Error creating data', error };
     }
+  }
+
+  async getCityById(id: number): Promise<any> {
+    const city = await this.addressModel.findOne({
+      include: [
+        {
+          model: this.cityModel,
+        },
+      ],
+      where: { addr_id: id },
+    });
+    return city;
   }
 
   async update(id: number, updateAddressDto: UpdateAddressDto): Promise<any> {

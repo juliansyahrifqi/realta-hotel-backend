@@ -23,30 +23,30 @@ export class PriceItemsService {
     }
   }
 
-  async findAll(page = 1, limit = 10): Promise<any> {
-    try {
-      const offset = (page - 1) * limit;
-      const priceItems = await this.priceItemsModel.findAll({
-        limit,
-        offset,
-      });
-      const count = await this.priceItemsModel.count();
-      const totalPages = Math.ceil(count / limit);
-      const currentPage = page > totalPages ? totalPages : page;
+  // async findAll(page = 1, limit = 10): Promise<any> {
+  //   try {
+  //     const offset = (page - 1) * limit;
+  //     const priceItems = await this.priceItemsModel.findAll({
+  //       limit,
+  //       offset,
+  //     });
+  //     const count = await this.priceItemsModel.count();
+  //     const totalPages = Math.ceil(count / limit);
+  //     const currentPage = page > totalPages ? totalPages : page;
 
-      return {
-        message: 'Data found',
-        data: priceItems,
-        pagination: {
-          totalPages,
-          currentPage,
-          totalItems: count,
-        },
-      };
-    } catch (error) {
-      return { message: 'Error fetching data', error: error.message };
-    }
-  }
+  //     return {
+  //       message: 'Data found',
+  //       data: priceItems,
+  //       pagination: {
+  //         totalPages,
+  //         currentPage,
+  //         totalItems: count,
+  //       },
+  //     };
+  //   } catch (error) {
+  //     return { message: 'Error fetching data', error: error.message };
+  //   }
+  // }
 
   async findOne(id: number): Promise<any> {
     try {
@@ -61,14 +61,37 @@ export class PriceItemsService {
     }
   }
 
-  async findAllSearch(searchQuery: string): Promise<any> {
+  async findAllSearch(
+    searchQuery?: string,
+    searchType?: string,
+    page?: number,
+    limit?: number,
+  ): Promise<any> {
     try {
+      const offset = (page - 1) * limit;
+      const count = await this.priceItemsModel.count({
+        where: {
+          prit_name: { [Op.iLike]: `%${searchQuery}%` },
+          prit_type: { [Op.iLike]: `%${searchType}%` },
+        },
+      });
+      const totalPages = Math.ceil(count / limit);
       const data = await this.priceItemsModel.findAll({
         where: {
           prit_name: { [Op.like]: `%${searchQuery}%` },
+          prit_type: { [Op.like]: `%${searchType}%` },
         },
+        limit,
+        offset,
       });
-      return data;
+      return {
+        status: 200,
+        message: 'Data ditemukan',
+        data: data,
+        totalPages: totalPages,
+        page: page,
+        limit: limit,
+      };
     } catch (error) {
       console.error(error);
       return error;
