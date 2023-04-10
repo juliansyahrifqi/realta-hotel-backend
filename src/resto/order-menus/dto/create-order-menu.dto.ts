@@ -12,8 +12,8 @@ export class CreateOrderMenuDto {
   @IsNumber()
   orme_id?: number;
 
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   orme_order_number: string;
 
   // @IsNotEmpty()
@@ -24,27 +24,27 @@ export class CreateOrderMenuDto {
   // @IsNumber()
   orme_total_item: number;
 
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   orme_total_discount: string;
 
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   orme_total_amount: string;
 
   // @IsNotEmpty()
   // @IsString()
   orme_pay_type: string;
 
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   orme_cardnumber: string;
 
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   orme_is_paid: string;
 
-  @IsOptional()
-  @IsDate()
+  // @IsOptional()
+  // @IsDate()
   orme_modified_date?: Date;
 }

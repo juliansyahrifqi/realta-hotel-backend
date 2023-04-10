@@ -30,53 +30,14 @@ export class RestoMenuPhotosController {
   constructor(
     private readonly restoMenuPhotosService: RestoMenuPhotosService,
   ) {}
-
+  // * MENAMPILKAN SEMUA DATA PHOTO
   @Get()
   async findAll(): Promise<resto_menu_photos[]> {
     return this.restoMenuPhotosService.findAll();
   }
+  // ! MENAMPILKAN SEMUA DATA PHOTO
 
-  // @Post()
-  // @UseInterceptors(
-  //   FilesInterceptor('remp_photo_filename', 10, {
-  //     storage: diskStorage({
-  //       destination: './uploads/image/resto',
-  //       filename: (req, file, cb) => {
-  //         const randomName = Array(32)
-  //           .fill(null)
-  //           .map(() => Math.round(Math.random() * 16).toString(16))
-  //           .join('');
-  //         cb(null, `${randomName}${extname(file.originalname)}`);
-  //       },
-  //     }),
-  //   }),
-  // )
-  // async create(
-  //   @Body() createRestoMenuPhotosDto: CreateRestoMenuPhotoDto,
-  //   @UploadedFiles() images: Express.Multer.File[],
-  //   @Req() req: any,
-  // ): Promise<resto_menu_photos[]> {
-  //   if (!images || images.length === 0) {
-  //     throw new BadRequestException('No files uploaded');
-  //   }
-  //   const imagesURLs = images.map((image) => {
-  //     return (
-  //       req.protocol +
-  //       '://' +
-  //       req.get('host') +
-  //       '/resto-menu-photos/image/src/' +
-  //       image.filename
-  //     );
-  //   });
-  //   const restomenuPhotos = imagesURLs.map((url) => {
-  //     return {
-  //       ...createRestoMenuPhotosDto,
-  //       remp_photo_filename: url,
-  //     };
-  //   });
-  //   return this.restoMenuPhotosService.create(restomenuPhotos);
-  // }
-
+  // * UPLOAD/CREATE PHOTO MULTIPLE BISA SINGLE JUGA
   @Post()
   @UseInterceptors(
     FilesInterceptor('remp_photo_filename', 10, {
@@ -108,13 +69,15 @@ export class RestoMenuPhotosController {
       return {
         ...createRestoMenuPhotosDto,
         remp_thumbnail_filename: `${image.originalname}`,
-        remp_photo_filename: `${fileName}-${image.originalname}`,
+        remp_photo_filename: `${fileName}`,
         remp_url: fileUrl,
       };
     });
     return this.restoMenuPhotosService.create(restomenuPhotos);
   }
+  // ! UPLOAD/CREATE PHOTO MULTIPLE BISA SINGLE JUGA
 
+  // * MENAMPILKAN DATA PHOTO BY ID
   @Get(':id')
   async findOne(
     @Param('id', ParseIntPipe) id: number,
@@ -125,13 +88,17 @@ export class RestoMenuPhotosController {
     }
     return restoMenuPhoto;
   }
+  // ! MENAMPILKAN DATA PHOTO BY ID
 
+  // * MENAMPILKAN GAMBAR DARI DATA PHOTO BY NAMA FILE GAMBARNYA
   @Get('image/src/:filename')
   async serveImage(@Param('filename') filename: string, @Res() res: Response) {
     const imagePath = join(process.cwd(), 'uploads/image/resto', filename);
     return res.sendFile(imagePath);
   }
+  // ! MENAMPILKAN GAMBAR DARI DATA PHOTO BY NAMA FILE GAMBARNYA
 
+  // * MENGEDIT DAN UPDATE DATA PHOTO
   @Put(':id')
   @UseInterceptors(
     FileInterceptor('remp_photo_filename', {
@@ -166,7 +133,7 @@ export class RestoMenuPhotosController {
     const restomenuPhotos = {
       ...updateRestoMenuPhotosDto,
       remp_thumbnail_filename: `${file.originalname}`,
-      remp_photo_filename: `${fileName}-${file.originalname}`,
+      remp_photo_filename: `${fileName}`,
       remp_url: finalImageURL,
     };
     const existingProduct = await this.restoMenuPhotosService.findOne(id);
@@ -181,13 +148,15 @@ export class RestoMenuPhotosController {
     }
     return this.restoMenuPhotosService.update(id, restomenuPhotos);
   }
+  // ! MENGEDIT DAN UPDATE DATA PHOTO
 
+  // * DELETE DATA PHOTO DAN GAMBAR BERDASARKAN ID
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<number> {
     const restomenuPhotos = await this.restoMenuPhotosService.findOne(id);
     if (restomenuPhotos && restomenuPhotos.remp_photo_filename) {
       const imagePath = join(
-        'uploads',
+        'uploads/image/resto',
         basename(restomenuPhotos.remp_photo_filename),
       );
       fs.unlinkSync(imagePath);
@@ -195,3 +164,8 @@ export class RestoMenuPhotosController {
     return this.restoMenuPhotosService.delete(id);
   }
 }
+// ! DELETE DATA PHOTO DAN GAMBAR BERDASARKAN ID
+
+// CATATAN SEMUA YANG ADA DI CONTROLLER BERELASI DENGAN SERVICE
+
+//  @ForeignKey(() => resto_menu_photos)
