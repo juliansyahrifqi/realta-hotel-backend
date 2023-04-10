@@ -3,7 +3,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 export class CreateFacilityDto {
   @IsNotEmpty()
   faci_name: string;
-  @IsNotEmpty()
+  @IsOptional()
   faci_description: string;
   @IsNotEmpty()
   faci_max_number: number;
@@ -19,8 +19,8 @@ export class CreateFacilityDto {
   faci_low_price: string;
   @IsNotEmpty()
   faci_high_price: string;
-  @IsNotEmpty()
-  faci_rate_price: string;
+  // @IsNotEmpty()
+  // faci_rate_price: string;
   @IsNotEmpty()
   faci_discount: number;
   @IsNotEmpty()
@@ -31,6 +31,6 @@ export class CreateFacilityDto {
   faci_hotel_id: number;
   @IsNotEmpty()
   faci_memb_name: string;
-  @IsNotEmpty()
+  @IsOptional()
   faci_user_id: number;
 }

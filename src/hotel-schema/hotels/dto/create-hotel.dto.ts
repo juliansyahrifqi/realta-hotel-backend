@@ -23,8 +23,8 @@ export class CreateHotelDto {
   hotel_reason: string;
 
   //===========MASTER============
-  @IsOptional()
-  city_name: string;
+  // @IsOptional()
+  // city_name: string;
 
   @IsNotEmpty()
   addr_line1: string;
