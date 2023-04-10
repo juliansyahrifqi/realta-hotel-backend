@@ -146,7 +146,7 @@ export class FacilitiesService {
     }
   }
 
-  findOne(@Res() response: Response, id: number) {
+  async findOne(@Res() response: Response, id: number) {
     return `This action returns a #${id} facility`;
   }
 

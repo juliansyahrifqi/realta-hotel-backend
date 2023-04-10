@@ -240,27 +240,18 @@ export class HotelsService {
     }
   }
 
-  async findAllIncludeSupport(
-    @Res() response: Response,
-    pageNumber = 1,
-    pageSize = 10,
-  ) {
+  async findAllIncludeSupport(@Res() response: Response, hotel_id: number) {
     try {
-      const offset = (pageNumber - 1) * pageSize;
-      const limit = pageSize;
       const data = await this.hotelsModel.findAll({
+        where: { hotel_id: hotel_id },
         include: [
           {
             model: facilities_support,
           },
         ],
-        offset,
-        limit,
       });
       const dataResponse = {
         statusCode: HttpStatus.OK,
-        page: offset + 1,
-        data: data,
       };
       return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {

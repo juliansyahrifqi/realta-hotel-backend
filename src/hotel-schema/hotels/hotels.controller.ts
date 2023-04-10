@@ -107,17 +107,15 @@ export class HotelsController {
       };
     }
   }
-  @Get('hotel-support')
+  @Get('hotel-support/:id')
   async findAllIncludeSupport(
     @Res() response: Response,
-    @Query('pageNumber') pageNumber: number = 1,
-    @Query('pageSize') pageSize: number = 10,
+    @Param('id') hotel_id: number,
   ) {
     try {
       const hotels = await this.hotelsService.findAllIncludeSupport(
         response,
-        pageNumber,
-        pageSize,
+        hotel_id,
       );
       return hotels;
     } catch (error) {
