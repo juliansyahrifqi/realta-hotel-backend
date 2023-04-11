@@ -1,4 +1,11 @@
-import { HttpStatus, Injectable, Res } from '@nestjs/common';
+import {
+  Body,
+  HttpStatus,
+  Injectable,
+  Req,
+  Res,
+  UploadedFiles,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   facilities,
@@ -18,37 +25,80 @@ export class FacilityPhotoService {
     @InjectModel(facility_photos)
     private faphoModel = facility_photos,
   ) {}
+  // async create(
+  //   @Res() response: Response,
+  //   createFacilityPhotoDto: CreateFacilityPhotoDto,
+  //   photos: Express.Multer.File,
+  // ) {
+  //   try {
+  //     // Penamaan untuk Thumbnail
+  //     let thumbnailName = `faci${createFacilityPhotoDto.fapho_faci_id}_${
+  //       path.parse(photos.originalname).name
+  //     }`;
+  //     // Penamaan untuk URL
+  //     let finalURL = `http://localhost:${process.env.PORT}/facility-photos/photos/${photos.filename}`;
+
+  //     const data = await this.faphoModel.create({
+  //       fapho_faci_id: createFacilityPhotoDto.fapho_faci_id,
+  //       fapho_thumbnail_filename: thumbnailName,
+  //       fapho_photo_filename: photos.filename,
+  //       fapho_primary: createFacilityPhotoDto.fapho_primary,
+  //       fapho_url: finalURL,
+  //     });
+
+  //     const dataResponse = {
+  //       statusCode: HttpStatus.OK,
+  //       message: 'Berhasil Di Tambahkan',
+  //       data: data,
+  //     };
+  //     return response.status(HttpStatus.OK).send(dataResponse);
+  //   } catch (error) {
+  //     const dataResponse = {
+  //       statusCode: HttpStatus.BAD_REQUEST,
+  //       message: 'gagal',
+  //     };
+  //     return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
+  //   }
+  // }
+
   async create(
     @Res() response: Response,
     createFacilityPhotoDto: CreateFacilityPhotoDto,
-    photos: Express.Multer.File,
+    photos: Express.Multer.File[],
   ) {
     try {
-      // Penamaan untuk Thumbnail
-      let thumbnailName = `faci${createFacilityPhotoDto.fapho_faci_id}_${
-        path.parse(photos.originalname).name
-      }`;
-      // Penamaan untuk URL
-      let finalURL = `http://localhost:${process.env.PORT}/facility-photos/photos/${photos.filename}`;
+      let responseData = [];
 
-      const data = await this.faphoModel.create({
-        fapho_faci_id: createFacilityPhotoDto.fapho_faci_id,
-        fapho_thumbnail_filename: thumbnailName,
-        fapho_photo_filename: photos.filename,
-        fapho_primary: createFacilityPhotoDto.fapho_primary,
-        fapho_url: finalURL,
-      });
+      for (let i = 0; i < photos.length; i++) {
+        // Penamaan untuk Thumbnail
+        let thumbnailName = `faci${createFacilityPhotoDto.fapho_faci_id}_${
+          path.parse(photos[i].originalname).name
+        }`;
+
+        // Tambahkan kondisi untuk fapho_primary
+        const fapho_primary = i === 0 ? 1 : 0;
+
+        const data = await this.faphoModel.create({
+          fapho_faci_id: createFacilityPhotoDto.fapho_faci_id,
+          fapho_thumbnail_filename: thumbnailName,
+          fapho_photo_filename: photos[i].filename,
+          fapho_primary: fapho_primary.toString(),
+          fapho_url: `http://localhost:${process.env.PORT}/facility-photos/photos/${photos[i].filename}`,
+        });
+
+        responseData.push(data);
+      }
 
       const dataResponse = {
         statusCode: HttpStatus.OK,
         message: 'Berhasil Di Tambahkan',
-        data: data,
+        data: responseData,
       };
       return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: `'error', ${error}`,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }

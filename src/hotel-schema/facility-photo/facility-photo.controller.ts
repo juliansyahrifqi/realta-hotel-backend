@@ -10,11 +10,12 @@ import {
   UseInterceptors,
   Res,
   Put,
+  UploadedFiles,
 } from '@nestjs/common';
 import { FacilityPhotoService } from './facility-photo.service';
 import { CreateFacilityPhotoDto } from './dto/create-facility-photo.dto';
 import { UpdateFacilityPhotoDto } from './dto/update-facility-photo.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
 
@@ -24,10 +25,10 @@ export class FacilityPhotoController {
 
   @Post()
   @UseInterceptors(
-    FileInterceptor('photos', {
+    FilesInterceptor('photos', 8, {
       storage: diskStorage({
         destination: './uploads/image/hotel',
-        filename(req, file, cb) {
+        filename(_req, file, cb) {
           const finalName = Array(20)
             .fill(null)
             .map(() => Math.round(Math.random() * 16).toString(16))
@@ -41,7 +42,7 @@ export class FacilityPhotoController {
   create(
     @Res() response: Response,
     @Body() createFacilityPhotoDto: CreateFacilityPhotoDto,
-    @UploadedFile() photos: Express.Multer.File,
+    @UploadedFiles() photos: Express.Multer.File[],
   ) {
     return this.facilityPhotoService.create(
       response,
@@ -70,7 +71,7 @@ export class FacilityPhotoController {
     FileInterceptor('photos', {
       storage: diskStorage({
         destination: './uploads/image/hotel',
-        filename(req, file, cb) {
+        filename(_req, file, cb) {
           const finalName = Array(20)
             .fill(null)
             .map(() => Math.round(Math.random() * 16).toString(16))

@@ -10,12 +10,18 @@ import { users } from 'models/usersSchema';
 import { Sequelize } from 'sequelize';
 import { CreateFacilityDto } from './dto/create-facility.dto';
 import { UpdateFacilityDto } from './dto/update-facility.dto';
+import { category_group } from 'models/masterSchema';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class FacilitiesService {
   constructor(
     @InjectModel(facilities)
     private faciModel: typeof facilities,
+
+    @InjectModel(facility_photos)
+    private faphoModel = facility_photos,
 
     @InjectModel(facility_price_history)
     private faphModel: typeof facility_price_history,
@@ -87,6 +93,7 @@ export class FacilitiesService {
     try {
       const data = await this.faciModel.findAll({
         include: [
+          { model: category_group },
           { model: facility_price_history, include: [{ model: users }] },
         ],
       });
@@ -219,7 +226,7 @@ export class FacilitiesService {
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
@@ -227,6 +234,31 @@ export class FacilitiesService {
 
   async remove(@Res() response: Response, id: number) {
     try {
+      const facilities = await this.faciModel.findOne({
+        where: { faci_id: id },
+        include: [{ model: facility_photos }],
+      });
+
+      if (facilities.facility_photos.length) {
+        for (const photos of facilities.facility_photos) {
+          const photosURL = photos.fapho_photo_filename;
+          let filePath = `${path.resolve(
+            __dirname,
+            `../../../../uploads/image/hotel/${photosURL}`,
+          )}`;
+          fs.unlink(filePath, async (err) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log('deleted');
+          });
+
+          await this.faciModel.destroy({
+            where: { faci_id: id },
+          });
+        }
+      }
+
       const data = await this.faciModel.destroy({
         where: { faci_id: id },
       });
