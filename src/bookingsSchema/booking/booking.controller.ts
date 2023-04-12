@@ -340,4 +340,21 @@ export class BookingController {
       })
     }
   }
+
+  @Get('price-items/')
+  async getExtraItemsBooking(@Res() res: Response) {
+    try {
+      const dataResponse = await this.bookingService.getAllExtraItemsBooking()
+      return res.status(200).json({
+        status_code: HttpStatus.OK,
+        message: 'success',
+        data: dataResponse
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status_code: HttpStatus.BAD_REQUEST,
+        message: error
+      })
+    }
+  }
 }
