@@ -28,7 +28,7 @@ export class PaymentTransactionService {
         where: { usac_account_number: createPaymentTransaction.sourceId },
       });
       let recipientUserAccount = await this.userAccountModal.findOne({
-        where: { usac_account_number: createPaymentTransaction.sourceId },
+        where: { usac_account_number: createPaymentTransaction.targetId },
       });
   
 
@@ -66,9 +66,6 @@ export class PaymentTransactionService {
         // Simpan perubahan ke database
         await currentUserAccount.save();
         await recipientUserAccount.save();
-
-
-
       } 
       else if(createPaymentTransaction.ormeOrderNumber){
         createPaymentTransaction.payType='ORM'
@@ -98,7 +95,6 @@ export class PaymentTransactionService {
         recipientUserAccount.usac_saldo = (
           recipientUserAccountBalance + Number(createPaymentTransaction.debit)
         ).toString();
-        console.log(recipientUserAccount)
         // Simpan perubahan ke database
         await currentUserAccount.save();
         await recipientUserAccount.save();
@@ -658,6 +654,7 @@ async findAll(
   page: number,
   limit: number,
   type: string,
+  id:number,
 ) {
   const offset = limit * (page - 1);
   const where = {
@@ -671,11 +668,13 @@ async findAll(
         },
       },
     ],
+    patr_user_id: id,
   };
 
   const query = `SELECT * FROM payment."getallpaymenttransaction"
                 WHERE patr_trx_number ILIKE '%${search}%' 
                 AND patr_type ILIKE '%${type}%'
+                AND "patr_user_id" =  ${id}
                 ORDER BY patr_trx_number DESC
                 OFFSET ${offset}
                 LIMIT ${limit}`;

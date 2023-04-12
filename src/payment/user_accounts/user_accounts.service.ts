@@ -69,9 +69,9 @@ async create(createUserAccountDto: CreateUserAccountDto) {
 
 
 
-  async findAll() {
+  async findAll(id:number) {
     try {
-      const result = await this.sequelize.query(`SELECT * FROM payment."findUserAccount"`);
+      const result = await this.sequelize.query(`SELECT * FROM payment."findUserAccount" where "usac_user_id" =  ${id}`);
       return result[0]
     } catch (error) {
       throw new Error(`Gagal mendapatkan data akun pengguna ${error}`);
