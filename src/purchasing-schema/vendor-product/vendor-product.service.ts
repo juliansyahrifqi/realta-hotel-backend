@@ -10,7 +10,6 @@ export class VendorProductService {
     @InjectModel(vendor_product)
     private vendorProductModel: typeof vendor_product,
   ) {}
-
   async create(createVendorProductDto: CreateVendorProductDto) {
     await vendor_product.create(createVendorProductDto);
     return {
