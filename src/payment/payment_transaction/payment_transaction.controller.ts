@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Res } fr
 import { PaymentTransactionService } from './payment_transaction.service';
 import { CreatePaymentTransactionDto } from './dto/create-payment_transaction.dto';
 
-@Controller('payment-transaction')
+@Controller('transaction')
 export class PaymentTransactionController {
   constructor(private readonly paymentTransactionService: PaymentTransactionService) {}
 
@@ -79,8 +79,8 @@ export class PaymentTransactionController {
   //   return this.paymentTransactionService.findAll();
   // }
   @Get()
-  findAll( @Query('search') search: any, @Query('page') page: any, @Query('limit') limit: any, @Query('type') type: any) {
-    return this.paymentTransactionService.findAll(search,page,limit,type );
+  findAll( @Query('search') search: any, @Query('page') page: any, @Query('limit') limit: any, @Query('type') type: any, @Query('id') id:any) {
+    return this.paymentTransactionService.findAll(search,page,limit,type,id );
   }
 
 
