@@ -6,8 +6,10 @@ import {
   Index,
   Sequelize,
   ForeignKey,
+  HasOne,
   BelongsTo,
 } from 'sequelize-typescript';
+import { payment_transaction } from '../paymentSchema/payment_transaction';
 import { order_menu_detail } from './order_menu_detail';
 import { users } from '../usersSchema/users';
 import { resto_menu_photos } from './resto_menu_photos';
@@ -52,10 +54,10 @@ export class order_menus
   @Column({ allowNull: true, type: DataType.INTEGER })
   orme_total_item?: number;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
+  @Column({ allowNull: true, type: DataType.DECIMAL })
   orme_total_discount?: string;
 
-  @Column({ allowNull: true, type: DataType.NUMBER })
+  @Column({ allowNull: true, type: DataType.DECIMAL })
   orme_total_amount?: string;
 
   @Column({ allowNull: true, type: DataType.STRING(2) })
@@ -73,6 +75,9 @@ export class order_menus
   @ForeignKey(() => users)
   @Column({ allowNull: true, type: DataType.INTEGER })
   orme_user_id?: number;
+
+  @HasOne(() => payment_transaction, { sourceKey: 'orme_order_number' })
+  payment_transaction?: payment_transaction;
 
   @BelongsTo(() => order_menu_detail)
   order_menu_detail?: order_menu_detail;
