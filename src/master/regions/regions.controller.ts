@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
 } from '@nestjs/common';
 // import { RegionsDto } from './dto/';
 import { RegionsService } from './regions.service';
@@ -18,13 +19,18 @@ export class RegionsController {
   constructor(private readonly regionsService: RegionsService) {}
 
   @Get()
-  async findAll(): Promise<regions[]> {
+  async findAll(): Promise<any> {
     return this.regionsService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<regions> {
+  async findOne(@Param('id') id: number): Promise<any> {
     return this.regionsService.findOne(id);
+  }
+  @Get('/regions/:id')
+  async getCountriesByRegion(@Param('id') id: number) {
+    const countries = await this.regionsService.getCountryById(id);
+    return { data: countries };
   }
 
   @Post()
@@ -36,12 +42,12 @@ export class RegionsController {
   async update(
     @Param('id') id: number,
     @Body() dto: UpdateRegionDto,
-  ): Promise<regions> {
+  ): Promise<any> {
     return this.regionsService.update(id, dto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<void> {
+  async delete(@Param('id') id: number): Promise<any> {
     return this.regionsService.delete(id);
   }
 }

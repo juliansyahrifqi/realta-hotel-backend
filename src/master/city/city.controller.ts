@@ -52,6 +52,12 @@ export class CityController {
     return this.citiesService.findOne(id);
   }
 
+  @Get('/city/:id')
+  async getProvinceByRegion(@Param('id') id: number) {
+    const city = await this.citiesService.getAddressById(id);
+    return { data: city };
+  }
+
   // @Put(':id')
   // async update(
   //   @Param('id') id: number,

@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
-import { bank, entity, fintech, user_accounts, user_accountsAttributes } from 'models/paymentSchema';
+import { user_accounts } from 'models/paymentSchema';
 import { InjectModel } from '@nestjs/sequelize';
 import {  Sequelize } from 'sequelize-typescript';
-
 
 @Injectable()
 export class UserAccountsService {
@@ -12,6 +11,15 @@ export class UserAccountsService {
     @InjectModel(user_accounts) private userAccountModel: typeof user_accounts,
     private sequelize: Sequelize
   ) {}
+
+  async findBFAll() {
+    try {
+      const result = await this.sequelize.query(`SELECT * FROM payment."getAllBankFintech"`);
+      return result[0]
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 
 async create(createUserAccountDto: CreateUserAccountDto) {
   try { 
@@ -23,18 +31,46 @@ async create(createUserAccountDto: CreateUserAccountDto) {
       usac_type: createUserAccountDto.usac_type,
       usac_expmonth: createUserAccountDto.usac_expmonth,
       usac_expyear: createUserAccountDto.usac_expyear,
-    });
+    },
+    );
+    console.log(userAccounts)
     return userAccounts;
   } catch (error) {
     return error;
-    // return "Terjadi kesalahan saat membuat akun pengguna";
   }
 }
 
 
+
+// async create(createUserAccountDto: CreateUserAccountDto): Promise<user_accounts> {
+//   try { 
+//     const userAccount = await this.userAccountModel.create({
+//       usac_entity_id: createUserAccountDto.usac_entity_id,
+//       usac_user_id: createUserAccountDto.usac_user_id,
+//       usac_account_number: createUserAccountDto.usac_account_number,
+//       usac_saldo: String(createUserAccountDto.usac_saldo),
+//       usac_type: createUserAccountDto.usac_type,
+//       usac_expmonth: createUserAccountDto.usac_expmonth,
+//       usac_expyear: createUserAccountDto.usac_expyear,
+//     }, {
+//       include: [
+//         { model: bank, attributes: ['bank_name'] },
+//         { model: fintech, attributes: ['fint_name'] },
+//       ],
+//     });
+
+//     return userAccount;
+//   } catch (error) {
+//     throw new (error);
+//   }
+// }
+
+
+
+
+
   async findAll() {
     try {
-      
       const result = await this.sequelize.query(`SELECT * FROM payment."findUserAccount"`);
       return result[0]
     } catch (error) {
@@ -142,9 +178,9 @@ async create(createUserAccountDto: CreateUserAccountDto) {
   }
   
 
-  async delete(id: string) {
+  async delete(id: any) {
     try {
-      const entity = await this.userAccountModel.findByPk(id);
+      const entity = await this.userAccountModel.findOne(id);
       if (!entity) {
         return { error: 'Uses Account yang dimasukkan tidak ada' };
       }

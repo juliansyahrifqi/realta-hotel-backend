@@ -24,7 +24,7 @@ N:N, poca_poli_id, poca_cagro_id, category_group, policy, policy_category_group
 1:N, user_id, patr_user_id, users, payment_transaction
 1:1, orme_order_number,patr_orme_order_number, order_menus, payment_transaction
 1:1, boor_order_number, patr_boor_order_number, booking_orders, payment_transaction
-1:N, reme_id, remp_reme_id, resto_menus, resto_menu_photos
+1:1, remp_reme_id, reme_id, resto_menu_photos, resto_menus
 1:N, omde_orme_id, orme_id, order_menu_detail, order_menus
 1:N, omde_reme_id, reme_id, order_menu_detail, resto_menus
 1:N, faci_id, reme_faci_id, facilities, resto_menus
