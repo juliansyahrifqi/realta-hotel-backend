@@ -148,6 +148,9 @@ export class PaymentTransactionService {
 // ======FINAL TOPUP==============
   async topUp(createPaymentTransaction: CreatePaymentTransactionDto): Promise<any> {
       try {
+        createPaymentTransaction.payType = 'TP'
+        createPaymentTransaction.payNote = 'Topup'
+        
         let currentUserAccount = await this.userAccountModal.findOne({
           where: { usac_account_number: createPaymentTransaction.sourceId },
         });

@@ -184,8 +184,6 @@ async create(createUserAccountDto: CreateUserAccountDto) {
       if (!entity) {
         return { error: 'Uses Account yang dimasukkan tidak ada' };
       }
-
-      await entity.destroy();
       await this.userAccountModel.destroy({ where: { usac_account_number: id } });
 
       return { success: `Berhasil menghapus data user account dengan id ${id}` };
