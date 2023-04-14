@@ -3,6 +3,7 @@ import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
 import { bank, entity, fintech, user_accounts } from 'models/paymentSchema';
 import { InjectModel } from '@nestjs/sequelize';
+
 import { Sequelize } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 
@@ -15,8 +16,10 @@ export class UserAccountsService {
 
   async findBFAll() {
     try {
-      const result = await this.sequelize.query(`SELECT * FROM payment."getAllBankFintech"`);
-      return result[0]
+      const result = await this.sequelize.query(
+        `SELECT * FROM payment."getAllBankFintech"`,
+      );
+      return result[0];
     } catch (error) {
       throw new Error(error);
     }
@@ -78,6 +81,12 @@ export class UserAccountsService {
   //     throw new (error);
   //   }
   // }
+  //     return userAccount;
+  //   } catch (error) {
+  //     throw new (error);
+  //   }
+  // }
+
 
 
 
@@ -114,10 +123,6 @@ export class UserAccountsService {
   //     return { error: 'Failed to get banks' };
   //   }
   // }
-
-
-
-
 
   // async findAll(searchTerm: string = '', page: number = 1, limit: number = 10): Promise<any> {
   //   try {
@@ -176,16 +181,23 @@ export class UserAccountsService {
     try {
       return await this.userAccountModel.findOne({ where: { usac_account_number: id } });
     } catch (error) {
-      throw new Error(`Gagal mendapatkan akun pengguna dengan id: ${error.message}`);
+      throw new Error(
+        `Gagal mendapatkan akun pengguna dengan id: ${error.message}`,
+      );
     }
   }
 
-  async update(accountNumber: string, updateUserAccountsDto: UpdateUserAccountDto): Promise<user_accounts> {
+  async update(
+    accountNumber: string,
+    updateUserAccountsDto: UpdateUserAccountDto,
+  ): Promise<user_accounts> {
     try {
       const userAccount = await this.userAccountModel.findOne({ where: { usac_account_number: accountNumber } });
 
       if (!userAccount) {
-        throw new NotFoundException(`Akun pengguna dengan nomor rekening ${accountNumber} tidak ditemukan`);
+        throw new NotFoundException(
+          `Akun pengguna dengan nomor rekening ${accountNumber} tidak ditemukan`,
+        );
       }
 
       userAccount.usac_entity_id = updateUserAccountsDto.usac_entity_id;
@@ -197,7 +209,9 @@ export class UserAccountsService {
 
       return await userAccount.save();
     } catch (error) {
-      throw new Error(`Gagal mengupdate data akun pengguna dengan nomor rekening ${accountNumber}: ${error.message}`);
+      throw new Error(
+        `Gagal mengupdate data akun pengguna dengan nomor rekening ${accountNumber}: ${error.message}`,
+      );
     }
   }
 
@@ -209,10 +223,13 @@ export class UserAccountsService {
         return { error: 'Uses Account yang dimasukkan tidak ada' };
       }
 
-      await entity.destroy();
-      await this.userAccountModel.destroy({ where: { usac_account_number: id } });
+      await this.userAccountModel.destroy({
+        where: { usac_account_number: id },
+      });
 
-      return { success: `Berhasil menghapus data user account dengan id ${id}` };
+      return {
+        success: `Berhasil menghapus data user account dengan id ${id}`,
+      };
     } catch (error) {
       return { error: 'Gagal menghapus data user account' };
     }
