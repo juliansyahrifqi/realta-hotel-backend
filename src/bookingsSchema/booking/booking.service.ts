@@ -7,14 +7,14 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { user_members, users } from 'models/usersSchema';
 import { Op, where } from 'sequelize';
-import { booking_order_detail, booking_order_detail_extra, booking_orders, special_offer_coupons, special_offers } from 'models/bookingSchema';
+import { booking_order_detail, booking_order_detail_extra, booking_orders, special_offer_coupons, special_offers, user_breakfeast } from 'models/bookingSchema';
 import { subtle } from 'crypto';
 
 
 
 @Injectable()
 export class BookingService {
-  constructor(@InjectModel(hotels) private hotelsModel: typeof hotels, @InjectModel(facilities) private facilityModel: typeof facilities, @InjectModel(booking_orders) private bookingOrdersModel: typeof booking_orders, @InjectModel(booking_order_detail) private bookingOrderDetailModel: typeof booking_order_detail, @InjectModel(special_offers) private specialOfferModel: typeof special_offers, @InjectModel(special_offer_coupons) private specialOfferCouponsModel: typeof special_offer_coupons, @InjectModel(booking_order_detail_extra) private bookingOrderDetailExtraModel: typeof booking_order_detail_extra, @InjectModel(price_items) private priceItemsModel: typeof price_items, sequelize: Sequelize) { }
+  constructor(@InjectModel(hotels) private hotelsModel: typeof hotels, @InjectModel(facilities) private facilityModel: typeof facilities, @InjectModel(booking_orders) private bookingOrdersModel: typeof booking_orders, @InjectModel(booking_order_detail) private bookingOrderDetailModel: typeof booking_order_detail, @InjectModel(special_offers) private specialOfferModel: typeof special_offers, @InjectModel(special_offer_coupons) private specialOfferCouponsModel: typeof special_offer_coupons, @InjectModel(booking_order_detail_extra) private bookingOrderDetailExtraModel: typeof booking_order_detail_extra, @InjectModel(price_items) private priceItemsModel: typeof price_items, @InjectModel(user_breakfeast) private userBreakFeastModel: typeof user_breakfeast, sequelize: Sequelize) { }
   create(createBookingDto: CreateBookingDto) {
     return 'This action adds a new booking';
   }
@@ -586,7 +586,7 @@ export class BookingService {
 
   async getAllSpecialOffer(IdBoor: string) {
     try {
-      const getAllUserSpecialOffer = await this.bookingOrderDetailModel.findOne({
+      const getAllUserSpecialOffer = await this.bookingOrderDetailModel.findAll({
         include: [{
           model: booking_orders,
           include: [{
@@ -600,14 +600,15 @@ export class BookingService {
           border_boor_id: Number(IdBoor)
         }
 
+      }).catch((err) => {
+        console.log(err)
       })
 
       const getAllSpecialOffer = await this.specialOfferModel.findAll({
         where: {
-          spof_type: getAllUserSpecialOffer.booking_orders.users.user_type
+          spof_type: getAllUserSpecialOffer[0].booking_orders.users.user_type
         }
       })
-      console.log(getAllUserSpecialOffer.booking_orders.users.user_type)
 
       return getAllSpecialOffer
     } catch (error) {
@@ -812,173 +813,173 @@ export class BookingService {
 
 
 
-      const dataAllBookingDetailExtraItems = await this.bookingOrderDetailModel.findAll({
+      // const dataAllBookingDetailExtraItems = await this.bookingOrderDetailModel.findAll({
 
-        where: {
-          borde_id: {
-            [Op.in]: [...new Set([...dataExtraItems.map((data) => {
-              return data.boex_borde_id
-            })])]
-          }
-        },
-        include: [{
-          model: special_offer_coupons,
+      //   where: {
+      //     borde_id: {
+      //       [Op.in]: [...new Set([...dataExtraItems.map((data) => {
+      //         return data.boex_borde_id
+      //       })])]
+      //     }
+      //   },
+      //   include: [{
+      //     model: special_offer_coupons,
 
-          where: {
-            soco_borde_id: {
-              [Op.in]: [...new Set([...dataExtraItems.map((data) => {
-                return data.boex_borde_id
-              })])]
-            },
-          },
-          include: [{
-            model: special_offers
-          }]
-        }, {
-          model: facilities,
-          include: [{
-            model: hotels,
-            include: [{
-              model: address,
-              include: [{
-                model: city,
-                include: [
-                  {
-                    model: provinces,
+      //     where: {
+      //       soco_borde_id: {
+      //         [Op.in]: [...new Set([...dataExtraItems.map((data) => {
+      //           return data.boex_borde_id
+      //         })])]
+      //       },
+      //     },
+      //     include: [{
+      //       model: special_offers
+      //     }]
+      //   }, {
+      //     model: facilities,
+      //     include: [{
+      //       model: hotels,
+      //       include: [{
+      //         model: address,
+      //         include: [{
+      //           model: city,
+      //           include: [
+      //             {
+      //               model: provinces,
 
-                    include: [
-                      {
-                        model: country,
-                        include: [
-                          {
-                            model: regions,
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              }]
-            }, { model: hotel_reviews }]
-          }]
+      //               include: [
+      //                 {
+      //                   model: country,
+      //                   include: [
+      //                     {
+      //                       model: regions,
+      //                     },
+      //                   ],
+      //                 },
+      //               ],
+      //             },
+      //           ],
+      //         }]
+      //       }, { model: hotel_reviews }]
+      //     }]
 
-        }, { model: booking_order_detail_extra }]
-      })
-      let totalBonusCoupons = 0
+      //   }, { model: booking_order_detail_extra }]
+      // })
+      // let totalBonusCoupons = 0
 
-      dataAllBookingDetailExtraItems.forEach((item) => {
-        totalBonusCoupons = totalBonusCoupons + item.special_offer_coupons_borde[0].special_offers.spof_discount
-      })
+      // dataAllBookingDetailExtraItems.forEach((item) => {
+      //   totalBonusCoupons = totalBonusCoupons + item.special_offer_coupons_borde[0].special_offers.spof_discount
+      // })
 
-      // console.log(totalBonusCoupons)
-      let bonusMember = 0
+      // // console.log(totalBonusCoupons)
+      // let bonusMember = 0
 
-      dataAllBookingDetailExtraItems.forEach((data) => {
-        dataUser.members.forEach((data2) => {
-          if (data.facility.faci_memb_name === data2.memb_name) {
-            bonusMember = bonusMember + data2.user_members.usme_points
-          }
-        })
-      })
-
-
-
-      let bodePrice = 0
-      let bordePriceSub = 0
-      dataAllBookingDetailExtraItems.forEach((item) => {
-        item.boex.forEach((data3) => {
-          bordePriceSub = bordePriceSub + parseInt(data3.boex_subtotal.replace(/[^0-9.-]+/g, ''))
-        })
-
-        bodePrice = bodePrice + bordePriceSub
-      })
-
-      console.log(bodePrice)
-
-      const hore_reviews: any[] = dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews;
-      const ratings_count: { [key: string]: number } = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
-
-
-      for (const review of dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews) {
-        ratings_count[review.hore_rating.toString()] += 1;
-      }
-
-      const total_reviews = hore_reviews.length
-      const percentages: { [key: string]: string } = {
-        '5': `${Math.round(ratings_count['5'] / total_reviews * 100) ? Math.round(ratings_count['5'] / total_reviews * 100) : 0}%`,
-        '4': `${Math.round(ratings_count['4'] / total_reviews * 100) ? Math.round(ratings_count['4'] / total_reviews * 100) : 0}%`,
-        '3': `${Math.round(ratings_count['3'] / total_reviews * 100) ? Math.round(ratings_count['3'] / total_reviews * 100) : 0}%`,
-        '2': `${Math.round(ratings_count['2'] / total_reviews * 100) ? Math.round(ratings_count['2'] / total_reviews * 100) : 0}%`,
-        '1': `${Math.round(ratings_count['1'] / total_reviews * 100) ? Math.round(ratings_count['1'] / total_reviews * 100) : 0}%`,
-      };
-
-      let sumRating = 0
-      let sumRatingLength = 0
-      let jumlahReviewsHotel = dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews.length
-      let hotelReviewsAtr = { ...dataAllBookingDetailExtraItems[0].facility.hotel, hotel_reviews_count: jumlahReviewsHotel }
-
-      hotelReviewsAtr.hotel_reviews.forEach((hr: any) => {
-        sumRating += hr.hore_rating
-        sumRatingLength++
-      })
-
-      let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
-
-      let ratingDescription = '';
-      let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
-
-      if (ratingStar >= 4.5) {
-        ratingDescription = 'Excellent';
-      } else if (ratingStar >= 4) {
-        ratingDescription = 'Very Good';
-      } else if (ratingStar >= 3.5) {
-        ratingDescription = 'Good';
-      } else if (ratingStar >= 3) {
-        ratingDescription = 'Fair';
-      } else {
-        ratingDescription = 'Poor';
-      }
+      // dataAllBookingDetailExtraItems.forEach((data) => {
+      //   dataUser.members.forEach((data2) => {
+      //     if (data.facility.faci_memb_name === data2.memb_name) {
+      //       bonusMember = bonusMember + data2.user_members.usme_points
+      //     }
+      //   })
+      // })
 
 
 
-      let totalPrice = 0;
-      let subTotal = 0
+      // let bodePrice = 0
+      // let bordePriceSub = 0
+      // dataAllBookingDetailExtraItems.forEach((item) => {
+      //   item.boex.forEach((data3) => {
+      //     bordePriceSub = bordePriceSub + parseInt(data3.boex_subtotal.replace(/[^0-9.-]+/g, ''))
+      //   })
 
-      dataAllBookingDetailExtraItems.forEach((data) => {
-        let priceTotalConverse = parseFloat(data.borde_price.replace(/[^0-9.-]+/g, ''))
-        let subTotalConverse = parseFloat(data.borde_subtotal.replace(/[^0-9.-]+/g, ''))
+      //   bodePrice = bodePrice + bordePriceSub
+      // })
 
-        totalPrice = totalPrice + priceTotalConverse
-        subTotal = subTotal + subTotalConverse
-      })
-      console.log(subTotal)
-      subTotal = subTotal - totalBonusCoupons
-      subTotal = subTotal - bonusMember
-      subTotal = subTotal + bodePrice
+      // console.log(bodePrice)
+
+      // const hore_reviews: any[] = dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews;
+      // const ratings_count: { [key: string]: number } = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
 
 
-      const dataRes = {
-        boor_id: dataAllBookingDetailExtraItems[0].border_boor_id,
-        boor_border_hotel_book_name: dataAllBookingDetailExtraItems[0].facility.hotel.hotel_name,
-        boor_border_rooms_address1: dataAllBookingDetailExtraItems[0].facility.hotel.address.addr_line1,
-        boor_border_rooms_address_city: dataAllBookingDetailExtraItems[0].facility.hotel.address.city.city_name,
-        boor_border_hotel_rating: ratingStar,
-        boor_border_hotel_rating_length: total_reviews,
-        boor_border_hotel_rating_status: ratingDescription,
-        boor_border_hotel_checkin_checkout: `${dataAllBookingDetailExtraItems[0].borde_checkin} ${dataAllBookingDetailExtraItems[0].borde_checkout}`,
-        boor_border_hotel_rooms_total_rooms: TotalRooms,
-        boor_border_hotel_rooms_total_guest: TotalGuest,
-        boor_border_rooms_name: dataAllBookingDetailExtraItems[0].facility.faci_name,
-        boor_border_rooms_price: dataAllBookingDetailExtraItems[0].borde_price,
-        boor_border_rooms_percent_discount: `${100 * Number(dataAllBookingDetailExtraItems[0].facility.faci_discount)}%`,
-        boor_border_rooms_percent_tax: `${100 * Number(dataAllBookingDetailExtraItems[0].facility.faci_tax_rate)}%`,
-        boor_border_rooms_price_total: totalPrice,
-        boor_border_rooms_sub_total: subTotal,
-        boor_border_rooms_bonus_member: bonusMember,
-        boor_borde_room_bonus_coupons: totalBonusCoupons,
-        boor_borde_room_bonus_extra_price_items: bodePrice
-      }
-      return { dataRes, dataCache: dataAllBookingDetailExtraItems }
+      // for (const review of dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews) {
+      //   ratings_count[review.hore_rating.toString()] += 1;
+      // }
+
+      // const total_reviews = hore_reviews.length
+      // const percentages: { [key: string]: string } = {
+      //   '5': `${Math.round(ratings_count['5'] / total_reviews * 100) ? Math.round(ratings_count['5'] / total_reviews * 100) : 0}%`,
+      //   '4': `${Math.round(ratings_count['4'] / total_reviews * 100) ? Math.round(ratings_count['4'] / total_reviews * 100) : 0}%`,
+      //   '3': `${Math.round(ratings_count['3'] / total_reviews * 100) ? Math.round(ratings_count['3'] / total_reviews * 100) : 0}%`,
+      //   '2': `${Math.round(ratings_count['2'] / total_reviews * 100) ? Math.round(ratings_count['2'] / total_reviews * 100) : 0}%`,
+      //   '1': `${Math.round(ratings_count['1'] / total_reviews * 100) ? Math.round(ratings_count['1'] / total_reviews * 100) : 0}%`,
+      // };
+
+      // let sumRating = 0
+      // let sumRatingLength = 0
+      // let jumlahReviewsHotel = dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews.length
+      // let hotelReviewsAtr = { ...dataAllBookingDetailExtraItems[0].facility.hotel, hotel_reviews_count: jumlahReviewsHotel }
+
+      // hotelReviewsAtr.hotel_reviews.forEach((hr: any) => {
+      //   sumRating += hr.hore_rating
+      //   sumRatingLength++
+      // })
+
+      // let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
+
+      // let ratingDescription = '';
+      // let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
+
+      // if (ratingStar >= 4.5) {
+      //   ratingDescription = 'Excellent';
+      // } else if (ratingStar >= 4) {
+      //   ratingDescription = 'Very Good';
+      // } else if (ratingStar >= 3.5) {
+      //   ratingDescription = 'Good';
+      // } else if (ratingStar >= 3) {
+      //   ratingDescription = 'Fair';
+      // } else {
+      //   ratingDescription = 'Poor';
+      // }
+
+
+
+      // let totalPrice = 0;
+      // let subTotal = 0
+
+      // dataAllBookingDetailExtraItems.forEach((data) => {
+      //   let priceTotalConverse = parseFloat(data.borde_price.replace(/[^0-9.-]+/g, ''))
+      //   let subTotalConverse = parseFloat(data.borde_subtotal.replace(/[^0-9.-]+/g, ''))
+
+      //   totalPrice = totalPrice + priceTotalConverse
+      //   subTotal = subTotal + subTotalConverse
+      // })
+      // console.log(subTotal)
+      // subTotal = subTotal - totalBonusCoupons
+      // subTotal = subTotal - bonusMember
+      // subTotal = subTotal + bodePrice
+
+
+      // const dataRes = {
+      //   boor_id: dataAllBookingDetailExtraItems[0].border_boor_id,
+      //   boor_border_hotel_book_name: dataAllBookingDetailExtraItems[0].facility.hotel.hotel_name,
+      //   boor_border_rooms_address1: dataAllBookingDetailExtraItems[0].facility.hotel.address.addr_line1,
+      //   boor_border_rooms_address_city: dataAllBookingDetailExtraItems[0].facility.hotel.address.city.city_name,
+      //   boor_border_hotel_rating: ratingStar,
+      //   boor_border_hotel_rating_length: total_reviews,
+      //   boor_border_hotel_rating_status: ratingDescription,
+      //   boor_border_hotel_checkin_checkout: `${dataAllBookingDetailExtraItems[0].borde_checkin} ${dataAllBookingDetailExtraItems[0].borde_checkout}`,
+      //   boor_border_hotel_rooms_total_rooms: TotalRooms,
+      //   boor_border_hotel_rooms_total_guest: TotalGuest,
+      //   boor_border_rooms_name: dataAllBookingDetailExtraItems[0].facility.faci_name,
+      //   boor_border_rooms_price: dataAllBookingDetailExtraItems[0].borde_price,
+      //   boor_border_rooms_percent_discount: `${100 * Number(dataAllBookingDetailExtraItems[0].facility.faci_discount)}%`,
+      //   boor_border_rooms_percent_tax: `${100 * Number(dataAllBookingDetailExtraItems[0].facility.faci_tax_rate)}%`,
+      //   boor_border_rooms_price_total: totalPrice,
+      //   boor_border_rooms_sub_total: subTotal,
+      //   boor_border_rooms_bonus_member: bonusMember,
+      //   boor_borde_room_bonus_coupons: totalBonusCoupons,
+      //   boor_borde_room_bonus_extra_price_items: bodePrice
+      // }
+      return dataExtraItems
 
     } catch (error) {
       return error
@@ -999,6 +1000,119 @@ export class BookingService {
 
       console.log(dataExtraItems)
       return changeDataExtraItems
+
+    } catch (error) {
+      return error
+    }
+  }
+
+  async createBreakFeastBooking(BoorId: any, PickBreakFeast: any) {
+    try {
+      let dataOrderDetail = await this.bookingOrderDetailModel.findAll({
+        where: {
+          border_boor_id: BoorId
+        }
+      })
+
+      if (dataOrderDetail.length > 0) {
+        let dataBreakFeast = await this.userBreakFeastModel.bulkCreate([...PickBreakFeast], { fields: ['usbr_borde_id', 'usbr_modified_date', 'usbr_total_vacant'] })
+
+        return dataBreakFeast
+      } else {
+        return `Order Detail Anda Salah`
+      }
+
+
+    } catch (error) {
+      return error
+    }
+  }
+
+
+  async createFinalBookingOrderDetail(IdBorde: any, Pick: any[], bordeAll: any) {
+    try {
+      const dataHasilUpdate = []
+      const promises = Pick.map(async (data, index) => {
+        const updatedBordeDetail = await this.bookingOrderDetailModel.update({
+          border_boor_id: data.border_boor_id,
+          borde_checkin: data.borde_checkin,
+          borde_checkout: data.borde_checkout,
+          borde_adults: data.borde_adults,
+          borde_kids: data.borde_kids,
+          borde_price: data.borde_price,
+          borde_extra: data.borde_extra,
+          borde_discount: data.borde_discount,
+          borde_tax: data.borde_tax,
+          borde_subtotal: data.borde_subtotal,
+          borde_faci_id: data.borde_faci_id
+        }, {
+          where: {
+            borde_id: bordeAll[index],
+            border_boor_id: IdBorde
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+        const bordeDetail = await this.bookingOrderDetailModel.findOne({
+          where: {
+            borde_id: bordeAll[index]
+          }
+        })
+        dataHasilUpdate.push(bordeDetail)
+      })
+
+      await Promise.all(promises)
+      return dataHasilUpdate
+
+    } catch (error) {
+      return error
+    }
+  }
+
+
+  updateUserMemberPointsBooking = async (userMemberId: any, userMemberName: any, dataUpdate: any) => {
+    const [numRowsUpdated, updatedUserMember] = await user_members.update(
+      {
+        usme_points: dataUpdate.usme_points,
+        usme_type: dataUpdate.usme_type
+      },
+      {
+        where: {
+          usme_user_id: userMemberId,
+          usme_memb_name: userMemberName
+        },
+        returning: true // return the updated row data
+      }
+    );
+
+    return updatedUserMember;
+  }
+
+  createBookingOrderFinal = async (dataBooking: any, IdBoor: any) => {
+    try {
+      const dataBookingOrder = await this.bookingOrdersModel.update({
+        boor_arrival_date: dataBooking.boor_arrival_date,
+        boor_total_room: dataBooking.boor_total_room,
+        boor_total_guest: dataBooking.boor_total_guest,
+        boor_discount: dataBooking.boor_discount,
+        boor_total_tax: dataBooking.boor_total_tax,
+        boor_total_amount: dataBooking.boor_total_amount,
+        boor_down_payment: dataBooking.boor_down_payment,
+        boor_pay_type: dataBooking.boor_pay_type,
+        boor_is_paid: dataBooking.boor_is_paid,
+        boor_type: dataBooking.boor_type,
+        boor_cardnumber: dataBooking.boor_cardnumber,
+        boor_member_type: dataBooking.boor_member_type,
+        boor_status: dataBooking.boor_status,
+        boor_user_id: dataBooking.boor_user_id,
+        boor_order_date: dataBooking.boor_order_date
+      }, {
+        where: {
+          boor_id: IdBoor
+        }
+      })
+
+      return dataBookingOrder
 
     } catch (error) {
       return error

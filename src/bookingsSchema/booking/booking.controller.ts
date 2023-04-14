@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Put, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -18,7 +18,7 @@ export class BookingController {
     @Query('limit') limit = 3,
     @Query('minSubTotal') minSubTotal = 0,
     @Query('maxSubTotal') maxSubTotal = Number.MAX_VALUE,
-    @Query('cityName') cityName: string = 'Indonesia',
+    @Query('cityName') cityName: string = 'Jakarta',
     @Query('provName') provName: string,
     @Query('countryName') countryName: string,
     @Query('regionName') regionName = 'Asia',
@@ -290,7 +290,7 @@ export class BookingController {
   @Get('hotel/rooms/coupons/:IdBoor')
   async getAllSpecialOffer(@Res() res: Response, @Param('IdBoor') IdBoor: string) {
     try {
-
+      console.log(IdBoor)
       const dataRes = await this.bookingService.getAllSpecialOffer(IdBoor)
 
       return res.status(200).json({
@@ -331,7 +331,7 @@ export class BookingController {
       return res.status(200).json({
         status_code: HttpStatus.OK,
         message: 'success',
-        data: dataResponse
+        data: [...dataResponse]
       })
     } catch (error) {
       return res.status(400).json({
@@ -357,4 +357,77 @@ export class BookingController {
       })
     }
   }
+
+  @Post('hotel/breakfeast/:BordeId')
+  async createBreakFeast(@Param('BordeId') BoorId: any, @Body() pick: any, @Res() res: Response) {
+    try {
+      const dataResponse = await this.bookingService.createBreakFeastBooking(BoorId, pick)
+      return res.status(200).json({
+        status_code: HttpStatus.OK,
+        message: 'success',
+        data: dataResponse
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status_code: HttpStatus.BAD_REQUEST,
+        message: error
+      })
+    }
+  }
+
+  @Put('booking_orders_detail/:IdBorde')
+  async createFinalBookingOrderDetails(@Param('IdBorde') IdBorde: any,
+    @Body() pick: any, @Query(`Borde_Id_All`) Borde_Id_All: any, @Res() res: Response) {
+    try {
+      let bordeAll = Borde_Id_All.split(", ").map((str: any) => Number(str.replace(/[\[\]']+/g, '')))
+      const dataResponse = await this.bookingService.createFinalBookingOrderDetail(IdBorde, pick, bordeAll)
+      return res.status(200).json({
+        status_code: HttpStatus.OK,
+        message: 'success',
+        data: dataResponse
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status_code: HttpStatus.BAD_REQUEST,
+        message: error
+      })
+    }
+  }
+
+  @Put('booking_orders/:IdBookingOrder')
+  async createBookingOrder(@Param('IdBookingOrder') IdBookingOrder: any, @Body() pick: any, @Res() res: Response) {
+    try {
+      const dataResponse = await this.bookingService.createBookingOrderFinal(pick, IdBookingOrder)
+      return res.status(200).json({
+        status_code: HttpStatus.OK,
+        message: 'success',
+        data: dataResponse
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status_code: HttpStatus.BAD_REQUEST,
+        message: error
+      })
+    }
+  }
+
+  @Put(`user_points`)
+  async updateUserMemberPointsBooking(@Query('UserMemberId') UserMemberId: any, @Query('UserMemberName') UserMemberName: any, @Body() pick: any, @Res() res: Response) {
+    try {
+      console.log(UserMemberId, UserMemberName, pick)
+      const dataResponse = await this.bookingService.updateUserMemberPointsBooking(Number(UserMemberId), UserMemberName, pick)
+      return res.status(200).json({
+        status_code: HttpStatus.OK,
+        message: 'success',
+        data: dataResponse
+      })
+    } catch (error) {
+      return res.status(400).json({
+        status_code: HttpStatus.BAD_REQUEST,
+        message: error
+      })
+    }
+  }
+
+
 }
