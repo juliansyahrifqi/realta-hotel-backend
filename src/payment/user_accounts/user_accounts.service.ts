@@ -3,7 +3,6 @@ import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
 import { bank, entity, fintech, user_accounts } from 'models/paymentSchema';
 import { InjectModel } from '@nestjs/sequelize';
-
 import { Sequelize } from 'sequelize-typescript';
 import { Op } from 'sequelize';
 
@@ -76,11 +75,6 @@ export class UserAccountsService {
   //       ],
   //     });
 
-  //     return userAccount;
-  //   } catch (error) {
-  //     throw new (error);
-  //   }
-  // }
   //     return userAccount;
   //   } catch (error) {
   //     throw new (error);
@@ -192,7 +186,11 @@ export class UserAccountsService {
     updateUserAccountsDto: UpdateUserAccountDto,
   ): Promise<user_accounts> {
     try {
-      const userAccount = await this.userAccountModel.findOne({ where: { usac_account_number: accountNumber } });
+
+
+      const userAccount = await this.userAccountModel.findOne({
+        where: { usac_account_number: accountNumber },
+      });
 
       if (!userAccount) {
         throw new NotFoundException(
