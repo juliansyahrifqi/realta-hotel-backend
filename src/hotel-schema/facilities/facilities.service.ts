@@ -20,9 +20,6 @@ export class FacilitiesService {
     @InjectModel(facilities)
     private faciModel: typeof facilities,
 
-    @InjectModel(facility_photos)
-    private faphoModel = facility_photos,
-
     @InjectModel(facility_price_history)
     private faphModel: typeof facility_price_history,
   ) {}
@@ -252,10 +249,6 @@ export class FacilitiesService {
             }
             console.log('deleted');
           });
-
-          await this.faciModel.destroy({
-            where: { faci_id: id },
-          });
         }
       }
 
@@ -270,7 +263,7 @@ export class FacilitiesService {
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }

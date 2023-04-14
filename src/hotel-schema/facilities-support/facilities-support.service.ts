@@ -1,10 +1,11 @@
 import { HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Response } from 'express';
-import { facilities_support, hotels } from 'models/hotelSchema';
+import { facilities_support } from 'models/hotelSchema';
 import { CreateFacilitiesSupportDto } from './dto/create-facilities-support.dto';
 import { UpdateFacilitiesSupportDto } from './dto/update-facilities-support.dto';
-
+import * as path from 'path';
+import * as fs from 'fs';
 @Injectable()
 export class FacilitiesSupportService {
   constructor(
@@ -119,6 +120,34 @@ export class FacilitiesSupportService {
 
   async remove(@Res() response: Response, id: number) {
     try {
+      const facilitySupport = await this.faciSupModel.findOne({
+        where: { fs_id: id },
+      });
+
+      let split = facilitySupport.fs_icon_url.split('/');
+      console.log(split);
+      let filepath = `uploads/icons/hotel/${split[5]}`;
+      console.log(filepath);
+
+      fs.unlink(filepath, async (err) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log('deleted');
+      });
+
+      // const photosURL = facilities;
+      // let filePath = `${path.resolve(
+      //   __dirname,
+      //   `../../../../uploads/image/hotel/${photosURL}`,
+      // )}`;
+      // fs.unlink(filePath, async (err) => {
+      //   if (err) {
+      //     console.log(err);
+      //   }
+      //   console.log('deleted');
+      // });
+
       const data = await this.faciSupModel.destroy({
         where: { fs_id: id },
       });

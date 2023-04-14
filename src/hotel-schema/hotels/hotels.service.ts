@@ -6,18 +6,23 @@ import {
   facilities_support,
   hotels,
   hotel_reviews,
+  facility_photos,
+  facility_price_history,
 } from 'models/hotelSchema';
 import { address, category_group, city } from 'models/masterSchema';
-import { off } from 'process';
 import { Op, Sequelize } from 'sequelize';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { UpdateHotelDto } from './dto/update-hotel.dto';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class HotelsService {
   constructor(
     @InjectModel(hotels)
     private hotelsModel: typeof hotels,
+    @InjectModel(facilities)
+    private faciModel: typeof facilities,
     @InjectModel(address)
     private addressModel: typeof address,
     @InjectModel(city)
@@ -100,7 +105,14 @@ export class HotelsService {
         },
         include: [
           { model: address, include: [{ model: city }] },
-          { model: facilities, include: [{ model: category_group }] },
+          {
+            model: facilities,
+            include: [
+              { model: category_group },
+              { model: facility_photos },
+              { model: facility_price_history },
+            ],
+          },
           { model: facilities_support },
         ],
         offset: offset,
@@ -264,7 +276,20 @@ export class HotelsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} hotel`;
+    const data = this.hotelsModel.findOne({
+      where: { hotel_id: id },
+      include: [
+        {
+          model: facilities,
+          include: [
+            { model: facility_photos },
+            { model: facility_price_history },
+          ],
+        },
+      ],
+    });
+
+    return data;
   }
 
   async update(
@@ -357,7 +382,59 @@ export class HotelsService {
 
   async remove(@Res() response: Response, @Param('id') id: number) {
     try {
-      const hapus = await this.hotelsModel.destroy({
+      // const facilities = await this.faciModel.findAll({
+      //   where: { faci_hotel_id: id },
+      //   include: [{ model: facility_photos }],
+      // });
+
+      // if (facilities.facility_photos.length) {
+      //   for (const photos of facilities.facility_photos) {
+      //     const photosURL = photos.fapho_photo_filename;
+      //     let filePath = `${path.resolve(
+      //       __dirname,
+      //       `../../../../uploads/image/hotel/${photosURL}`,
+      //     )}`;
+      //     fs.unlink(filePath, async (err) => {
+      //       if (err) {
+      //         console.log(err);
+      //       }
+      //       console.log('deleted');
+      //     });
+
+      //     await this.faciModel.destroy({
+      //       where: { faci_id: id },
+      //     });
+      //   }
+      // }
+
+      // const hapus = await this.hotelsModel.destroy({
+      //   where: { hotel_id: id },
+      // });
+
+      const facilities = await this.faciModel.findAll({
+        where: { faci_hotel_id: id },
+        include: [{ model: facility_photos }],
+      });
+
+      for (const facility of facilities) {
+        const facilityPhotos = facility.facility_photos;
+        for (const photo of facilityPhotos) {
+          const photoPath = path.resolve(
+            __dirname,
+            `../../../../uploads/image/hotel/${photo.fapho_photo_filename}`,
+          );
+          fs.unlink(photoPath, (err) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log('File deleted:', photoPath);
+          });
+          await photo.destroy();
+        }
+        await facility.destroy();
+      }
+
+      await this.hotelsModel.destroy({
         where: { hotel_id: id },
       });
 
@@ -369,7 +446,7 @@ export class HotelsService {
     } catch (error) {
       const dataResponse = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'gagal',
+        message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
