@@ -147,7 +147,7 @@ export class BookingService {
           sumRatingLength++
         })
 
-        let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
+        let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength).toFixed(2) ? (sumRating / sumRatingLength).toFixed(2).toString() : Number(0).toString() }
 
         let ratingDescription = '';
         let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
@@ -249,9 +249,12 @@ export class BookingService {
 
           // Hitung selisih hari antara startDate dan endDate
           const start = new Date(startDate);
+          start.setDate(start.getDate() + 1); // mengambil tanggal selanjutnya
           const end = new Date(endDate);
+          end.setDate(end.getDate() + 1); // mengambil tanggal selanjutnya
           const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
 
+          console.log(start)
           // Hitung harga total berdasarkan selisih hari
           let priceDiscount = priceRate - data.faci_discount * priceRate;
           let subTotal = priceDiscount + data.faci_tax_rate * priceDiscount;
@@ -321,7 +324,7 @@ export class BookingService {
             hotel: {
               ...data.hotel.toJSON(),
               hotel_review_percentage: percentages,
-              hotel_rating_final_star: ratingStar,
+              hotel_rating_final_star: ratingStar.toFixed(2),
               hotel_review_count: jumlahReviewsHotel,
               hotel_rating_status: ratingDescription
             },
@@ -514,7 +517,7 @@ export class BookingService {
         sumRatingLength++
       })
 
-      let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
+      let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength).toFixed(2) ? (sumRating / sumRatingLength).toFixed(2).toString() : Number(0).toString() }
 
       let ratingDescription = '';
       let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
@@ -723,7 +726,7 @@ export class BookingService {
         sumRatingLength++
       })
 
-      let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
+      let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength).toFixed(2) ? (sumRating / sumRatingLength).toFixed().toString() : Number(0).toString() }
 
       let ratingDescription = '';
       let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
@@ -1112,12 +1115,38 @@ export class BookingService {
         }
       })
 
-      return dataBookingOrder
+      const BookingOrderById = await this.bookingOrdersModel.findOne({
+        where: {
+          boor_id: IdBoor
+        }
+      })
+
+      return BookingOrderById
 
     } catch (error) {
       return error
     }
   }
+
+
+
+  removeOrderBooking = async (IdBoor: any) => {
+    try {
+      const BookingOrderById = await this.bookingOrdersModel.destroy({
+        where: {
+          boor_id: IdBoor
+        }
+      })
+
+      return BookingOrderById
+
+    } catch (error) {
+      return error
+    }
+  }
+
+
+
 
 
 }

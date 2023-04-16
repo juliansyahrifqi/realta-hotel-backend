@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -421,6 +421,31 @@ export class BookingController {
         message: 'success',
         data: dataResponse
       })
+    } catch (error) {
+      return res.status(400).json({
+        status_code: HttpStatus.BAD_REQUEST,
+        message: error
+      })
+    }
+  }
+
+  @Delete('booking_orders/:IdBookingOrder')
+  async deleteBookingOrder(@Param('IdBookingOrder') IdBookingOrder: any, @Res() res: Response) {
+    try {
+      const dataResponse = await this.bookingService.removeOrderBooking(Number(IdBookingOrder))
+      if (dataResponse) {
+        return res.status(200).json({
+          status_code: HttpStatus.OK,
+          message: 'success',
+          data: dataResponse
+        })
+      } else {
+        return res.status(200).json({
+          status_code: HttpStatus.OK,
+          message: 'gagal dihapus',
+        })
+      }
+
     } catch (error) {
       return res.status(400).json({
         status_code: HttpStatus.BAD_REQUEST,
