@@ -25,26 +25,6 @@ export class RestoMenusService {
   }
 
   // INI GET ALL COBA
-  // async findAllInclude(): Promise<any> {
-  //   try {
-  //     const result = await resto_menus.findAll({
-  //       include: [
-  //         {
-  //           model: resto_menu_photos,
-  //         },
-  //       ],
-  //     });
-  //     return {
-  //       status: 200,
-  //       message: `Data berhasil ditemukan`,
-  //       data: result,
-  //     };
-  //   } catch (error) {
-  //     return { status: 400, message: error };
-  //   }
-  // }
-
-  // INI GET ALL COBA
 
   // * HUBUNGAN DENGAN TABLE FACILITIES DARI SCHEMA HOTEL
   async findAllSearch(options: {

@@ -61,8 +61,8 @@ export class resto_menus
   @HasMany(() => resto_menu_photos, { sourceKey: 'reme_id' })
   resto_menu_photos?: resto_menu_photos[];
 
-  @BelongsTo(() => order_menu_detail)
-  order_menu_detail?: order_menu_detail;
+  @HasMany(() => order_menu_detail, { sourceKey: 'reme_id' })
+  order_menu_detail?: order_menu_detail[];
 
   @BelongsTo(() => facilities)
   facility?: facilities;

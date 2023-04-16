@@ -12,9 +12,21 @@ export class OrderMenuDetailService {
   ) {}
 
   async create(
-    createOrderMenuDetailDto: CreateOrderMenuDetailDto,
-  ): Promise<order_menu_detail> {
-    return this.orderMenuDetailModel.create(createOrderMenuDetailDto);
+    createOrderMenuDetailDto:
+      | CreateOrderMenuDetailDto
+      | CreateOrderMenuDetailDto[],
+  ): Promise<order_menu_detail | order_menu_detail[]> {
+    if (Array.isArray(createOrderMenuDetailDto)) {
+      const createdOrderMenuDetails: order_menu_detail[] = [];
+      for (const orderMenuDetailDto of createOrderMenuDetailDto) {
+        const createdOrderMenuDetailItem =
+          await this.orderMenuDetailModel.create(orderMenuDetailDto);
+        createdOrderMenuDetails.push(createdOrderMenuDetailItem);
+      }
+      return createdOrderMenuDetails;
+    } else {
+      return this.orderMenuDetailModel.create(createOrderMenuDetailDto);
+    }
   }
 
   // * HUBUNGAN DENGAN TABLE ORDER_MENUS DAN RESO_MENUS

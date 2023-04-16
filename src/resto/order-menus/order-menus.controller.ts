@@ -31,15 +31,6 @@ export class OrderMenusController {
   }
   // ! MENAMPILKAN SEMUA DATA ORDER_MENUS
 
-  // * CREATE ORDER_MENUS
-  // @Post()
-  // async create(
-  //   @Body() createOrderMenuDto: CreateOrderMenuDto,
-  // ): Promise<order_menus> {
-  //   return this.orderMenusService.create(createOrderMenuDto);
-  // }
-  // ! CREATE ORDER_MENUS
-
   @Post()
   async create(
     @Body() createOrderMenuDto: CreateOrderMenuDto,

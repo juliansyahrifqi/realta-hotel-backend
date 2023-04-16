@@ -8,6 +8,7 @@ import {
   ForeignKey,
   HasOne,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { payment_transaction } from '../paymentSchema/payment_transaction';
 import { order_menu_detail } from './order_menu_detail';
@@ -79,9 +80,9 @@ export class order_menus
   @HasOne(() => payment_transaction, { sourceKey: 'orme_order_number' })
   payment_transaction?: payment_transaction;
 
-  @BelongsTo(() => order_menu_detail)
-  order_menu_detail?: order_menu_detail;
-
   @BelongsTo(() => users)
   user?: users;
+
+  @HasMany(() => order_menu_detail, { sourceKey: 'orme_id' })
+  order_menu_details?: order_menu_detail[];
 }

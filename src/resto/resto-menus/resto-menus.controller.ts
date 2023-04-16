@@ -50,13 +50,6 @@ export class RestoMenusController {
   }
   // ! MENAMPILKAN DATA BY ID
 
-  // // * MENAMPILKAN GAMBAR DARI DATA PHOTO BY NAMA FILE GAMBARNYA
-  // @Get('photo')
-  // findAll(): Promise<any[]> {
-  //   return this.restoMenusService.findAllInclude();
-  // }
-  // // ! MENAMPILKAN GAMBAR DARI DATA PHOTO BY NAMA FILE GAMBARNYA
-
   // * EDIT DAN UPDATE RESTO_MENUS
   @Put(':id')
   async update(

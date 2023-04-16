@@ -36,7 +36,7 @@ export class OrderMenusService {
 
     const orderMenu = new order_menus();
     orderMenu.orme_order_number = newOrderNumber;
-    orderMenu.orme_order_date = orderMenuDto.orme_order_date;
+    orderMenu.orme_order_date = now;
     orderMenu.orme_total_item = orderMenuDto.orme_total_item;
     orderMenu.orme_total_discount = orderMenuDto.orme_total_discount;
     orderMenu.orme_total_amount = orderMenuDto.orme_total_amount;
@@ -52,7 +52,7 @@ export class OrderMenusService {
   // * MEMBAWA DATA USER ATAU HUBUNGAN DENGAN USER
   async findAll(): Promise<order_menus[]> {
     return this.orderMenusModel.findAll({
-      include: 'user',
+      include: ['user', 'order_menu_details'],
     });
   }
   // ! MEMBAWA DATA USER ATAU HUBUNGAN DENGAN USER
@@ -70,7 +70,11 @@ export class OrderMenusService {
     if (!orderMenusUpdate) throw new Error(`Customer with id ${id} not found.`);
 
     const now = new Date();
-    const newData = { ...updateOrderMenuDto, orme_modified_date: now };
+    const newData = {
+      ...updateOrderMenuDto,
+      orme_modified_date: now,
+      orme_order_date: now,
+    };
 
     const [affectedCount, affectedRows] = await this.orderMenusModel.update(
       newData,

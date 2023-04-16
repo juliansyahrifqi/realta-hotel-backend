@@ -19,6 +19,7 @@ import { hotels } from './hotels';
 import { members } from '../masterSchema/members';
 import { special_offer_coupons } from 'models/bookingSchema';
 import { users } from 'models/usersSchema';
+import { stock_detail } from 'models/purchasingSchema';
 
 export interface facilitiesAttributes {
   faci_id?: number;
@@ -44,7 +45,8 @@ export interface facilitiesAttributes {
 @Table({ tableName: 'facilities', schema: 'hotel', timestamps: false })
 export class facilities
   extends Model<facilitiesAttributes, facilitiesAttributes>
-  implements facilitiesAttributes {
+  implements facilitiesAttributes
+{
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,
@@ -96,7 +98,11 @@ export class facilities
   @Column({ allowNull: true, type: DataType.DECIMAL(4, 2) })
   faci_tax_rate?: string;
 
-  @Column({ allowNull: true, type: DataType.DATE })
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  })
   faci_modified_date?: Date;
 
   @ForeignKey(() => category_group)
@@ -119,7 +125,7 @@ export class facilities
   @BelongsTo(() => hotels)
   hotel?: hotels;
 
-  //buat Kepin
+  // //buat Kepin
   // @BelongsTo(() => hotels)
   // hotels?: hotels;
 
@@ -140,4 +146,8 @@ export class facilities
 
   @BelongsTo(() => users)
   users?: users;
+
+  // STOCK DETAIL
+  @HasMany(() => stock_detail, { sourceKey: 'faci_id' })
+  stock_detail?: stock_detail[];
 }

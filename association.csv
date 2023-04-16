@@ -1,31 +1,6 @@
-N:N, usme_user_id, usme_memb_name, users, members, user_members
-1:N, addr_id, hotel_addr_id, address, hotels
-N:N, fsh_hotel_id, fsh_fs_id, hotels, facilities_support, facility_support_hotels
-N:N, faci_hotel_id, faci_cagro_id, hotels, category_group, facilities
-N:N, faci_hotel_id, faci_memb_name, hotels, members, facilities
-N:N, hore_user_id, hore_hotel_id, users, hotels, hotel_reviews
-1:N, faci_id, fapho_faci_id, facilities, facility_photos
-1:N, faci_id, faph_faci_id, facilities, facility_price_history
-N:N, boor_user_id, boor_hotel_id, users, hotels, booking_orders
-N:N, border_boor_id, borde_faci_id, booking_orders, facilities, booking_order_detail
-N:N, soco_borde_id, soco_spof_id, booking_order_detail, special_offers, special_offer_coupons
-1:N,  borde_id, usbr_borde_id, booking_order_detail, user_breakfeast
-N:N, boex_borde_id, boex_prit_id, booking_order_detail, price_items, booking_order_detail_extra
-1:N, region_code, country_region_id, regions, country
-1:N, country_id, prov_country_id, country, provinces
-1:N, prov_id, city_prov_id, provinces, city
-1:N, city_id, addr_city_id, city, address
-N:N, poca_poli_id, poca_cagro_id, category_group, policy, policy_category_group
-1:1, entity_id, bank_entity_id, entity, bank
-1:1, entity_id, fint_entity_id, entity, fintech
-1:N, usac_entity_id, bank_entity_id, entity_id, user_accounts, bank, entity
-1:N, usac_entity_id, fint_entity_id, entity_id, user_accounts, fintech, entity
-1:N, user_id, usac_user_id, users, user_accounts
-1:N, user_id, patr_user_id, users, payment_transaction
-1:1, orme_order_number,patr_orme_order_number, order_menus, payment_transaction
-1:1, boor_order_number, patr_boor_order_number, booking_orders, payment_transaction
 1:N, reme_id, remp_reme_id, resto_menus, resto_menu_photos
 1:N, omde_orme_id, orme_id, order_menu_detail, order_menus
 1:N, omde_reme_id, reme_id, order_menu_detail, resto_menus
 1:N, faci_id, reme_faci_id, facilities, resto_menus
 1:N, user_id, orme_user_id, users, order_menus
+1:N, orme_id, omde_orme_id, order_menus, order_menu_detail

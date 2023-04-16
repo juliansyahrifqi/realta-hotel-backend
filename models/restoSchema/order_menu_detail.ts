@@ -7,6 +7,7 @@ import {
   Sequelize,
   ForeignKey,
   HasMany,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { order_menus } from './order_menus';
 import { resto_menus } from './resto_menus';
@@ -48,15 +49,17 @@ export class order_menu_detail
   @Column({ allowNull: true, type: DataType.DECIMAL })
   orme_discount?: string;
 
+  @ForeignKey(() => order_menus)
   @Column({ allowNull: true, type: DataType.INTEGER })
   omde_orme_id?: number;
 
+  @ForeignKey(() => resto_menus)
   @Column({ allowNull: true, type: DataType.INTEGER })
   omde_reme_id?: number;
 
-  @HasMany(() => order_menus, { sourceKey: 'omde_orme_id' })
-  order_menus?: order_menus[];
+  @BelongsTo(() => order_menus)
+  order_menus?: order_menus;
 
-  @HasMany(() => resto_menus, { sourceKey: 'omde_reme_id' })
-  resto_menus?: resto_menus[];
+  @BelongsTo(() => resto_menus)
+  resto_menus?: resto_menus;
 }

@@ -31,8 +31,11 @@ export class OrderMenuDetailController {
   // *CREATE DATA ORDER_MENU_DETAIL
   @Post()
   async create(
-    @Body() createOrderMenuDetailDto: CreateOrderMenuDetailDto,
-  ): Promise<order_menu_detail> {
+    @Body()
+    createOrderMenuDetailDto:
+      | CreateOrderMenuDetailDto
+      | CreateOrderMenuDetailDto[],
+  ): Promise<order_menu_detail | order_menu_detail[]> {
     return this.orderMenuDetailService.create(createOrderMenuDetailDto);
   }
   // !CREATE DATA ORDER_MENU_DETAIL

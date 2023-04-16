@@ -167,5 +167,3 @@ export class RestoMenuPhotosController {
 // ! DELETE DATA PHOTO DAN GAMBAR BERDASARKAN ID
 
 // CATATAN SEMUA YANG ADA DI CONTROLLER BERELASI DENGAN SERVICE
-
-//  @ForeignKey(() => resto_menu_photos)

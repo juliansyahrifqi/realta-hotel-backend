@@ -14,7 +14,7 @@ import { subtle } from 'crypto';
 
 @Injectable()
 export class BookingService {
-  constructor(@InjectModel(hotels) private hotelsModel: typeof hotels, @InjectModel(facilities) private facilityModel: typeof facilities, @InjectModel(booking_orders) private bookingOrdersModel: typeof booking_orders, @InjectModel(booking_order_detail) private bookingOrderDetailModel: typeof booking_order_detail, @InjectModel(special_offers) private specialOfferModel: typeof special_offers, @InjectModel(special_offer_coupons) private specialOfferCouponsModel: typeof special_offer_coupons, @InjectModel(booking_order_detail_extra) private bookingOrderDetailExtraModel: typeof booking_order_detail_extra, sequelize: Sequelize) { }
+  constructor(@InjectModel(hotels) private hotelsModel: typeof hotels, @InjectModel(facilities) private facilityModel: typeof facilities, @InjectModel(booking_orders) private bookingOrdersModel: typeof booking_orders, @InjectModel(booking_order_detail) private bookingOrderDetailModel: typeof booking_order_detail, @InjectModel(special_offers) private specialOfferModel: typeof special_offers, @InjectModel(special_offer_coupons) private specialOfferCouponsModel: typeof special_offer_coupons, @InjectModel(booking_order_detail_extra) private bookingOrderDetailExtraModel: typeof booking_order_detail_extra, @InjectModel(price_items) private priceItemsModel: typeof price_items, sequelize: Sequelize) { }
   create(createBookingDto: CreateBookingDto) {
     return 'This action adds a new booking';
   }
@@ -118,7 +118,9 @@ export class BookingService {
 
         if (facilities_support_filter) {
           filteredData = filteredData.filter((data) => {
+            console.log(facilities_support_filter)
             if (data.hotel.facilities_support) {
+              console.log(data.hotel.facilities_support.some((fs: any) => facilities_support_filter.includes(fs.fs_name)))
               return data.hotel.facilities_support.some((fs: any) => facilities_support_filter.includes(fs.fs_name));
             }
             return false;
@@ -470,7 +472,7 @@ export class BookingService {
                 ],
               }]
             }, { model: hotel_reviews }]
-          }]
+          }, { model: facility_photos }]
         }],
         where: {
           border_boor_id: IdOrderDetail
@@ -485,19 +487,48 @@ export class BookingService {
           }
         })
       })
+      const hore_reviews: any[] = dataOrderDetail[0].facility.hotel.hotel_reviews;
+      const ratings_count: { [key: string]: number } = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
 
-      let ratingStarStatus = ''
 
-      if (Number(dataOrderDetail[0].facility.hotel.hotel_rating_star) >= 4.5) {
-        ratingStarStatus += 'Excellent';
-      } else if (Number(dataOrderDetail[0].facility.hotel.hotel_rating_star) >= 4) {
-        ratingStarStatus += 'Very Good';
-      } else if (Number(dataOrderDetail[0].facility.hotel.hotel_rating_star) >= 3.5) {
-        ratingStarStatus += 'Good';
-      } else if (Number(dataOrderDetail[0].facility.hotel.hotel_rating_star) >= 3) {
-        ratingStarStatus += 'Fair';
+      for (const review of dataOrderDetail[0].facility.hotel.hotel_reviews) {
+        ratings_count[review.hore_rating.toString()] += 1;
+      }
+
+      const total_reviews = hore_reviews.length
+      const percentages: { [key: string]: string } = {
+        '5': `${Math.round(ratings_count['5'] / total_reviews * 100) ? Math.round(ratings_count['5'] / total_reviews * 100) : 0}%`,
+        '4': `${Math.round(ratings_count['4'] / total_reviews * 100) ? Math.round(ratings_count['4'] / total_reviews * 100) : 0}%`,
+        '3': `${Math.round(ratings_count['3'] / total_reviews * 100) ? Math.round(ratings_count['3'] / total_reviews * 100) : 0}%`,
+        '2': `${Math.round(ratings_count['2'] / total_reviews * 100) ? Math.round(ratings_count['2'] / total_reviews * 100) : 0}%`,
+        '1': `${Math.round(ratings_count['1'] / total_reviews * 100) ? Math.round(ratings_count['1'] / total_reviews * 100) : 0}%`,
+      };
+
+      let sumRating = 0
+      let sumRatingLength = 0
+      let jumlahReviewsHotel = dataOrderDetail[0].facility.hotel.hotel_reviews.length
+      let hotelReviewsAtr = { ...dataOrderDetail[0].facility.hotel, hotel_reviews_count: jumlahReviewsHotel }
+
+      hotelReviewsAtr.hotel_reviews.forEach((hr: any) => {
+        sumRating += hr.hore_rating
+        sumRatingLength++
+      })
+
+      let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
+
+      let ratingDescription = '';
+      let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
+
+      if (ratingStar >= 4.5) {
+        ratingDescription = 'Excellent';
+      } else if (ratingStar >= 4) {
+        ratingDescription = 'Very Good';
+      } else if (ratingStar >= 3.5) {
+        ratingDescription = 'Good';
+      } else if (ratingStar >= 3) {
+        ratingDescription = 'Fair';
       } else {
-        ratingStarStatus += 'Poor';
+        ratingDescription = 'Poor';
       }
       let totalPrice = 0;
       let subTotal = 0
@@ -515,9 +546,9 @@ export class BookingService {
         boor_border_hotel_book_name: dataOrderDetail[0].facility.hotel.hotel_name,
         boor_border_rooms_address1: dataOrderDetail[0].facility.hotel.address.addr_line1,
         boor_border_rooms_address_city: dataOrderDetail[0].facility.hotel.address.city.city_name,
-        boor_border_hotel_rating: dataOrderDetail[0].facility.hotel.hotel_rating_star,
-        boor_border_hotel_rating_length: dataOrderDetail[0].facility.hotel.hotel_reviews.length,
-        boor_border_hotel_rating_status: ratingStarStatus,
+        boor_border_hotel_rating: ratingStar,
+        boor_border_hotel_rating_length: jumlahReviewsHotel,
+        boor_border_hotel_rating_status: ratingDescription,
         boor_border_hotel_checkin_checkout: `${CheckIn} ${CheckOut}`,
         boor_border_hotel_rooms_total_rooms: TotalRooms,
         boor_border_hotel_rooms_total_guest: TotalGuest,
@@ -576,6 +607,7 @@ export class BookingService {
           spof_type: getAllUserSpecialOffer.booking_orders.users.user_type
         }
       })
+      console.log(getAllUserSpecialOffer.booking_orders.users.user_type)
 
       return getAllSpecialOffer
     } catch (error) {
@@ -663,20 +695,49 @@ export class BookingService {
         })
       })
 
-      let ratingStarStatus = ''
+      const hore_reviews: any[] = dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_reviews;
+      const ratings_count: { [key: string]: number } = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
 
-      if (Number(dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star) >= 4.5) {
-        ratingStarStatus += 'Excellent';
-      } else if (Number(dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star) >= 4) {
-        ratingStarStatus += 'Very Good';
-      } else if (Number(dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star) >= 3.5) {
-        ratingStarStatus += 'Good';
-      } else if (Number(dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star) >= 3) {
-        ratingStarStatus += 'Fair';
-      } else {
-        ratingStarStatus += 'Poor';
+
+      for (const review of dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_reviews) {
+        ratings_count[review.hore_rating.toString()] += 1;
       }
 
+      const total_reviews = hore_reviews.length
+      const percentages: { [key: string]: string } = {
+        '5': `${Math.round(ratings_count['5'] / total_reviews * 100) ? Math.round(ratings_count['5'] / total_reviews * 100) : 0}%`,
+        '4': `${Math.round(ratings_count['4'] / total_reviews * 100) ? Math.round(ratings_count['4'] / total_reviews * 100) : 0}%`,
+        '3': `${Math.round(ratings_count['3'] / total_reviews * 100) ? Math.round(ratings_count['3'] / total_reviews * 100) : 0}%`,
+        '2': `${Math.round(ratings_count['2'] / total_reviews * 100) ? Math.round(ratings_count['2'] / total_reviews * 100) : 0}%`,
+        '1': `${Math.round(ratings_count['1'] / total_reviews * 100) ? Math.round(ratings_count['1'] / total_reviews * 100) : 0}%`,
+      };
+
+      let sumRating = 0
+      let sumRatingLength = 0
+      let jumlahReviewsHotel = dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_reviews.length
+      let hotelReviewsAtr = { ...dataAllBookingDetailSpecialOffers[0].facility.hotel, hotel_reviews_count: jumlahReviewsHotel }
+
+      hotelReviewsAtr.hotel_reviews.forEach((hr: any) => {
+        sumRating += hr.hore_rating
+        sumRatingLength++
+      })
+
+      let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
+
+      let ratingDescription = '';
+      let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
+
+      if (ratingStar >= 4.5) {
+        ratingDescription = 'Excellent';
+      } else if (ratingStar >= 4) {
+        ratingDescription = 'Very Good';
+      } else if (ratingStar >= 3.5) {
+        ratingDescription = 'Good';
+      } else if (ratingStar >= 3) {
+        ratingDescription = 'Fair';
+      } else {
+        ratingDescription = 'Poor';
+      }
 
       let totalPrice = 0;
       let subTotal = 0
@@ -697,9 +758,9 @@ export class BookingService {
         boor_border_hotel_book_name: dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_name,
         boor_border_rooms_address1: dataAllBookingDetailSpecialOffers[0].facility.hotel.address.addr_line1,
         boor_border_rooms_address_city: dataAllBookingDetailSpecialOffers[0].facility.hotel.address.city.city_name,
-        boor_border_hotel_rating: dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_rating_star,
-        boor_border_hotel_rating_length: dataAllBookingDetailSpecialOffers[0].facility.hotel.hotel_reviews.length,
-        boor_border_hotel_rating_status: ratingStarStatus,
+        boor_border_hotel_rating: ratingStar,
+        boor_border_hotel_rating_length: total_reviews,
+        boor_border_hotel_rating_status: ratingDescription,
         boor_border_hotel_checkin_checkout: `${dataAllBookingDetailSpecialOffers[0].borde_checkin} ${dataAllBookingDetailSpecialOffers[0].borde_checkout}`,
         boor_border_hotel_rooms_total_rooms: TotalRooms,
         boor_border_hotel_rooms_total_guest: TotalGuest,
@@ -834,21 +895,50 @@ export class BookingService {
 
       console.log(bodePrice)
 
+      const hore_reviews: any[] = dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews;
+      const ratings_count: { [key: string]: number } = { '5': 0, '4': 0, '3': 0, '2': 0, '1': 0 };
 
 
-      let ratingStarStatus = ''
-
-      if (Number(dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star) >= 4.5) {
-        ratingStarStatus += 'Excellent';
-      } else if (Number(dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star) >= 4) {
-        ratingStarStatus += 'Very Good';
-      } else if (Number(dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star) >= 3.5) {
-        ratingStarStatus += 'Good';
-      } else if (Number(dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star) >= 3) {
-        ratingStarStatus += 'Fair';
-      } else {
-        ratingStarStatus += 'Poor';
+      for (const review of dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews) {
+        ratings_count[review.hore_rating.toString()] += 1;
       }
+
+      const total_reviews = hore_reviews.length
+      const percentages: { [key: string]: string } = {
+        '5': `${Math.round(ratings_count['5'] / total_reviews * 100) ? Math.round(ratings_count['5'] / total_reviews * 100) : 0}%`,
+        '4': `${Math.round(ratings_count['4'] / total_reviews * 100) ? Math.round(ratings_count['4'] / total_reviews * 100) : 0}%`,
+        '3': `${Math.round(ratings_count['3'] / total_reviews * 100) ? Math.round(ratings_count['3'] / total_reviews * 100) : 0}%`,
+        '2': `${Math.round(ratings_count['2'] / total_reviews * 100) ? Math.round(ratings_count['2'] / total_reviews * 100) : 0}%`,
+        '1': `${Math.round(ratings_count['1'] / total_reviews * 100) ? Math.round(ratings_count['1'] / total_reviews * 100) : 0}%`,
+      };
+
+      let sumRating = 0
+      let sumRatingLength = 0
+      let jumlahReviewsHotel = dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews.length
+      let hotelReviewsAtr = { ...dataAllBookingDetailExtraItems[0].facility.hotel, hotel_reviews_count: jumlahReviewsHotel }
+
+      hotelReviewsAtr.hotel_reviews.forEach((hr: any) => {
+        sumRating += hr.hore_rating
+        sumRatingLength++
+      })
+
+      let hotelRatingStarAverage = { ...hotelReviewsAtr, hotel_rating_star: (sumRating / sumRatingLength) ? (sumRating / sumRatingLength).toString() : Number(0).toString() }
+
+      let ratingDescription = '';
+      let ratingStar = parseFloat(hotelRatingStarAverage.hotel_rating_star);
+
+      if (ratingStar >= 4.5) {
+        ratingDescription = 'Excellent';
+      } else if (ratingStar >= 4) {
+        ratingDescription = 'Very Good';
+      } else if (ratingStar >= 3.5) {
+        ratingDescription = 'Good';
+      } else if (ratingStar >= 3) {
+        ratingDescription = 'Fair';
+      } else {
+        ratingDescription = 'Poor';
+      }
+
 
 
       let totalPrice = 0;
@@ -872,9 +962,9 @@ export class BookingService {
         boor_border_hotel_book_name: dataAllBookingDetailExtraItems[0].facility.hotel.hotel_name,
         boor_border_rooms_address1: dataAllBookingDetailExtraItems[0].facility.hotel.address.addr_line1,
         boor_border_rooms_address_city: dataAllBookingDetailExtraItems[0].facility.hotel.address.city.city_name,
-        boor_border_hotel_rating: dataAllBookingDetailExtraItems[0].facility.hotel.hotel_rating_star,
-        boor_border_hotel_rating_length: dataAllBookingDetailExtraItems[0].facility.hotel.hotel_reviews.length,
-        boor_border_hotel_rating_status: ratingStarStatus,
+        boor_border_hotel_rating: ratingStar,
+        boor_border_hotel_rating_length: total_reviews,
+        boor_border_hotel_rating_status: ratingDescription,
         boor_border_hotel_checkin_checkout: `${dataAllBookingDetailExtraItems[0].borde_checkin} ${dataAllBookingDetailExtraItems[0].borde_checkout}`,
         boor_border_hotel_rooms_total_rooms: TotalRooms,
         boor_border_hotel_rooms_total_guest: TotalGuest,
@@ -889,6 +979,26 @@ export class BookingService {
         boor_borde_room_bonus_extra_price_items: bodePrice
       }
       return { dataRes, dataCache: dataAllBookingDetailExtraItems }
+
+    } catch (error) {
+      return error
+    }
+  }
+
+
+  async getAllExtraItemsBooking() {
+    try {
+      let dataExtraItems = await this.priceItemsModel.findAll()
+
+      const changeDataExtraItems = dataExtraItems.map((data: any) => {
+        return {
+          ...data.toJSON(),
+          prit_price: Number(data.prit_price.replace(/[^0-9.-]+/g, ""))
+        }
+      })
+
+      console.log(dataExtraItems)
+      return changeDataExtraItems
 
     } catch (error) {
       return error
