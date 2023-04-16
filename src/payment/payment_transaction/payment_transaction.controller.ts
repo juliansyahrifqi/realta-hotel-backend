@@ -1,9 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Res } from '@nestjs/common';
 import { PaymentTransactionService } from './payment_transaction.service';
 import { CreatePaymentTransactionDto } from './dto/create-payment_transaction.dto';
-import { payment_transaction } from 'models/paymentSchema';
 
-@Controller('payment-transaction')
+@Controller('transaction')
 export class PaymentTransactionController {
   constructor(private readonly paymentTransactionService: PaymentTransactionService) {}
 
@@ -75,11 +74,14 @@ export class PaymentTransactionController {
   //   }
   // }
 
+  // @Get()
+  // async getAllTransactions(): Promise<payment_transaction[]> {
+  //   return this.paymentTransactionService.findAll();
+  // }
   @Get()
-  async getAllTransactions(): Promise<payment_transaction[]> {
-    return this.paymentTransactionService.findAll();
-  }
-
+  findAll( @Query('search') search: any, @Query('page') page: any, @Query('limit') limit: any, @Query('type') type: any, @Query('id') id:any) {
+    return this.paymentTransactionService.findAll(search,page,limit,type,id );
+  }
 
 
 
