@@ -14,7 +14,7 @@ export class HotelReviewsService {
 
     @InjectModel(hotels)
     private hotelsModel: typeof hotels,
-  ) { }
+  ) {}
 
   async create(
     @Res() response: Response,

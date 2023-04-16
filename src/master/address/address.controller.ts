@@ -26,6 +26,12 @@ export class AddressController {
     return this.addressService.findOne(Number(id));
   }
 
+  @Get('/address/:id')
+  async getCityByRegion(@Param('id') id: number) {
+    const address = await this.addressService.getCityById(id);
+    return { data: address };
+  }
+
   @Post()
   async create(@Body() createAddressDto: CreateAddressDto): Promise<any> {
     return this.addressService.create(createAddressDto);

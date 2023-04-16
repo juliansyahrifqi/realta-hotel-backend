@@ -2,8 +2,9 @@ import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/
 import { UserAccountsService } from './user_accounts.service';
 import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
+import { id } from 'date-fns/locale';
 
-@Controller('user-accounts')
+@Controller('accounts')
 export class UserAccountsController {
   constructor(private readonly userAccountsService: UserAccountsService) {}
 
@@ -14,8 +15,13 @@ export class UserAccountsController {
   }
 
   @Get()
-  async findAll()  {
-    return this.userAccountsService.findAll();
+  async findAll(@Query('id') id: any)  {
+    return this.userAccountsService.findAll(id);
+  }
+
+  @Get('data')
+  async findBFAll()  {
+    return this.userAccountsService.findBFAll();
   }
 
   @Get(':id')

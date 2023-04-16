@@ -1,5 +1,4 @@
 export class CreateStockDto {
-  stock_id: number;
   stock_name: string;
   stock_description: string;
   stock_quantity: number;

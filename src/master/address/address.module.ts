@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { address } from '../../../models/masterSchema';
+import { address, city } from '../../../models/masterSchema';
 import { AddressController } from './address.controller';
 import { AddressService } from './address.service';
 
 @Module({
-  imports: [SequelizeModule.forFeature([address])], // import SequelizeModule dengan konfigurasi forFeature
+  imports: [SequelizeModule.forFeature([address, city])], // import SequelizeModule dengan konfigurasi forFeature
   controllers: [AddressController],
   providers: [AddressService],
 })

@@ -7,10 +7,12 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { CreatePurchaseOrderHeaderDto } from './dto/create-purchase-order-header.dto';
 import { PurchaseOrderHeaderService } from './purchase-order-header.service';
 import { UpdatePurchaseOrderHeaderDto } from './dto/update-purchase-order-header.dto';
+import { Response } from 'express';
 
 @Controller('purchasing/listorder')
 export class PurchaseOrderHeaderController {
@@ -23,31 +25,31 @@ export class PurchaseOrderHeaderController {
     return this.purchaseOrderHeaderService.create(createPurchaseOrderHeaderDto);
   }
 
-  @Get()
-  async searchVendor(
-    @Query('page') pageNumber: number,
-    @Query('limit') limit: number,
-    @Query('number') poNumber: string,
-    @Query('status') status?: string,
-  ) {
-    if (poNumber) {
-      return this.purchaseOrderHeaderService.searchOrder(
-        pageNumber,
-        limit,
-        poNumber,
-        status,
-      );
-    } else if (status) {
-      return this.purchaseOrderHeaderService.searchOrder(
-        pageNumber,
-        limit,
-        poNumber,
-        status,
-      );
-    } else {
-      return this.purchaseOrderHeaderService.findAll(pageNumber, limit);
-    }
-  }
+  // @Get()
+  // async searchVendor(
+  //   @Query('page') pageNumber: number,
+  //   @Query('limit') limit: number,
+  //   @Query('number') poNumber: string,
+  //   @Query('status') status?: string,
+  // ) {
+  //   if (poNumber) {
+  //     return this.purchaseOrderHeaderService.searchOrder(
+  //       pageNumber,
+  //       limit,
+  //       poNumber,
+  //       status,
+  //     );
+  //   } else if (status) {
+  //     return this.purchaseOrderHeaderService.searchOrder(
+  //       pageNumber,
+  //       limit,
+  //       poNumber,
+  //       status,
+  //     );
+  //   } else {
+  //     return this.purchaseOrderHeaderService.findAll(pageNumber, limit);
+  //   }
+  // }
 
   // Search orderHeader
   // @Get(':ponumber')

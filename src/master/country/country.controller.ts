@@ -28,6 +28,12 @@ export class CountryController {
     return this.countryService.findOne(id);
   }
 
+  @Get('/country/:id')
+  async getProvinceByRegion(@Param('id') id: number) {
+    const countries = await this.countryService.getProvinceById(id);
+    return { data: countries };
+  }
+
   @Post()
   create(@Body() countryDto: CreateCountryDto): Promise<any> {
     return this.countryService.create(countryDto);

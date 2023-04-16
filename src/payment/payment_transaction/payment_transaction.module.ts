@@ -7,9 +7,11 @@ import { booking_orders } from 'models/bookingSchema';
 import { order_menus } from 'models/restoSchema';
 import { users } from 'models/usersSchema';
 
+
 @Module({
   imports: [SequelizeModule.forFeature([payment_transaction, user_accounts, users, booking_orders, order_menus])],
   controllers: [PaymentTransactionController],
-  providers: [PaymentTransactionService]
+  providers: [PaymentTransactionService],
+  exports:[SequelizeModule]
 })
 export class PaymentTransactionModule {}

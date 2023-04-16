@@ -31,12 +31,15 @@ export class RestoMenuPhotosController {
     private readonly restoMenuPhotosService: RestoMenuPhotosService,
   ) {}
   // * MENAMPILKAN SEMUA DATA PHOTO
+  // * MENAMPILKAN SEMUA DATA PHOTO
   @Get()
   async findAll(): Promise<resto_menu_photos[]> {
     return this.restoMenuPhotosService.findAll();
   }
   // ! MENAMPILKAN SEMUA DATA PHOTO
+  // ! MENAMPILKAN SEMUA DATA PHOTO
 
+  // * UPLOAD/CREATE PHOTO MULTIPLE BISA SINGLE JUGA
   // * UPLOAD/CREATE PHOTO MULTIPLE BISA SINGLE JUGA
   @Post()
   @UseInterceptors(
@@ -167,3 +170,8 @@ export class RestoMenuPhotosController {
 // ! DELETE DATA PHOTO DAN GAMBAR BERDASARKAN ID
 
 // CATATAN SEMUA YANG ADA DI CONTROLLER BERELASI DENGAN SERVICE
+// ! DELETE DATA PHOTO DAN GAMBAR BERDASARKAN ID
+
+// CATATAN SEMUA YANG ADA DI CONTROLLER BERELASI DENGAN SERVICE
+
+//  @ForeignKey(() => resto_menu_photos)

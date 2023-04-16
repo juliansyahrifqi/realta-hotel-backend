@@ -44,7 +44,9 @@ export class FacilitiesSupportService {
 
   async findAll(@Res() response: Response) {
     try {
-      const data = await this.faciSupModel.findAll();
+      const data = await this.faciSupModel.findAll({
+        order: [['fs_id', 'ASC']],
+      });
       const dataResponse = {
         statusCode: HttpStatus.OK,
         data: data,
@@ -87,7 +89,7 @@ export class FacilitiesSupportService {
   ) {
     try {
       // Penamaan untuk URL
-      let finalURL = `http://localhost:${process.env.PORT}/facility-photos/photos/${icons.filename}`;
+      let finalURL = `http://localhost:${process.env.PORT}/facilities-support/icons/${icons.filename}`;
 
       const data = await this.faciSupModel.update(
         {

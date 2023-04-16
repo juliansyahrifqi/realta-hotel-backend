@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsOptional, IsNumber, IsString, IsDate } from 'class-validator';
+import { IsOptional, IsString, IsDate, IsNotEmpty } from 'class-validator';
 // import { IsDate } from 'sequelize-typescript';
 import { CreatePriceItemDto } from './create-price_item.dto';
 
@@ -8,8 +8,7 @@ export class UpdatePriceItemDto extends PartialType(CreatePriceItemDto) {
   @IsString()
   prit_name?: string;
 
-  @IsOptional()
-  @IsNumber()
+  @IsNotEmpty()
   prit_price?: string;
 
   @IsOptional()
