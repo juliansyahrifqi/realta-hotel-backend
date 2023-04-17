@@ -14,8 +14,8 @@ export class BookingController {
 
   @Get()
   async findAllHotel(
-    @Query('page') page = 1,
-    @Query('limit') limit = 3,
+    @Query('page') page = 0,
+    @Query('limit') limit = 0,
     @Query('minSubTotal') minSubTotal = 0,
     @Query('maxSubTotal') maxSubTotal = Number.MAX_VALUE,
     @Query('cityName') cityName: string = 'Jakarta',
@@ -111,11 +111,11 @@ export class BookingController {
       //     return faciStartDate >= startFilterDate && faciEndDate <= endFilterDate;
       //   });
       // }
-      const startIndex = (page - 1) * limit;
-      const endIndex = page * limit;
-      console.log(`Halaman start Index ${startIndex} dan Halaman End Index ${endIndex}`)
+      // const startIndex = (page - 1) * limit;
+      // const endIndex = page * limit;
+      // console.log(`Halaman start Index ${startIndex} dan Halaman End Index ${endIndex}`)
 
-      dataResFinal = dataResFinal.slice(startIndex, endIndex);
+      // dataResFinal = dataResFinal.slice(startIndex, endIndex);
 
 
       if (!dataResFinal) {
