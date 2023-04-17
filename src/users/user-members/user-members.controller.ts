@@ -10,6 +10,7 @@ import {
 import { UserMembersService } from './user-members.service';
 import { CreateUserMemberDto } from './dto/create-user-member.dto';
 import { UpdateUserMemberDto } from './dto/update-user-member.dto';
+import { CreateOrUpdateUserMemberDto } from './dto/create-or-update-member.dto';
 
 @Controller('users/userMembers')
 export class UserMembersController {
@@ -74,6 +75,17 @@ export class UserMembersController {
     } catch (e) {
       return { statusCode: HttpStatus.BAD_REQUEST, message: e };
     }
+  }
+
+  @Put('updateOrCreate/:id')
+  createOrUpdateUserMember(
+    @Param('id') id: string,
+    @Body() createOrUpdateUserMemberDto: CreateOrUpdateUserMemberDto,
+  ) {
+    return this.userMembersService.createOrUpdateserMember(
+      +id,
+      createOrUpdateUserMemberDto,
+    );
   }
 
   // @Delete(':id')
