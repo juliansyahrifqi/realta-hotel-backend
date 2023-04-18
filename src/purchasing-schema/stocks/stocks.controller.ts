@@ -41,7 +41,7 @@ export class StocksController {
   @Get()
   async findDetail(
     @Res() response: Response,
-    @Param('search') search: string,
+    @Query('search') search: string,
     @Query('pageNumber') pageNumber: number,
     @Query('pageSize') pageSize: number,
   ) {
@@ -58,6 +58,18 @@ export class StocksController {
         message: 'Internal server error',
       };
     }
+  }
+
+  // FindStockDetail
+
+  @Get('detail/:id')
+  async stockDet(
+    // @Query('page') page = 1,
+    // @Query('limit') limit = 5,
+    @Param('id') id: number,
+  ): Promise<any[]> {
+    const result = await this.stocksService.findStockDetail(id);
+    return result;
   }
 
   // All Stock

@@ -82,6 +82,7 @@ export class VendorController {
   async findAll(
     @Res() response: Response,
     @Query('search') search: string,
+    @Query('prio') searchPrio: string,
     @Query('pageNumber') pageNumber: number,
     @Query('pageSize') pageSize: number,
   ) {
@@ -89,6 +90,7 @@ export class VendorController {
       const vendor = await this.vendorService.findAll(
         response,
         search,
+        searchPrio,
         pageNumber,
         pageSize,
       );

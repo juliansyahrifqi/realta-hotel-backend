@@ -23,6 +23,19 @@ export class StockDetailController {
     return this.stockDetailService.create(createStockDetailDto);
   }
 
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateStockDetailDto: UpdateStockDetailDto,
+  ) {
+    return this.stockDetailService.update(+id, updateStockDetailDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.stockDetailService.remove(+id);
+  }
+
   // Stock Detail ~ GAK DIPAKE JADI DI STOCK ALL ADANYA
 
   @Get('detailprod/:id')
@@ -73,19 +86,6 @@ export class StockDetailController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.stockDetailService.findOne(+id);
-  }
-
-  @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateStockDetailDto: UpdateStockDetailDto,
-  ) {
-    return this.stockDetailService.update(+id, updateStockDetailDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.stockDetailService.remove(+id);
   }
 }
 

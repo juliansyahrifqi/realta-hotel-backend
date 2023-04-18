@@ -30,14 +30,14 @@ export class StocksService {
 
   async stockDetail(
     @Res() response: Response,
-    searching: string,
+    stock_name: string,
     pageNumber: number,
     pageSize: number,
   ): Promise<any> {
     try {
       const pages = pageNumber || 0;
       const limits = pageSize || 5;
-      const search = searching || '';
+      const search = stock_name || '';
       const offset = limits * (pages - 1);
 
       const totalRows = await stocks.count({
@@ -45,7 +45,7 @@ export class StocksService {
           [Op.or]: [
             {
               stock_name: {
-                [Op.iLike]: '%' + search + '%',
+                [Op.iLike]: `%${search}%`,
               },
             },
           ],
@@ -54,20 +54,23 @@ export class StocksService {
       const totalPage = Math.ceil(totalRows / limits);
       const data = await stocks.findAll({
         where: {
-          [Op.or]: [
-            {
-              stock_name: {
-                [Op.iLike]: '%' + search + '%',
-              },
-            },
-          ],
+          stock_name: {
+            [Op.iLike]: `%${search}%`,
+          },
         },
         include: [
+          {
+            model: stock_photo,
+          },
           {
             model: stock_detail,
             include: [
               {
                 model: purchase_order_header,
+              },
+              {
+                model: facilities,
+                attributes: ['faci_id', 'faci_name'],
               },
             ],
           },
@@ -89,6 +92,43 @@ export class StocksService {
         message: error,
       };
       return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
+    }
+  }
+
+  // FindStockDetail
+  async findStockDetail(id: number): Promise<any> {
+    try {
+      const result = await stocks.findOne({
+        where: {
+          stock_id: id,
+        },
+        include: [
+          {
+            model: stock_detail,
+            include: [
+              {
+                model: purchase_order_header,
+              },
+              {
+                model: facilities,
+              },
+            ],
+          },
+        ],
+      });
+
+      // const totalPages = Math.ceil(result.count / limit);
+      return {
+        statusCode: 200,
+        message: 'Success',
+        data: {
+          // totalPages,
+          // currentPage: page,
+          data: result,
+        },
+      };
+    } catch (err) {
+      return err;
     }
   }
 

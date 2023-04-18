@@ -1,5 +1,5 @@
 export class CreateVendorDto {
-  id: number;
+  vendor_entity_id: number;
   vendor_name: string;
   vendor_active: string;
   vendor_priority: string;

@@ -1,40 +1,114 @@
-import { Injectable, UploadedFile } from '@nestjs/common';
+import { HttpStatus, Injectable, Res, UploadedFile } from '@nestjs/common';
 import { CreateStockPhotoDto } from './dto/create-stock-photo.dto';
 import { UpdateStockPhotoDto } from './dto/update-stock-photo.dto';
-import { stock_photo } from 'models/purchasingSchema';
+import { stock_photo, stocks, vendor_product } from 'models/purchasingSchema';
 import { join } from 'path';
+import * as path from 'path';
 import * as fs from 'fs';
+import { Response } from 'express';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class StockPhotoService {
   async create(
+    @Res() response: Response,
     createStockPhotoDto: CreateStockPhotoDto,
-    foto: Express.Multer.File[],
+    photos: Express.Multer.File[],
   ) {
     try {
-      const data = [];
-      for (let i = 0; i < foto.length; i++) {
-        const photoStock = await stock_photo.create({
-          spho_thumbnail_filename: createStockPhotoDto.spho_thumbnail_filename,
-          spho_photo_filename: foto[i].filename,
-          spho_primary: createStockPhotoDto.spho_primary,
-          spho_url: `http://localhost:${process.env.PORT}/uploads/image/stock/${foto[i].filename}`,
+      const responseData = [];
+
+      for (let i = 0; i < photos.length; i++) {
+        // Penamaan untuk Thumbnail
+        const thumbnailName = `spho${createStockPhotoDto.spho_stock_id}_${
+          path.parse(photos[i].originalname).name
+        }`;
+
+        // Tambahkan kondisi untuk fapho_primary
+        const spho_primary = i === 0 ? 1 : 0;
+
+        const data = await stock_photo.create({
           spho_stock_id: createStockPhotoDto.spho_stock_id,
+          spho_thumbnail_filename: thumbnailName,
+          spho_photo_filename: photos[i].filename,
+          spho_primary: spho_primary.toString(),
+          // spho_url: `/uploads/image/stock/${photos[i].filename}`,
+          spho_url: `http://localhost:${process.env.PORT}/purchasing/photo/uploads/image/stock/${photos[i].filename}`,
         });
-        data.push(photoStock);
+
+        responseData.push(data);
       }
-      return { message: `Data berhasil di tambahkan`, data };
+
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        message: 'Berhasil Di Tambahkan',
+        data: responseData,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: `'error', ${error}`,
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
-  async findAll(): Promise<any> {
+  async findAll(
+    @Res() response: Response,
+    stock_name: string,
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<any> {
     try {
-      const result = await stock_photo.findAll();
-      return { message: `Data di temukan`, data: result };
+      const pages = pageNumber || 0;
+      const limits = pageSize || 5;
+      const search = stock_name || '';
+      const offset = limits * (pages - 1);
+
+      const totalRows = await stocks.count({
+        where: {
+          [Op.or]: [
+            {
+              stock_name: {
+                [Op.iLike]: `%${search}%`,
+              },
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / limits);
+      const data = await stocks.findAll({
+        where: {
+          stock_name: {
+            [Op.iLike]: `%${search}%`,
+          },
+        },
+        include: [
+          {
+            model: vendor_product,
+          },
+          {
+            model: stock_photo,
+          },
+        ],
+        offset: offset,
+        limit: limits,
+      });
+      const dataResponse = {
+        statusCode: HttpStatus.OK,
+        totalPage: totalPage,
+        totalRows: totalRows,
+        page: pages,
+        data: data,
+      };
+      return response.status(HttpStatus.OK).send(dataResponse);
     } catch (error) {
-      return error;
+      const dataResponse = {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error,
+      };
+      return response.status(HttpStatus.BAD_REQUEST).send(dataResponse);
     }
   }
 
@@ -81,15 +155,12 @@ export class StockPhotoService {
     }
   }
 
-  async remove(spho_stock_id: number): Promise<string> {
+  async remove(spho_id: number): Promise<any> {
     try {
-      const result = await stock_photo.findOne({
-        where: { spho_stock_id },
-      });
+      const result = await stock_photo.findOne({ where: { spho_id } });
       if (!result) {
-        return `Data dengan id ${spho_stock_id} tidak ditemukan`;
+        return `Data dengan id ${spho_id} tidak di temukan`;
       }
-
       const uploadPath = join(__dirname, '../../../../uploads/image/stock');
       const files = await fs.promises.readdir(uploadPath);
 
@@ -97,9 +168,7 @@ export class StockPhotoService {
         const filePath = join(uploadPath, file);
         await fs.promises.unlink(filePath);
       }
-
-      await stock_photo.destroy({ where: { spho_stock_id } });
-      return `Data dengan id ${spho_stock_id} telah dihapus dari database`;
+      return `Data dengan id ${spho_id} terhapus`;
     } catch (error) {
       return error.message;
     }

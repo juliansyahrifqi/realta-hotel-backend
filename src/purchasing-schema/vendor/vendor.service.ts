@@ -4,6 +4,7 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Response } from 'express';
 import {
+  purchase_order_detail,
   purchase_order_header,
   stocks,
   vendor,
@@ -191,6 +192,7 @@ export class VendorService {
   async findAll(
     @Res() response: Response,
     vendor_name: string,
+    vendor_priority: string,
     pageNumber: number,
     pageSize: number,
   ): Promise<any> {
@@ -198,26 +200,20 @@ export class VendorService {
       const pages = pageNumber || 0;
       const limits = pageSize || 5;
       const search = vendor_name || '';
+      const searchPrio = vendor_priority || '';
       const offset = limits * (pages - 1);
 
       const totalRows = await this.vendorModel.count({
         where: {
-          [Op.or]: [
-            {
-              vendor_name: {
-                [Op.iLike]: '%' + search + '%',
-              },
-            },
-          ],
+          vendor_name: { [Op.iLike]: `%${search}%` },
         },
       });
-      const totalPage = Math.ceil(vendor.length / limits);
+
+      const totalPage = Math.ceil(totalRows / limits);
 
       const data = await this.vendorModel.findAll({
         where: {
-          vendor_name: {
-            [Op.iLike]: '%' + search + '%',
-          },
+          vendor_name: { [Op.iLike]: `%${search}%` },
         },
         include: [
           {
@@ -317,6 +313,10 @@ export class VendorService {
       const totalRows = await purchase_order_header.count({
         include: [
           {
+            model: purchase_order_detail,
+            include: [{ model: stocks }],
+          },
+          {
             model: vendor,
           },
         ],
@@ -334,6 +334,10 @@ export class VendorService {
 
       const data = await purchase_order_header.findAll({
         include: [
+          {
+            model: purchase_order_detail,
+            include: [{ model: stocks }],
+          },
           {
             model: vendor,
           },

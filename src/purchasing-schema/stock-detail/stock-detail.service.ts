@@ -90,8 +90,8 @@ export class StockDetailService {
       where: { stod_id },
     });
     return {
-      message: `Stock dengan id ${stod_id} berhasil di update`,
-      updateStockDetailDto,
+      message: `Stock dengan id ${stod_id} berhasil diupdate`,
+      data: updateStockDetailDto,
     };
   }
 
