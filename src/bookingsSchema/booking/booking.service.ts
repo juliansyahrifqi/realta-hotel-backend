@@ -24,14 +24,15 @@ export class BookingService {
     provName: string,
     countryName: string,
     regionName: string,
-    facilities_support_filter: number[]) {
+    facilities_support_filter: any[]) {
     try {
 
       const dataBookingHotels = await this.facilityModel.findAll({
-        attributes: ['faci_id', 'faci_name', 'faci_room_number', 'faci_startdate', 'faci_enddate', 'faci_discount', 'faci_tax_rate', 'faci_rate_price', 'faci_memb_name'],
+
         include: [
           {
             model: hotels,
+
             include: [
               {
                 model: address,
@@ -61,7 +62,6 @@ export class BookingService {
                 ],
               },
               { model: hotel_reviews, attributes: ['hore_rating'] },
-              { model: facilities_support }
             ],
           },
         ],
@@ -69,7 +69,7 @@ export class BookingService {
       }).catch((err) => {
         throw err
       })
-      console.log(countryName)
+      console.log(dataBookingHotels)
 
       const dataFaciPhoto = await this.facilityModel.findAll({
         include: {
@@ -79,9 +79,10 @@ export class BookingService {
       const dataHotel = await this.hotelsModel.findAll({
         include: [{
           model: facilities_support,
-          where: facilities_support_filter ? { fs_name: facilities_support_filter } : {}
+
         }]
       })
+
 
 
       const hotelsData = dataHotel.reduce((acc, hotel) => {
@@ -90,6 +91,7 @@ export class BookingService {
         };
         return acc;
       }, {});
+
 
       const dataBookingHotelsWithFacilities = dataBookingHotels.map((facility) => {
         const hotelData = hotelsData[facility.hotel.hotel_id];
@@ -118,13 +120,16 @@ export class BookingService {
 
         if (facilities_support_filter) {
           filteredData = filteredData.filter((data) => {
-            console.log(facilities_support_filter)
+
             if (data.hotel.facilities_support) {
+
               console.log(data.hotel.facilities_support.some((fs: any) => facilities_support_filter.includes(fs.fs_name)))
               return data.hotel.facilities_support.some((fs: any) => facilities_support_filter.includes(fs.fs_name));
             }
             return false;
           });
+
+
         }
       }
 
@@ -177,7 +182,7 @@ export class BookingService {
 
 
 
-      return { dataNew, totalData };
+      return { dataNew, totalData, dataBookingHotels };
     } catch (error) {
       console.log(error)
       return error;

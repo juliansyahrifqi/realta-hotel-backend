@@ -33,7 +33,7 @@ export class BookingController {
       if (facilities_support_filter !== undefined) {
         facilitiesSupportFilter = facilities_support_filter.split(", ").map(str => str.replace(/[\[\]']+/g, ''))
       }
-      const { dataNew, totalData } = await this.bookingService.findBookingAllHotel(
+      const { dataNew, totalData, dataBookingHotels } = await this.bookingService.findBookingAllHotel(
         page,
         limit,
         cityName,
@@ -135,6 +135,7 @@ export class BookingController {
           page,
           limit,
           total: dataResFinal.length,
+          dataBookingHotels
         };
         return response.status(HttpStatus.OK).send(dataResponse);
       }
