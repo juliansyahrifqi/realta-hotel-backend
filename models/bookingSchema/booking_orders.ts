@@ -120,7 +120,7 @@ export class booking_orders
   @BelongsToMany(() => facilities, () => booking_order_detail)
   facilities?: facilities[];
 
-  @HasMany(() => booking_order_detail, { as: 'order_details' })
+  @HasMany(() => booking_order_detail)
   order_details?: booking_order_detail[];
 
   @BelongsTo(() => users)

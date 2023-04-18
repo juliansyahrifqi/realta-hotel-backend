@@ -4,7 +4,7 @@ import { CreatePaymentTransactionDto } from './dto/create-payment_transaction.dt
 
 @Controller('transaction')
 export class PaymentTransactionController {
-  constructor(private readonly paymentTransactionService: PaymentTransactionService) {}
+  constructor(private readonly paymentTransactionService: PaymentTransactionService) { }
 
   // @Post()
   // async create(@Body('currentUserAccountId') currentUserAccountId: number, @Body('recipientAccountId') recipientAccountId: number, @Body('amount') amount: number) {
@@ -21,7 +21,7 @@ export class PaymentTransactionController {
     );
   }
 
-    @Post('topup')
+  @Post('topup')
   async topUp(
     @Body() createPaymentTransaction: CreatePaymentTransactionDto,
   ): Promise<any> {
@@ -79,9 +79,18 @@ export class PaymentTransactionController {
   //   return this.paymentTransactionService.findAll();
   // }
   @Get()
-  findAll( @Query('search') search: any, @Query('page') page: any, @Query('limit') limit: any, @Query('type') type: any, @Query('id') id:any) {
-    return this.paymentTransactionService.findAll(search,page,limit,type,id );
-  }
+  findAll(@Query('search') search: any, @Query('page') page: any, @Query('limit') limit: any, @Query('type') type: any, @Query('id') id: any) {
+    return this.paymentTransactionService.findAll(search, page, limit, type, id);
+  }
+
+  @Delete(':idTransaction')
+  deleteTransaction(@Param('idTransaction') idTransaction: any) {
+    try {
+
+    } catch (error) {
+      return error
+    }
+  }
 
 
 
