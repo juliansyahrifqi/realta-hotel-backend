@@ -14,6 +14,7 @@ import { facilities } from '../hotelSchema/facilities';
 import { booking_order_detail } from './booking_order_detail';
 import { users } from '../usersSchema/users';
 import { hotels } from '../hotelSchema/hotels';
+import { payment_transaction } from 'models/paymentSchema';
 
 export interface booking_ordersAttributes {
   boor_id?: number;
@@ -128,4 +129,7 @@ export class booking_orders
 
   @BelongsTo(() => hotels)
   hotels?: hotels
+
+  @HasMany(() => payment_transaction)
+  payment_transaction?: payment_transaction[]
 }
