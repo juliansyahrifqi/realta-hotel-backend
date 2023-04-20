@@ -20,7 +20,7 @@ const formatDate = (dateString: string): string => {
   const day = String(date.getDate()).padStart(2, '0');
   const year = String(date.getFullYear());
   return `${month}/${day}/${year}`;
-}
+};
 @Controller('booking')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
@@ -43,8 +43,8 @@ export class BookingController {
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
     @Query('facilities_support_filter') facilities_support_filter: string,
-    @Query('openDate') openDate = "02/01/2023",
-    @Query('closeDate') closeDate = "06/01/2023",
+    @Query('openDate') openDate = '02/01/2023',
+    @Query('closeDate') closeDate = '06/01/2023',
     @Res() response: Response,
   ) {
     try {
@@ -55,17 +55,18 @@ export class BookingController {
           .split(', ')
           .map((str) => str.replace(/[\[\]']+/g, ''));
       }
-      const { dataNew, totalData, dataBookingHotels } = await this.bookingService.findBookingAllHotel(
-        page,
-        limit,
-        cityName,
-        provName,
-        countryName,
-        regionName,
-        facilitiesSupportFilter
-      );
+      const { dataNew, totalData, dataBookingHotels } =
+        await this.bookingService.findBookingAllHotel(
+          page,
+          limit,
+          cityName,
+          provName,
+          countryName,
+          regionName,
+          facilitiesSupportFilter,
+        );
 
-      const dataResFinal = dataNew
+      let dataResFinal = dataNew
         .map((data: any) => {
           let priceRate = 0;
           if (data.faci_rate_price.length > 0) {
@@ -96,58 +97,21 @@ export class BookingController {
             currency: 'IDR',
           }).format(faci_rate_price_converse);
 
-        // let priceDiscount = priceRate - (data.faci_discount * priceRate)
-        // let priceTax = priceDiscount + (data.faci_tax_rate * priceDiscount)
-        // let subTotal = priceTax
-
-
+          // let priceDiscount = priceRate - (data.faci_discount * priceRate)
+          // let priceTax = priceDiscount + (data.faci_tax_rate * priceDiscount)
+          // let subTotal = priceTax
 
           // const rpSubTotal = new Intl.NumberFormat('id-ID', {
           //   style: 'currency',
           //   currency: 'IDR',
           // }).format(subTotal);
 
-
-
-        let dataObj = {
-          ...data,
-          faci_rate_price: faci_rate_price_converse,
-          faci_subtotal: subTotal,
-          faci_startdate: formatDate(data.faci_startdate),
-          faci_enddate: formatDate(data.faci_enddate),
-
-        };
-        delete dataObj.parent;
-        return dataObj;
-      }).filter((data: any) => {
-        const faciSubtotalNumber = data.faci_subtotal;
-        console.log(faciSubtotalNumber >= Number(minSubTotal) && faciSubtotalNumber <= Number(maxSubTotal))
-        return faciSubtotalNumber >= Number(minSubTotal) && faciSubtotalNumber <= Number(maxSubTotal);
-      });
-
-
-
-      dataResFinal = dataResFinal.filter((data) => {
-        const dataStartDate = moment(data.faci_startdate, 'MM/DD/YYYY'); // Format tanggal input
-        const dataEndDate = moment(data.faci_enddate, 'MM/DD/YYYY'); // Format tanggal input
-        const startDateRange = moment(openDate, 'MM/DD/YYYY'); // Format tanggal input
-        const endDateRange = moment(closeDate, 'MM/DD/YYYY'); // Format tanggal input
-
-        // Memeriksa apakah dataStartDate atau dataEndDate berada dalam range tanggal yang ditentukan
-        return dataStartDate.isSameOrAfter(startDateRange) &&
-          dataEndDate.isSameOrBefore(endDateRange);
-      });
-
-
-
-
-
-
-
           const dataObj = {
             ...data,
             faci_rate_price: faci_rate_price_converse,
             faci_subtotal: subTotal,
+            faci_startdate: formatDate(data.faci_startdate),
+            faci_enddate: formatDate(data.faci_enddate),
           };
           delete dataObj.parent;
           return dataObj;
@@ -163,6 +127,19 @@ export class BookingController {
             faciSubtotalNumber <= Number(maxSubTotal)
           );
         });
+
+      dataResFinal = dataResFinal.filter((data) => {
+        const dataStartDate = moment(data.faci_startdate, 'MM/DD/YYYY'); // Format tanggal input
+        const dataEndDate = moment(data.faci_enddate, 'MM/DD/YYYY'); // Format tanggal input
+        const startDateRange = moment(openDate, 'MM/DD/YYYY'); // Format tanggal input
+        const endDateRange = moment(closeDate, 'MM/DD/YYYY'); // Format tanggal input
+
+        // Memeriksa apakah dataStartDate atau dataEndDate berada dalam range tanggal yang ditentukan
+        return (
+          dataStartDate.isSameOrAfter(startDateRange) &&
+          dataEndDate.isSameOrBefore(endDateRange)
+        );
+      });
 
       // let formattedDateStart: string;
       // let formattedDateEnd: string;
@@ -640,26 +617,22 @@ export class BookingController {
     }
   }
 
-
   @Get('mybooking/:IdUser')
   async getBookingHistory(@Param('IdUser') IdUser: any, @Res() res: Response) {
     try {
-      const dataResponse = await this.bookingService.getBookingHistory(Number(IdUser))
+      const dataResponse = await this.bookingService.getBookingHistory(
+        Number(IdUser),
+      );
       return res.status(200).json({
         status_code: HttpStatus.OK,
         message: 'success',
-        data: dataResponse[0]
-      })
-
-
+        data: dataResponse[0],
+      });
     } catch (error) {
       return res.status(400).json({
         status_code: HttpStatus.BAD_REQUEST,
-        message: error
-      })
+        message: error,
+      });
     }
   }
-
-
-
 }
