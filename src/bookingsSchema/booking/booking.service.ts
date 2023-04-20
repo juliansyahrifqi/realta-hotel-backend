@@ -9,12 +9,13 @@ import { user_members, users } from 'models/usersSchema';
 import { Op, where } from 'sequelize';
 import { booking_order_detail, booking_order_detail_extra, booking_orders, special_offer_coupons, special_offers, user_breakfeast } from 'models/bookingSchema';
 import { subtle } from 'crypto';
+import { payment_transaction } from 'models/paymentSchema';
 
 
 
 @Injectable()
 export class BookingService {
-  constructor(@InjectModel(hotels) private hotelsModel: typeof hotels, @InjectModel(facilities) private facilityModel: typeof facilities, @InjectModel(booking_orders) private bookingOrdersModel: typeof booking_orders, @InjectModel(booking_order_detail) private bookingOrderDetailModel: typeof booking_order_detail, @InjectModel(special_offers) private specialOfferModel: typeof special_offers, @InjectModel(special_offer_coupons) private specialOfferCouponsModel: typeof special_offer_coupons, @InjectModel(booking_order_detail_extra) private bookingOrderDetailExtraModel: typeof booking_order_detail_extra, @InjectModel(price_items) private priceItemsModel: typeof price_items, @InjectModel(user_breakfeast) private userBreakFeastModel: typeof user_breakfeast, sequelize: Sequelize) { }
+  constructor(@InjectModel(hotels) private hotelsModel: typeof hotels, @InjectModel(facilities) private facilityModel: typeof facilities, @InjectModel(booking_orders) private bookingOrdersModel: typeof booking_orders, @InjectModel(booking_order_detail) private bookingOrderDetailModel: typeof booking_order_detail, @InjectModel(special_offers) private specialOfferModel: typeof special_offers, @InjectModel(special_offer_coupons) private specialOfferCouponsModel: typeof special_offer_coupons, @InjectModel(booking_order_detail_extra) private bookingOrderDetailExtraModel: typeof booking_order_detail_extra, @InjectModel(price_items) private priceItemsModel: typeof price_items, @InjectModel(user_breakfeast) private userBreakFeastModel: typeof user_breakfeast, private sequelize: Sequelize) { }
   create(createBookingDto: CreateBookingDto) {
     return 'This action adds a new booking';
   }
@@ -24,14 +25,15 @@ export class BookingService {
     provName: string,
     countryName: string,
     regionName: string,
-    facilities_support_filter: number[]) {
+    facilities_support_filter: any[]) {
     try {
 
       const dataBookingHotels = await this.facilityModel.findAll({
-        attributes: ['faci_id', 'faci_name', 'faci_room_number', 'faci_startdate', 'faci_enddate', 'faci_discount', 'faci_tax_rate', 'faci_rate_price', 'faci_memb_name'],
+
         include: [
           {
             model: hotels,
+
             include: [
               {
                 model: address,
@@ -61,7 +63,6 @@ export class BookingService {
                 ],
               },
               { model: hotel_reviews, attributes: ['hore_rating'] },
-              { model: facilities_support }
             ],
           },
         ],
@@ -69,7 +70,7 @@ export class BookingService {
       }).catch((err) => {
         throw err
       })
-      console.log(countryName)
+      console.log(dataBookingHotels)
 
       const dataFaciPhoto = await this.facilityModel.findAll({
         include: {
@@ -79,9 +80,10 @@ export class BookingService {
       const dataHotel = await this.hotelsModel.findAll({
         include: [{
           model: facilities_support,
-          where: facilities_support_filter ? { fs_name: facilities_support_filter } : {}
+
         }]
       })
+
 
 
       const hotelsData = dataHotel.reduce((acc, hotel) => {
@@ -90,6 +92,7 @@ export class BookingService {
         };
         return acc;
       }, {});
+
 
       const dataBookingHotelsWithFacilities = dataBookingHotels.map((facility) => {
         const hotelData = hotelsData[facility.hotel.hotel_id];
@@ -118,13 +121,16 @@ export class BookingService {
 
         if (facilities_support_filter) {
           filteredData = filteredData.filter((data) => {
-            console.log(facilities_support_filter)
+
             if (data.hotel.facilities_support) {
+
               console.log(data.hotel.facilities_support.some((fs: any) => facilities_support_filter.includes(fs.fs_name)))
               return data.hotel.facilities_support.some((fs: any) => facilities_support_filter.includes(fs.fs_name));
             }
             return false;
           });
+
+
         }
       }
 
@@ -177,7 +183,7 @@ export class BookingService {
 
 
 
-      return { dataNew, totalData };
+      return { dataNew, totalData, dataBookingHotels };
     } catch (error) {
       console.log(error)
       return error;
@@ -1146,7 +1152,28 @@ export class BookingService {
   }
 
 
+  getBookingHistory = async (IdUser: any) => {
+    try {
+      const dataUserBooking: any = await this.sequelize.query(`
+    
+SELECT DISTINCT *
+FROM users.users u
+INNER JOIN payment.payment_transaction pt ON u.user_id = pt.patr_user_id
+INNER JOIN booking.booking_orders bo ON bo.boor_order_number = pt.patr_boor_order_number inner join
+booking.booking_order_detail bod on bo.boor_id = bod.border_boor_id inner join booking.special_offer_coupons soc on
+soc.soco_borde_id = bod.borde_id inner join booking.special_offers so on soc.soco_spof_id = so.spof_id
+inner join hotel.hotels h on bo.boor_hotel_id = h.hotel_id inner join hotel.facilities f on bod.borde_faci_id = f.faci_id
+inner join hotel.facility_photos fps on fps.fapho_faci_id = f.faci_id
+WHERE u.user_id = ${IdUser} AND pt.patr_trx_number NOT LIKE '%0001%' order by pt.patr_id desc;
+      `)
+
+      return dataUserBooking
 
 
+
+    } catch (error) {
+      return error
+    }
+  }
 
 }

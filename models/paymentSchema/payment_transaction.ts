@@ -32,13 +32,12 @@ export interface payment_transactionAttributes {
   tableName: 'payment_transaction',
   schema: 'payment',
   timestamps: true,
-  createdAt:'patr_modified_date',
-  updatedAt:'patr_modified_date',
+  createdAt: 'patr_modified_date',
+  updatedAt: 'patr_modified_date',
 })
 export class payment_transaction
   extends Model<payment_transactionAttributes, payment_transactionAttributes>
-  implements payment_transactionAttributes
-{
+  implements payment_transactionAttributes {
   static save(paymentTransaction: payment_transaction) {
     throw new Error('Method not implemented.');
   }
@@ -129,5 +128,6 @@ export class payment_transaction
 
   @BelongsTo(() => users)
   user?: users;
+
 
 }

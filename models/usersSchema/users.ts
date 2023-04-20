@@ -32,8 +32,7 @@ export interface usersAttributes {
 @Table({ tableName: 'users', schema: 'users', timestamps: false })
 export class users
   extends Model<usersAttributes, usersAttributes>
-  implements usersAttributes
-{
+  implements usersAttributes {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -97,7 +96,7 @@ export class users
 
   @HasMany(() => user_accounts, { sourceKey: 'user_id' })
   user_accounts?: user_accounts[];
-  
-    @HasMany(() => payment_transaction, { sourceKey: 'user_id' })
-    payment_transactions?: payment_transaction[];
+
+  @HasMany(() => payment_transaction, { sourceKey: 'user_id' })
+  payment_transactions?: payment_transaction[];
 }
