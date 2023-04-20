@@ -1176,9 +1176,4 @@ WHERE u.user_id = ${IdUser} AND pt.patr_trx_number NOT LIKE '%0001%' order by pt
     }
   }
 
-
-
-
-
-
 }
