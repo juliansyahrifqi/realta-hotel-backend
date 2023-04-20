@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
-import { user_accounts } from 'models/paymentSchema';
+import { bank, entity, fintech, user_accounts } from 'models/paymentSchema';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UserAccountsService {
@@ -20,6 +21,24 @@ export class UserAccountsService {
       return result[0];
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  async findUserAccountAndRealta(
+    metPemUser: any,
+    rekeningUser: any,
+    metPemRealta: any,
+    rekeningRealta: any,
+  ) {
+    try {
+      console.log(metPemUser);
+      const result = await this.sequelize.query(
+        `SELECT * FROM payment."findUserAccount" where "usac_account_number" = ${rekeningUser} and "entity_name" = ${metPemUser}`,
+      );
+
+      return result;
+    } catch (error) {
+      throw new Error(`Gagal mendapatkan data akun pengguna ${error}`);
     }
   }
 
@@ -64,14 +83,30 @@ export class UserAccountsService {
   //   }
   // }
 
-  async findAll(id: number) {
+  async findAll(
+    id: number | undefined,
+    bank_name: string | undefined,
+    rekening_user: string | undefined,
+  ) {
     try {
-      const result = await this.sequelize.query(
-        `SELECT * FROM payment."findUserAccount" where "usac_user_id" =  ${id}`,
-      );
-      return result[0];
+      console.log(id);
+
+      if (id !== undefined) {
+        const result = await this.sequelize.query(
+          `SELECT * FROM payment."findUserAccount" where "usac_user_id" = ${id}`,
+        );
+        return result[0];
+      } else if (bank_name && rekening_user) {
+        console.log(bank_name, rekening_user);
+        const result = await this.sequelize.query(
+          `SELECT * FROM payment."findUserAccount" where "entity_name" = '${bank_name}' and "usac_account_number" = '${rekening_user}'`,
+        );
+        return result[0];
+      } else {
+        throw new Error('Parameter input tidak valid');
+      }
     } catch (error) {
-      throw new Error(`Gagal mendapatkan data akun pengguna ${error}`);
+      throw new Error(`Gagal mendapatkan data akun pengguna: ${error}`);
     }
   }
 
