@@ -55,6 +55,7 @@ export class BookingController {
       let dataResFinal = dataNew.map((data: any) => {
         let priceRate = 0;
         if (data.faci_rate_price.length > 0) {
+          console.log(data.faci_rate_price)
           priceRate = parseInt(data.faci_rate_price.replace(/[^0-9.-]+/g, ''));
 
         }
