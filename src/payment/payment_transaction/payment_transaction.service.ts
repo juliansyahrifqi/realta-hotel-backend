@@ -159,7 +159,10 @@ export class PaymentTransactionService {
         });
       
           if (!currentUserAccount || !recipientUserAccount) {
-            throw new Error('Akun pengguna tidak ditemukan');
+            return{
+              status:400,
+              message:'Account Number Not Found'
+             }
           }
       
           const currentUserAccountBalance = Number(currentUserAccount.usac_saldo);
@@ -167,7 +170,10 @@ export class PaymentTransactionService {
           
       
           if (currentUserAccountBalance < Number(createPaymentTransaction.debit)) {
-            throw new Error('Saldo tidak mencukupi');
+           return{
+            status:400,
+            message:'The balance is not sufficient'
+           }
           }
           // Update saldo pengirim dan penerima
           currentUserAccount.usac_saldo = (
