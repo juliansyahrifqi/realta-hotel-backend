@@ -387,6 +387,7 @@ export class BookingService {
         boor_hotel_id: dataOrder.booking_orders.boor_hotel_id,
         boor_user_id: dataOrder.booking_orders.boor_user_id
       })
+      console.log(dataBookingOrders)
 
       let dataAll = dataOrder.booking_orders.booking_order_detail.map((data2: any) => {
         return { border_boor_id: dataBookingOrders.boor_id, ...data2 }
@@ -395,9 +396,7 @@ export class BookingService {
       // const dataBookingOrderDetail = await booking_order_detail.bulkCreate(dataAll.booking_order_detail).catch((err) => {
       //   console.log(err)
       // })
-      const dataBookingOrderDetail = await this.bookingOrderDetailModel.bulkCreate(dataAll).catch((err) => {
-        console.log(err)
-      })
+      const dataBookingOrderDetail = await this.bookingOrderDetailModel.bulkCreate(dataAll)
 
       const dataAllBookingDetail = await this.bookingOrderDetailModel.findAll({
         where: {
