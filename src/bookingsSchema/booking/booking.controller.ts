@@ -25,15 +25,15 @@ export class BookingController {
     @Query('limit') limit = 0,
     @Query('minSubTotal') minSubTotal = 0,
     @Query('maxSubTotal') maxSubTotal = Number.MAX_VALUE,
-    @Query('cityName') cityName: string = 'Jakarta',
+    @Query('cityName') cityName: string,
     @Query('provName') provName: string,
-    @Query('countryName') countryName: string,
+    @Query('countryName') countryName = 'Indonesia',
     @Query('regionName') regionName = 'Asia',
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
     @Query('facilities_support_filter') facilities_support_filter: string,
     @Query('openDate') openDate = "02/01/2023",
-    @Query('closeDate') closeDate = "06/01/2023",
+    @Query('closeDate') closeDate = "04/30/2023",
     @Res() response: Response,
   ) {
     try {
