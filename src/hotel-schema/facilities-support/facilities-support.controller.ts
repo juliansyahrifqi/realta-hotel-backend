@@ -22,7 +22,7 @@ import { diskStorage } from 'multer';
 export class FacilitiesSupportController {
   constructor(
     private readonly facilitiesSupportService: FacilitiesSupportService,
-  ) { }
+  ) {}
 
   @Post()
   @UseInterceptors(

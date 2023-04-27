@@ -28,7 +28,7 @@ export class provinces
     autoIncrement: true,
     type: DataType.INTEGER,
     defaultValue: Sequelize.literal(
-      "nextval('master.provinces_prov_id_seq1'::regclass)",
+      "nextval('master.provinces_prov_id_seq'::regclass)",
     ),
   })
   @Index({ name: 'pk_prov_id', using: 'btree', unique: true })
